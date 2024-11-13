@@ -32,7 +32,7 @@ const registerUser = async (req, res) => {
     }
     const hashPassword = await bcrypt.hash(password, 10);
     const verificationToken = crypto.randomBytes(20).toString("hex"); // get the 20 bytes and turn into hexadecimals
-    const verificationExpiration = Date.now() + 3600 * 10; // ms is being used
+    const verificationExpiration = Date.now() + (3600 * 10); // ms is being used
 
     // pool.query (key.execute)
     const registerUser = await pool.query(
@@ -115,6 +115,10 @@ const verifyEmail = async (req, res) => {
   if (findToken[0].is_verified === 1) {
     return res.status(500).json({ error: "Invalid Link" });
   }
+
+ if(Date.now() > findToken[0].verif_expiration){
+  return res.status(500).json({error: "Invalid Link"})
+ }
 
   const [verifyEmail] = await pool.query(
     "UPDATE authentication SET is_verified = true WHERE id = ?",

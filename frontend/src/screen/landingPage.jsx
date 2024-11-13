@@ -1,6 +1,6 @@
 import { React, useState } from "react";
 import { ReactTyped } from "react-typed";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { loginActions } from "../actions/authActions";
 import {Link} from "react-router-dom";
 
@@ -8,6 +8,8 @@ const LandingPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
+  // state is the combineReducer, now we choose
+  const {message} = useSelector((state) => state.loginUser)
 
   const handleLogin = (e) => {
     e.preventDefault()
@@ -49,7 +51,7 @@ const LandingPage = () => {
                 <label>Password</label>
                 <input type="password" class="form-control" onChange = {e=>setPassword(e.target.value)}></input>
               </div>
-
+              {message && <p>{message}</p>}
               <button type="submit" class="btn btn-secondary mt-2">
                 Login
               </button>

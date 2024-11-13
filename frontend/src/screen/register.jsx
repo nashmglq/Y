@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registerAction } from "../actions/authActions";
-import { useNavigate } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import { registerReducer } from "../reducers/authReducer";
 const Register = () => {
   // useState, when load, put it to the value of none
@@ -16,11 +16,6 @@ const Register = () => {
 
   const handleRegister = (e) => {
     e.preventDefault();
-
-    if (password !== password2) {
-      return console.log("Password do not match");
-    }
-
     const formData = { email, username, password, password2 };
 
     dispatch(registerAction(formData));
@@ -80,8 +75,17 @@ const Register = () => {
                 ></input>
               </div>
 
-              <button class="btn btn-secondary mt-2">Register</button>
+              <button class="btn btn-secondary mt-2 col-12">Register</button>
             </form>
+
+            
+            <Link to = "/">
+            <small class = "mt-2">Login here.</small>
+            </Link>
+
+            <Link to = "/resend-verification">
+            <small class = "mt-2">Resend verification here.</small>
+            </Link>
 
             {/* {message ? <p>{message}</p> : ""} */}
             {/* same with ternary, if we have both then do it, */}

@@ -6,3 +6,4 @@ min = You can be this tall at least, but if you need more space, you can grow ta
 flex-column = flex-column stacks items vertically (Y-axis) and centers them. If space is tight, they may get squeezed. Without it, items align horizontally (X-axis).
 ReactTyped = for animation of typing
 div form-group, for input form-control
+

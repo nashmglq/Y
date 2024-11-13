@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 
 
 const emailStructure = (email, verificationToken) => {
-    const verificationLink = `http://localhost:5001/verify-email?token=${verificationToken}`;
+    const verificationLink = `http://localhost:3000/verify-email?token=${verificationToken}`;
 
     const emailSent = {
         from: process.env.EMAIL,
