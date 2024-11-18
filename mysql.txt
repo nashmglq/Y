@@ -1,0 +1,48 @@
+CREATE TABLE profiles (
+  user_id INT PRIMARY KEY,                    -- Use user_id as the primary key for profiles
+  profile_image VARCHAR(255),                 -- Store image file path or URL
+  bio TEXT,
+  FOREIGN KEY (user_id) REFERENCES authentication(id) -- Link to authentication table
+);
+
+
+FOREIGN KEY (user_id) REFERENCES authentication(id) // always use this to get id from other or any other type
+so this meanse
+get the column from other id and use it as reference for the user_id so it would be the same
+
+so it would be like
+your id is user_id
+however get the user_id base on the authenticationd id
+
+so text = unli length
+varchar = max length
+
+
+//// SIGNALS LIKE IN DJANGO ////
+
+DELIMITER $$
+
+CREATE TRIGGER create_profile_after_insert ( name of trigger)
+AFTER INSERT ON authentication (after inserting in this table)
+FOR EACH ROW  // very time a new row (user) is added to the authentication table, add it to the profile table too
+BEGIN
+    INSERT INTO profile (id, profile_image, bio) 
+    VALUES (NEW.id, 'default.jpg', ''); 
+END $$
+
+DELIMITER ;
+
+
+
+
+// use this to drop that 
+DROP TRIGGER create_profile_after_insert;
+
+! = if ! = true or false
+
+
+so use ternary when returning something
+
+|| for a fallback
+
+and && if true

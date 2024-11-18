@@ -7,3 +7,8 @@ flex-column = flex-column stacks items vertically (Y-axis) and centers them. If 
 ReactTyped = for animation of typing
 div form-group, for input form-control
 
+
+
+// split('') splits the string into individual characters (including spaces) or each char/per char
+// split(' ') splits the string by spaces, creating words without spaces or each space/per char
+// "?" if no authorization like if it is empty it will add undefined

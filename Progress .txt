@@ -5,3 +5,34 @@ BOTH (FRONTEND AND BACKEND)
 
 
 
+Nov 14, 2024
+FIXED state
+GET PROFILE
+
+
+Nov 17, 2024
+
+ERROR for update PROFILE
+Content-Type: You don't need to manually set Content-Type when using FormData. 
+It will automatically handle the correct content type, which is typically multipart/form-data, because it includes file data.
+
+e.target.files[0]: When you select a file using an input, e.target.files returns an array of files (even if there's only one).
+By using [0], you get the first file from that array.
+
+new FormData(): This creates a new FormData object, which allows you to append multiple key-value pairs, including files. 
+Since files are objects with multiple properties (like name, size, type), you cannot directly destructure them like simple values (e.g., username, bio). 
+So you need to append them one by one to the FormData object.
+
+my own understanding:
+
+contetn-tpye = not needed anymore, formdata will set that
+
+e.target.files = will provide a set of array, however we want the first one which is the FILE [0]
+so e.target.files will return an array of the files we uplaod [ file1 , file2]
+If you want to upload only the first file from the selected files (especially when the user selects multiple files), you access it like this:
+const file = e.target.files[0];
+
+
+new FormData = create a new object to append new key and value, we use this becuase we have the FILE which contains a lot of values, 
+we cannot destructure that using {} becuase this only destructure single values like username and bio, 
+so we appen all in new object which can take a lot like the file

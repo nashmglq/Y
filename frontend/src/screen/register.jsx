@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registerAction } from "../actions/authActions";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { registerReducer } from "../reducers/authReducer";
 const Register = () => {
   // useState, when load, put it to the value of none
@@ -11,8 +11,18 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
   const dispatch = useDispatch();
-  const { message } = useSelector((state) => state.registerUser);
-  const { success } = useSelector((state) => state.registerUser);
+  const { loading, success, message } = useSelector(
+    (state) => state.registerUser
+  );
+  const nav = useNavigate()
+
+  useEffect(()=>{
+    const token = localStorage.getItem("userInfo")
+
+    if(token){
+      nav("/profile")
+    }
+  })
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -24,7 +34,7 @@ const Register = () => {
   // think of this, argument is something that you pass on the fucntion so in this case useEffect
   // cannot use an arguement if we dont pass anything, if u try to use, then it would be undefined
   useEffect(() => {
-    // u cannot use useState inside other hookd 
+    // u cannot use useState inside other hookd
     if (success) {
       // set it as empty
       setEmail("");
@@ -33,7 +43,6 @@ const Register = () => {
       setPassword2("");
     }
   }, [success]);
-  
 
   console.log(success);
 
@@ -75,16 +84,20 @@ const Register = () => {
                 ></input>
               </div>
 
-              <button class="btn btn-secondary mt-2 col-12">Register</button>
+              {loading 
+              ? (
+                <button class="btn btn-secondary mt-2 col-12 active disabled">Processing...</button>
+              ) : (
+                <button class="btn btn-secondary mt-2 col-12">Register</button>
+              )}
             </form>
 
-            
-            <Link to = "/">
-            <small class = "mt-2">Login here.</small>
+            <Link to="/">
+              <small class="mt-2">Login here.</small>
             </Link>
 
-            <Link to = "/resend-verification">
-            <small class = "mt-2">Resend verification here.</small>
+            <Link to="/resend-verification">
+              <small class="mt-2">Resend verification here.</small>
             </Link>
 
             {/* {message ? <p>{message}</p> : ""} */}

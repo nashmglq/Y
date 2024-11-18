@@ -4,6 +4,9 @@ const app = express()
 const port = process.env.PORT
 const cors = require('cors');
 const route = require('./routes/route');
+const path = require('path')
+// for static
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // adding () this will call the function when it runned
 app.use(cors()) // communcate from frontend to backend

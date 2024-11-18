@@ -1,8 +1,8 @@
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import { ReactTyped } from "react-typed";
 import {useDispatch, useSelector} from "react-redux";
 import { loginActions } from "../actions/authActions";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 const LandingPage = () => {
   const [email, setEmail] = useState("");
@@ -10,7 +10,15 @@ const LandingPage = () => {
   const dispatch = useDispatch();
   // state is the combineReducer, now we choose
   const {message} = useSelector((state) => state.loginUser)
+  const nav = useNavigate()
 
+  useEffect(()=>{
+    const token = localStorage.getItem("userInfo")
+
+    if(token){
+      nav("/profile")
+    }
+  })
   const handleLogin = (e) => {
     e.preventDefault()
 
@@ -18,6 +26,8 @@ const LandingPage = () => {
 
     dispatch(loginActions(formData))
   }
+
+
 
   return (
     <div className="container d-flex min-vh-100 justify-content-center flex-column">

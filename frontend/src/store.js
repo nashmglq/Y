@@ -1,6 +1,6 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { thunk } from "redux-thunk";
-import { emailVerificationReducer, loginReducer, registerReducer, resendEmailVerificationReducer } from "./reducers/authReducer";
+import { emailVerificationReducer, getProfileReducer, loginReducer, registerReducer, resendEmailVerificationReducer, updateProfileReducer } from "./reducers/authReducer";
 import { emailVerifyAction } from "./actions/authActions";
 
 // put all reducers here
@@ -8,7 +8,9 @@ const reducer = combineReducers({
     loginUser : loginReducer,
     registerUser :registerReducer,
     emailVerify : emailVerificationReducer,
-    resendEmailVerification : resendEmailVerificationReducer
+    resendEmailVerification : resendEmailVerificationReducer,
+    getProfile : getProfileReducer,
+    updateProfile: updateProfileReducer
 
 })
 

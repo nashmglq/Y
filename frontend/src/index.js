@@ -1,7 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-// import "./index.css";
+// bootstrap 2 imports = css and js
 import "./bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux"; // making sure redux is availble to the app
@@ -10,14 +11,14 @@ import store from "./store"; // this store the state
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    {/* This makes Redux available to all components and provides the store for state management */}
-    {/* `store={store}`: The first `store` is the prop name expected by `Provider`, and the second `store` is the actual Redux store being passed as the value */}
+  // <React.StrictMode>
+    // {/* This makes Redux available to all components and provides the store for state management */}
+    // {/* `store={store}`: The first `store` is the prop name expected by `Provider`, and the second `store` is the actual Redux store being passed as the value */}
 
     <Provider store={store}>
     <App />
     </Provider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

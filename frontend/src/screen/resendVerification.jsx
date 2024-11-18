@@ -1,12 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { resendEmailVerificationAction } from "../actions/authActions";
-import {Link} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ResendVerification = () => {
   const [email, setEmail] = useState("");
   const dispatch = useDispatch();
-  const {message} = useSelector(state => state.resendEmailVerification)
+  const { message } = useSelector((state) => state.resendEmailVerification);
+  const nav = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("userInfo");
+
+    if (token) {
+      nav("/profile");
+    }
+  });
 
   const handleResend = (e) => {
     e.preventDefault();
@@ -24,11 +33,16 @@ const ResendVerification = () => {
             <form onSubmit={handleResend}>
               <div class="form-group">
                 <label>Email</label>
-                <input type="email" class="form-control" onChange={e => setEmail(e.target.value)}></input>
+                <input
+                  type="email"
+                  class="form-control"
+                  onChange={(e) => setEmail(e.target.value)}
+                ></input>
               </div>
-              <button class = "btn btn-secondary col-12 mt-4">Resend</button>
-              <Link to = "/" >
-              <small class = "mt-2">Login here.</small></Link>
+              <button class="btn btn-secondary col-12 mt-4">Resend</button>
+              <Link to="/">
+                <small class="mt-2">Login here.</small>
+              </Link>
 
               {message && <p>{message}</p>}
             </form>
