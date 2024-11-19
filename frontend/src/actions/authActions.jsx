@@ -182,14 +182,11 @@ export const updateProfileAction = (formData) => async (dispatch) => {
         }
       : null;
 
-
     const response = await axios.patch(
       "http://localhost:5001/profile-update",
       formData,
       config
     ); // so (url, data, headers)
-
-  
 
     if (response.data && response.data.success) {
       return dispatch({
@@ -201,7 +198,7 @@ export const updateProfileAction = (formData) => async (dispatch) => {
     return dispatch({
       type: UPDATE_PROFILE_FAIL,
       payload:
-      //catch (basket) we represent it by err, this contain the whole error
+        //catch (basket) we represent it by err, this contain the whole error
         err.response && err.response.data.error
           ? err.response.data.error
           : "Something went wrong.",

@@ -1,11 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const nav = useNavigate("/");
+  const logOut = (e) => {
+    e.preventDefault();
+    const removeToken = localStorage.removeItem("userInfo");
+    nav("/");
+  };
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-dark">
       <Link to="/home">
-        <img src="Y-final-bg.png" alt="Y logo" style={{ height: 80 }} />
+        <img src="Y-final-bg.png" alt="Y logo" style={{ height: 60 }} />
       </Link>
       <button
         className="navbar-toggler"
@@ -29,6 +36,15 @@ const Navbar = () => {
           <li className="nav-item">
             <Link to="/information" className="nav-link text-light">
               <h6 className="text-dark">Information</h6>
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link
+              to="/information"
+              onClick={logOut}
+              className="nav-link text-light"
+            >
+              <h6 className="text-dark">Log out</h6>
             </Link>
           </li>
         </ul>

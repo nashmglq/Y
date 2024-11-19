@@ -16,9 +16,11 @@ const LandingPage = () => {
     const token = localStorage.getItem("userInfo")
 
     if(token){
-      nav("/profile")
+      nav("/home")
     }
   })
+
+  
   const handleLogin = (e) => {
     e.preventDefault()
 

@@ -2,8 +2,10 @@ const pool = require("../config/connect");
 
 const postY = async (req, res) => {
   const { tweet } = req.body;
-  const tweet_img = req.file ? req.file.tweet_img : null;
+  const tweet_img = req.file ? req.file.filename : null;
   const userId = req.user.id;
+  console.log(req.file)
+  console.log(req.body)
 
   try {
     const getUserId = await pool.query(
@@ -40,13 +42,40 @@ const getY = async (req, res) => {
     return res.status(200).json({
       success: {
         // u cannot create an object like this id : getTweets.id, becuase u are getting a lot
-        getTweets,
+        getTweets
       },
     });
   } catch (err) {
     return res.status(500).json({ error: err });
   }
 };
+
+const getYDetails = async(req,res) =>{
+  const {id} = req.params;
+
+  try{
+
+    if(!id){
+      return res.status(400).json({error: "No ID recieve."})
+    }
+
+    console.log(id)
+    const [getIdY] = await pool.query
+    ("SELECT tweets.*, authentication.username, profile.profile_image FROM tweets LEFT JOIN authentication ON tweets.userId = authentication.id LEFT JOIN profile ON authentication.id = profile.user_id WHERE tweet_id = ? "
+      , [id]
+    )
+
+    if(getIdY === 0){
+      return res.status(404).json({error: "No ID found."})
+    }
+    console.log(getIdY)
+    return res.status(200).json({success : getIdY})
+
+
+  }catch(err){
+    return res.status(500).json({error: err.message})
+  }
+}
 
 const updateY = async (req, res) => {
   const { tweet } = req.body;
@@ -115,4 +144,4 @@ const deleteY = async (req, res) => {
   }
 };
 
-module.exports = { postY, getY, updateY, deleteY };
+module.exports = { postY, getY, getYDetails, updateY, deleteY };
