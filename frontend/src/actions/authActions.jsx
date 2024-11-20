@@ -50,6 +50,7 @@ export const loginActions = (formData) => async (dispatch) => {
 export const registerAction = (formData) => async (dispatch) => {
   try {
     dispatch({ type: REGISTER_REQUEST });
+    console.log(formData)
     const response = await axios.post(
       "http://localhost:5001/register",
       formData

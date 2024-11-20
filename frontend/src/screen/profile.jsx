@@ -25,13 +25,27 @@ const Profile = () => {
 
   return (
     
-    <div class="container-fluid d-flex justify-content-center align-items-center mt-2">
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="card p-4">
-            <h1>Profile</h1>
+    <div class="container mt-2">
+      <div class="row ">
+        <div class="col-sm-3">
+          <div class="card p-2"> 
+            <img
+              src={
+                profile
+                  ? `http://localhost:5001/uploads/${profile.profile_image}`
+                  : "default.jpg"
+              }
+              style={{ height: '40%', width: '40%' }}
+              class = "mt-2 rounded-circle"
+              alt="profile_image"
+            ></img>
+            <small class="mt-2">
+              {profile ? `@${profile.username}` : "You are not authenticated"}{" "}
+            </small>
+            <small class = "mb-4 mt-2">
+             {profile && profile.bio ? `${profile.bio}` : "No bio yet."}
+            </small>
 
-            {/* use && so we do not set null */}
             {profile && (
               <UpdateProfile
                 usernameInitial={profile.username}
@@ -39,32 +53,15 @@ const Profile = () => {
                 profile_image_Initial={profile.profile_image}
               />
             )}
-
-            <img
-              src={
-                profile
-                  ? `http://localhost:5001/uploads/${profile.profile_image}`
-                  : "default.jpg"
-              }
-              style={{ height: 200 }}
-              class = "mt-2"
-              alt="profile_image"
-            ></img>
-            <small class="mt-2">
-              {profile ? `@${profile.username}` : "You are not authenticated"}{" "}
-            </small>
-            <p class="mt-2">
-              Email:{" "}
-              {profile ? `${profile.email}` : "You are not authenticated"}
-            </p>
-            <p>
-              Bio: {profile && profile.bio ? `${profile.bio}` : "No bio yet."}
-            </p>
           </div>
         </div>
       </div>
+
     </div>
   );
 };
 
 export default Profile;
+
+
+

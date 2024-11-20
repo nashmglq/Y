@@ -17,7 +17,7 @@ const DeleteY = ({id}) =>{
         
     }
 
-    return(<div>
+    return(<div class = "col-2">
         <button onClick={deleteButton} class = "btn btn-link">
         <FontAwesomeIcon icon={faTrashAlt}/>
         </button>

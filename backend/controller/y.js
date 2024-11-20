@@ -36,8 +36,12 @@ const postY = async (req, res) => {
 const getY = async (req, res) => {
   try {
     const [getTweets] = await pool.query(
-      "SELECT authentication.id, authentication.username, profile.profile_image, tweets.tweet_id, tweets.tweet, tweets.img  FROM authentication LEFT JOIN profile ON authentication.id = profile.user_id LEFT JOIN tweets ON profile.user_id = tweets.userId"
+      "SELECT authentication.id, authentication.username, profile.profile_image, tweets.tweet_id, tweets.tweet, tweets.img  FROM tweets LEFT JOIN profile ON tweets.userId = profile.user_id LEFT JOIN authentication ON profile.user_id = authentication.id"
     );
+
+    if(getTweets.length === 0){
+      return res.status(400).json({error: "Empty space."})
+    }
 
     return res.status(200).json({
       success: {

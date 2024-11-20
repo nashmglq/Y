@@ -8,6 +8,7 @@ const Register = () => {
   // after useEffect, the data will be now empty, and will be put inside the box
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
   const dispatch = useDispatch();
@@ -26,8 +27,8 @@ const Register = () => {
 
   const handleRegister = (e) => {
     e.preventDefault();
-    const formData = { email, username, password, password2 };
-
+    const formData = { email, username, name, password, password2 };
+    console.log(formData.username)
     dispatch(registerAction(formData));
   };
 
@@ -39,6 +40,7 @@ const Register = () => {
       // set it as empty
       setEmail("");
       setUsername("");
+      setName("");
       setPassword("");
       setPassword2("");
     }
@@ -68,6 +70,9 @@ const Register = () => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 ></input>
+                <label>Name:</label>
+                <input type = "text" class = "form-control" value = {name} onChange = {e => setName(e.target.value)}>
+                </input>
                 <label>Password: </label>
                 <input
                   type="password"

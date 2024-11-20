@@ -71,7 +71,7 @@ const UpdateProfile = ({
             <input
               class="form-control"
               type="text"
-              placeholder={username}
+              placeholder={usernameInitial}
               onChange={(e) =>
                 setUsername(e.target.value ? e.target.value : username)
               }
@@ -79,7 +79,7 @@ const UpdateProfile = ({
             <label>Bio</label>
             <textarea
               class="form-control"
-              placeholder={bio}
+              placeholder={bioInitial}
               onChange={(e) => setBio(e.target.value ? e.target.value : bio)}
             ></textarea>
             <Modal.Footer>

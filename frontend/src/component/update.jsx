@@ -19,7 +19,7 @@ const Updatetweet = ({id, tweet}) => {
         setShow(false)
     }
   return (
-    <div>
+    <div class = "col-2">
       <button class = "btn btn-link" onClick={onShow}><FontAwesomeIcon icon = {faEdit}></FontAwesomeIcon></button>
       <Modal show = {show} onHide ={onHide}>
         <Modal.Header closeButton>Update Tweet</Modal.Header>

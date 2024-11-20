@@ -7,11 +7,12 @@ const { userInfo } = require("os");
 const { error } = require("console");
 
 const registerUser = async (req, res) => {
-  const { email, username, password, password2 } = req.body;
+  const { email, username, name, password, password2 } = req.body;
   console.log("trigger");
+  console.log(req.body)
 
   try {
-    if (!email || !username || !password || !password2) {
+    if (!email || !username || !name || !password || !password2) {
       return res.status(400).json({ error: "Please input all fields" });
     }
 
@@ -25,22 +26,42 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ error: "Password do not match" });
     }
 
+    if (username.length < 4) {
+      console.log(username.length)
+      return res
+        .status(400)
+        .json({ error: "Username must be at least 4 characters long." });
+    }
+
     const [checkEmail] = await pool.query(
-      "SELECT email FROM authentication WHERE  email = ?",
-      [email]
+      "SELECT email, username FROM authentication WHERE  email = ? OR username = ?",
+      [email,username]
     );
 
     if (checkEmail.length > 0) {
-      return res.status(500).json({ error: "Email is already used" });
+      if(checkEmail[0].email === email){
+        return res.status(400).json({error : "Email already exist."})
+      }
+      if(checkEmail[0].username === username){
+        return res.status(400).json({error : "Username already exist."})
+      }
     }
+
     const hashPassword = await bcrypt.hash(password, 10);
     const verificationToken = crypto.randomBytes(20).toString("hex"); // get the 20 bytes and turn into hexadecimals
     const verificationExpiration = Date.now() + 3600 * 10; // ms is being used
 
     // pool.query (key.execute)
     const registerUser = await pool.query(
-      "INSERT INTO authentication (email, username, password, verif_token, verif_expiration) VALUES (?, ?, ?, ?, ?)",
-      [email, username, hashPassword, verificationToken, verificationExpiration]
+      "INSERT INTO authentication (email, username, name, password, verif_token, verif_expiration) VALUES (?, ?, ?, ?, ?, ?)",
+      [
+        email,
+        username,
+        name,
+        hashPassword,
+        verificationToken,
+        verificationExpiration,
+      ]
     );
 
     await emailSender(email, verificationToken);
@@ -229,7 +250,7 @@ const updateProfile = async (req, res) => {
   const userId = req.user.id;
 
   console.log(req.body);
-  console.log(profile_image)
+  console.log(profile_image);
 
   try {
     if (!username || !bio || !profile_image) {
@@ -262,8 +283,6 @@ const updateProfile = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
-
-
 
 module.exports = {
   registerUser,
