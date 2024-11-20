@@ -11,3 +11,15 @@ export const POST_Y_FAIL = "POST_Y_FAIL";
 export const GET_DETAIL_Y_REQUEST = "GET_DETAIL_Y_REQUEST";
 export const GET_DETAIL_Y_SUCCESS = "GET_DETAIL_Y_SUCCESS";
 export const GET_DETAIL_Y_FAIL = "GET_DETAIL_Y_FAIL";
+
+
+
+
+export const DELETE_Y_REQUEST = "DELETE_Y_REQUEST";
+export const DELETE_Y_SUCCESS = "DELETE_Y_SUCCESS";
+export const DELETE_Y_FAIL = "DELETE_Y_FAIL";
+
+
+export const UPDATE_Y_REQUEST = "UPDATE_Y_REQUEST";
+export const UPDATE_Y_SUCCESS = "UPDATE_Y_SUCCESS";
+export const UPDATE_Y_FAIL = "UPDATE_Y_FAIL";

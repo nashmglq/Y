@@ -65,11 +65,13 @@ const getYDetails = async(req,res) =>{
       , [id]
     )
 
-    if(getIdY === 0){
+    if(getIdY.length === 0){
       return res.status(404).json({error: "No ID found."})
     }
     console.log(getIdY)
-    return res.status(200).json({success : getIdY})
+    return res.status(200).json({success : 
+      getIdY[0] // to remove []
+    })
 
 
   }catch(err){
@@ -78,13 +80,13 @@ const getYDetails = async(req,res) =>{
 }
 
 const updateY = async (req, res) => {
-  const { tweet } = req.body;
+  const { updateTweet } = req.body;
   const { id } = req.params; // or cosnt tweet_id = req.params.id, the current jsut destructure the params
   const tokenId = req.user.id;
-
+  
   console.log(id);
   try {
-    if (!tweet) {
+    if (!updateTweet) {
       return res.status(400).json({ error: "No tweet" });
     }
 
@@ -97,14 +99,14 @@ const updateY = async (req, res) => {
       return res.status(500).json({ err: "You are not the owner of this." });
     }
 
-    if (checkId[0].tweet === tweet) {
+    if (checkId[0].tweet === updateTweet) {
       return res
         .status(500)
         .json({ err: "You cannot pass your current tweet" });
     }
-    const updateTweet = await pool.query(
+    const updateUserTweet = await pool.query(
       "UPDATE tweets SET tweet = ? WHERE tweet_id = ?",
-      [tweet, id]
+      [updateTweet, id]
     );
 
     return res.status(200).json({ success: "Tweet updated" });

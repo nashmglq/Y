@@ -14,6 +14,7 @@ const authenticatorChecker = (req, res, next) => {
 
     // verify the signature or jwt_secret
     const compareSignature = jwt.verify(token, process.env.jwt_secret);
+    
 
     // manually setting this ( this is not a built-in of EXPRESS OR  NODE)
     req.user = compareSignature;

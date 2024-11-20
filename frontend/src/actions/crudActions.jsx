@@ -8,6 +8,12 @@ import {
   GET_DETAIL_Y_REQUEST,
   GET_DETAIL_Y_SUCCESS,
   GET_DETAIL_Y_FAIL,
+  DELETE_Y_REQUEST,
+  DELETE_Y_SUCCESS,
+  DELETE_Y_FAIL,
+  UPDATE_Y_REQUEST,
+  UPDATE_Y_SUCCESS,
+  UPDATE_Y_FAIL,
 } from "../constants/crudConstants";
 import axios from "axios";
 
@@ -70,6 +76,7 @@ export const postYActions = (formData) => async (dispatch) => {
     );
 
     if (response.data && response.data.success) {
+      dispatch(getYActions());
       return dispatch({ type: POST_Y_SUCCESS, payload: response.data.success });
     }
   } catch (err) {
@@ -103,7 +110,6 @@ export const detailYActions = (id) => async (dispatch) => {
       config
     );
 
-
     if (resposne.data && resposne.data.success) {
       return dispatch({
         type: GET_DETAIL_Y_SUCCESS,
@@ -117,6 +123,88 @@ export const detailYActions = (id) => async (dispatch) => {
         err.resposne && err.resposne.data.error
           ? err.resposne.data.error
           : "Something went wrong",
+    });
+  }
+};
+
+export const deleteYActions = (id, nav) => async (dispatch) => {
+  try {
+    dispatch({ type: DELETE_Y_REQUEST });
+
+    const getToken = JSON.parse(localStorage.getItem("userInfo"));
+    const token = getToken ? getToken.token : null;
+    const config = token
+      ? {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      : null;
+
+    const response = await axios.delete(
+      `http://localhost:5001/delete-y/${id}`,
+      config
+    );
+
+    if (response.data && response.data.success) {
+      dispatch(detailYActions());
+      nav("/home");
+      return dispatch({
+        type: DELETE_Y_SUCCESS,
+        payload: response.data.success,
+      });
+    }
+  } catch (err) {
+    return dispatch({
+      type: DELETE_Y_FAIL,
+      payload:
+        err.response && err.response.data.error
+          ? err.response.data.error
+          : "Something went wrong",
+    });
+  }
+};
+
+export const updateYAction = (id, formData) => async (dispatch) => {
+  try {
+    dispatch({ type: UPDATE_Y_REQUEST });
+
+    const getToken = JSON.parse(localStorage.getItem("userInfo"));
+    const token = getToken ? getToken.token : null;
+    const config = token
+      ? {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      : null;
+
+      console.log(id, formData, config)
+
+    const response = await axios.patch(
+      `http://localhost:5001/update-y/${id}`,
+      formData,
+      config
+    );
+
+    console.log(response)
+
+    if (response.data && response.data.success) {
+      dispatch(detailYActions(id));
+      return dispatch({
+        type: UPDATE_Y_SUCCESS,
+        payload: response.data.success,
+      });
+    }
+  } catch (err) {
+    return dispatch({
+      type: UPDATE_Y_FAIL,
+      payload:
+        err.response && err.response.data
+          ? err.response.data.error
+          : "Something went wrong!",
     });
   }
 };

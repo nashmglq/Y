@@ -146,7 +146,7 @@ export const getProfileActions = () => async (dispatch) => {
       : null;
 
     const response = await axios.get("http://localhost:5001/profile", config);
-
+    console.log(response.data.success.userInfo);
     if (response.data && response.data.success.userInfo) {
       console.log(response.data.success.userInfo);
       return dispatch({
@@ -189,6 +189,7 @@ export const updateProfileAction = (formData) => async (dispatch) => {
     ); // so (url, data, headers)
 
     if (response.data && response.data.success) {
+      dispatch(getProfileActions())
       return dispatch({
         type: UPDATE_PROFILE_SUCCESS,
         payload: response.data.success,
@@ -205,4 +206,3 @@ export const updateProfileAction = (formData) => async (dispatch) => {
     });
   }
 };
-

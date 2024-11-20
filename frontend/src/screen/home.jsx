@@ -17,15 +17,11 @@ const Home = () => {
   
   const postHandler = (e) => {
     e.preventDefault()
-
     const formData = new FormData();
-
     formData.append("tweet", tweet)
     formData.append("tweet_img", tweet_img)
-
-
     dispatch(postYActions(formData))
-
+    setTweet("")
   }
 
 
@@ -42,7 +38,7 @@ const Home = () => {
   
   return (
     <div>
-      <div className="container d-flex mt-4">
+      <div className="container d-flex mt-4 justify-content-center">
         <div className="row w-100">
           <div className="col-lg-8">
             <h5>Share something</h5>
@@ -50,6 +46,7 @@ const Home = () => {
               <textarea
                 className="bg-light text-white w-100 form-control"
                 placeholder="What's happening?"
+                value = {tweet}
                 minLength={1}
                 maxLength={999}
                 onChange={(e) => setTweet(e.target.value)}
@@ -80,22 +77,22 @@ const Home = () => {
 
       <div className="container mt-4">
         <div className="row">
-          <div className="col-lg-6">
+          <div className="col-lg-8">
             <h5>Latest happenings</h5>
-            {y &&
+            {y ?
               y.map((tweets) => (
                 <Link to = {`/home/${tweets.tweet_id}`} class = "text-decoration-none"
                 >
                 <div class="card mt-2">
                   <div>
                   <img src = {`http://localhost:5001/uploads/${tweets.profile_image}` || 'default.jpg' }
-                   style={{height:80, width: 60}}/> <small>{`@${tweets.username}`}</small>
+                   style={{height: '8%', width: '8%'}} class = "rounded-circle"/> <small>{`@${tweets.username}`}</small>
                    </div>
                   <p>{tweets.tweet}</p>
                   {tweets.img ? <img src = {`http://localhost:5001/uploads/${tweets.img}`}/> : null}
                 </div>
                 </Link>
-              ))}
+              )) : "You are not authenticated"}
           </div>
         </div>
       </div>

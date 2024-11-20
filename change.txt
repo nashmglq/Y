@@ -1,9 +1,0 @@
-  switch (actions.type) {
-    case "GET_DETAIL_Y_REQUEST":
-      return { loading: true, success: false, error: false, message: "" };
-    case "GET_DETAIL_Y_SUCCESS":
-      return { loading: false, success: true, error: false, message: actions.payload };
-    case "GET_DETAIL_Y_FAIL": 
-      return { loading: false, success: false, error: true, message: actions.payload };
-    default:
-      return state;
