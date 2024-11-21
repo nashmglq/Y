@@ -39,6 +39,7 @@ const Profile = () => {
               class = "mt-2 rounded-circle"
               alt="profile_image"
             ></img>
+            <h4 class = "mt-2">{profile ? `${profile.name}` : "You are not authenticated"}</h4>
             <small class="mt-2">
               {profile ? `@${profile.username}` : "You are not authenticated"}{" "}
             </small>
@@ -48,6 +49,7 @@ const Profile = () => {
 
             {profile && (
               <UpdateProfile
+                nameInitial = {profile.name}
                 usernameInitial={profile.username}
                 bioInitial={profile.bio}
                 profile_image_Initial={profile.profile_image}

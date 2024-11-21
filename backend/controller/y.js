@@ -35,8 +35,10 @@ const postY = async (req, res) => {
 
 const getY = async (req, res) => {
   try {
+
+    // ORDER BY tweets.date_published DESC (descending order) = to descend order & ASC = ascend order?
     const [getTweets] = await pool.query(
-      "SELECT authentication.id, authentication.username, profile.profile_image, tweets.tweet_id, tweets.tweet, tweets.img  FROM tweets LEFT JOIN profile ON tweets.userId = profile.user_id LEFT JOIN authentication ON profile.user_id = authentication.id"
+      "SELECT authentication.id, authentication.username, authentication.name ,profile.profile_image, tweets.tweet_id, tweets.tweet, tweets.img, tweets.date_published FROM tweets LEFT JOIN profile ON tweets.userId = profile.user_id LEFT JOIN authentication ON profile.user_id = authentication.id ORDER BY tweets.date_published DESC"
     );
 
     if(getTweets.length === 0){
@@ -109,7 +111,7 @@ const updateY = async (req, res) => {
         .json({ err: "You cannot pass your current tweet" });
     }
     const updateUserTweet = await pool.query(
-      "UPDATE tweets SET tweet = ? WHERE tweet_id = ?",
+      "UPDATE tweets SET tweet = ?, updated = 1 WHERE tweet_id = ?",
       [updateTweet, id]
     );
 
@@ -150,4 +152,13 @@ const deleteY = async (req, res) => {
   }
 };
 
-module.exports = { postY, getY, getYDetails, updateY, deleteY };
+
+const postLike = (req,res) =>{
+  const {id} = useParams();
+  const add = 1;
+  const user = req.user.id;
+  
+
+}
+
+module.exports = { postY, getY, getYDetails, updateY, deleteY, postLike };

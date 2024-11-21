@@ -33,11 +33,14 @@ const registerUser = async (req, res) => {
         .json({ error: "Username must be at least 4 characters long." });
     }
 
+    // To check both username and email if existing
     const [checkEmail] = await pool.query(
       "SELECT email, username FROM authentication WHERE  email = ? OR username = ?",
       [email,username]
     );
 
+    // this is better, so if there is something it would do the inside logic
+    // however, if it is outside if NOTHING is there it wont contain the username
     if (checkEmail.length > 0) {
       if(checkEmail[0].email === email){
         return res.status(400).json({error : "Email already exist."})
@@ -49,9 +52,8 @@ const registerUser = async (req, res) => {
 
     const hashPassword = await bcrypt.hash(password, 10);
     const verificationToken = crypto.randomBytes(20).toString("hex"); // get the 20 bytes and turn into hexadecimals
-    const verificationExpiration = Date.now() + 3600 * 10; // ms is being used
+    const verificationExpiration = Date.now() + 3600 * 10; 
 
-    // pool.query (key.execute)
     const registerUser = await pool.query(
       "INSERT INTO authentication (email, username, name, password, verif_token, verif_expiration) VALUES (?, ?, ?, ?, ?, ?)",
       [
@@ -217,7 +219,7 @@ const getPeople = async (req, res) => {
 
     const [getUser] = await pool.query(
       // LEFT JOIN means join profile with authentication base on the id and if there is no profile it will be null OR VICE VERSA
-      "SELECT authentication.id, authentication.email, authentication.username, profile.bio, profile.profile_image  FROM authentication LEFT JOIN profile ON authentication.id = profile.user_id WHERE id = ? ",
+      "SELECT authentication.id, authentication.email, authentication.username, authentication.name, profile.bio, profile.profile_image  FROM authentication LEFT JOIN profile ON authentication.id = profile.user_id WHERE id = ? ",
       [userId]
     );
 
@@ -231,6 +233,7 @@ const getPeople = async (req, res) => {
           email: getUser[0].email,
           id: getUser[0].id,
           username: getUser[0].username,
+          name: getUser[0].name,
           bio: getUser[0].bio,
           profile_image: getUser[0].profile_image,
         },
@@ -243,7 +246,7 @@ const getPeople = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   // destructure to get the values
-  const { username, bio } = req.body;
+  const { name ,username,bio } = req.body;
   // to be unique, pick the filename, no need destructure because we are not getting any values, we only pick
   // take body, when initial is being passed
   const profile_image = req.file ? req.file.filename : req.body.profile_image;
@@ -253,13 +256,13 @@ const updateProfile = async (req, res) => {
   console.log(profile_image);
 
   try {
-    if (!username || !bio || !profile_image) {
+    if (!name || !username || !bio || !profile_image) {
       return res.status(400).json({ error: "Please input all fields" });
     }
 
     // left join, find rows that equal to the id (or other base on the developer) if there is no data, return null (either) which prevent errors
     const getuserId = await pool.query(
-      "SELECT authentication.id ,authentication.username, profile.bio, profile.profile_image from authentication LEFT JOIN profile ON authentication.id = profile.user_id WHERE id = ? ",
+      "SELECT authentication.id, authentication.name ,authentication.username, profile.bio, profile.profile_image from authentication LEFT JOIN profile ON authentication.id = profile.user_id WHERE id = ? ",
       [userId]
     );
 
@@ -269,8 +272,8 @@ const updateProfile = async (req, res) => {
     }
 
     const updateUsername = await pool.query(
-      "UPDATE authentication SET username = ? WHERE id = ? ",
-      [username, userId]
+      "UPDATE authentication SET username = ?, name = ? WHERE id = ? ",
+      [username, name, userId]
     );
     const updateBioProfileImg = await pool.query(
       "UPDATE profile SET bio = ?, profile_image = ? WHERE user_id = ?",

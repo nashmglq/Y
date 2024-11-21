@@ -1,7 +1,7 @@
 const express = require('express');
 const route = express.Router(); // making this a variable of the function that creates routing
 const {registerUser, login, verifyEmail, resendEmailVerification, getPeople, updateProfile} = require('../controller/authentication') // if {} as export, please import as {}
-const {postY, getY, updateY, deleteY, getYDetails} = require("../controller/y")
+const {postY, getY, updateY, deleteY, getYDetails, postLike} = require("../controller/y")
 const {authenticatorChecker, upload} = require("../config/middleware")
 
 route.post("/register", registerUser)
@@ -16,6 +16,6 @@ route.get("/get-y", authenticatorChecker,  getY)
 route.get("/get-y/:id", authenticatorChecker, getYDetails)
 route.patch("/update-y/:id", authenticatorChecker,  updateY)
 route.delete("/delete-y/:id", authenticatorChecker,  deleteY)
-
+route.post("/post-like/:id", authenticatorChecker,  postLike)
 
 module.exports = route;

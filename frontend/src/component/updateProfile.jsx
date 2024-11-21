@@ -4,11 +4,13 @@ import Modal from "react-bootstrap/Modal";
 import { updateProfileAction } from "../actions/authActions";
 
 const UpdateProfile = ({
+  nameInitial,
   usernameInitial,
   bioInitial,
   profile_image_Initial,
 }) => {
   const [show, setShow] = useState(false);
+  const [name, setName] = useState(nameInitial);
   const [username, setUsername] = useState(usernameInitial);
   const [bio, setBio] = useState(bioInitial);
   const [profile_image, setProfile_image] = useState(profile_image_Initial);
@@ -29,8 +31,9 @@ const UpdateProfile = ({
 
     const formData = new FormData(); // new object wtih key/value empty
     // soo formData (key, value)
+    formData.append("name", name);
     formData.append("username", username);
-    formData.append("bio", bio);
+    formData.append("bio", bio ? bio : "No bio yet.");
 
     // Check if profile_image has a value, and if so, append it to formData
     if (profile_image) {
@@ -67,6 +70,13 @@ const UpdateProfile = ({
                 setProfile_image(e.target.files[0] || profile_image_Initial)
               }
             ></input>
+            <label>Name</label>
+            <input
+              type="text"
+              placeholder={nameInitial}
+              class="form-control"
+              onChange={(e) => setName(e.target.value)}
+            ></input>
             <label>Username</label>
             <input
               class="form-control"
@@ -79,7 +89,7 @@ const UpdateProfile = ({
             <label>Bio</label>
             <textarea
               class="form-control"
-              placeholder={bioInitial}
+              placeholder={bioInitial ? bioInitial : "No bio yet."}
               onChange={(e) => setBio(e.target.value ? e.target.value : bio)}
             ></textarea>
             <Modal.Footer>

@@ -47,4 +47,5 @@ so use ternary when returning something
 
 and && if true
 
-
+if  = updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP == this will add time before updated_at
+if = updated_at TIMESTAMP DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP == only add time when update

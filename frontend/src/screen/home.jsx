@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getYActions, postYActions } from "../actions/crudActions";
+import TimePosted from "../component/timePosted";
 
 const Home = () => {
   const [tweet, setTweet] = useState("");
@@ -13,7 +14,6 @@ const Home = () => {
   const { loading, success, error, y, message } = useSelector(
     (state) => state.getY
   );
-
 
 // useRef stores a reference to a DOM element (like a file input)
 // to interact with it directly without updating the component.
@@ -67,7 +67,8 @@ const fileNameReset = useRef(null);
                           style={{ height: "8%", width: "8%" }}
                           class="rounded-circle mt-1"
                         />{" "}
-                        <small>{`@${tweets.username}`}</small>
+                        <p class = "text-body-primary"><b>{tweets.name}</b></p>
+                        <small class = "mr-2">{`@${tweets.username}`} · <TimePosted time = {tweets.date_published}/></small>
                       </div>
                       <p>{tweets.tweet}</p>
                       {tweets.img ? (
