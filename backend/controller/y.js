@@ -4,8 +4,8 @@ const postY = async (req, res) => {
   const { tweet } = req.body;
   const tweet_img = req.file ? req.file.filename : null;
   const userId = req.user.id;
-  console.log(req.file)
-  console.log(req.body)
+  console.log(req.file);
+  console.log(req.body);
 
   try {
     const getUserId = await pool.query(
@@ -35,20 +35,19 @@ const postY = async (req, res) => {
 
 const getY = async (req, res) => {
   try {
-
     // ORDER BY tweets.date_published DESC (descending order) = to descend order & ASC = ascend order?
     const [getTweets] = await pool.query(
       "SELECT authentication.id, authentication.username, authentication.name ,profile.profile_image, tweets.tweet_id, tweets.tweet, tweets.img, tweets.date_published FROM tweets LEFT JOIN profile ON tweets.userId = profile.user_id LEFT JOIN authentication ON profile.user_id = authentication.id ORDER BY tweets.date_published DESC"
     );
 
-    if(getTweets.length === 0){
-      return res.status(400).json({error: "Empty space."})
+    if (getTweets.length === 0) {
+      return res.status(400).json({ error: "Empty space." });
     }
 
     return res.status(200).json({
       success: {
         // u cannot create an object like this id : getTweets.id, becuase u are getting a lot
-        getTweets
+        getTweets,
       },
     });
   } catch (err) {
@@ -56,40 +55,37 @@ const getY = async (req, res) => {
   }
 };
 
-const getYDetails = async(req,res) =>{
-  const {id} = req.params;
+const getYDetails = async (req, res) => {
+  const { id } = req.params;
 
-  try{
-
-    if(!id){
-      return res.status(400).json({error: "No ID recieve."})
+  try {
+    if (!id) {
+      return res.status(400).json({ error: "No ID recieve." });
     }
 
-    console.log(id)
-    const [getIdY] = await pool.query
-    ("SELECT tweets.*, authentication.username, profile.profile_image FROM tweets LEFT JOIN authentication ON tweets.userId = authentication.id LEFT JOIN profile ON authentication.id = profile.user_id WHERE tweet_id = ? "
-      , [id]
-    )
+    console.log(id);
+    const [getIdY] = await pool.query(
+      "SELECT tweets.*, authentication.username, profile.profile_image FROM tweets LEFT JOIN authentication ON tweets.userId = authentication.id LEFT JOIN profile ON authentication.id = profile.user_id WHERE tweet_id = ? ",
+      [id]
+    );
 
-    if(getIdY.length === 0){
-      return res.status(404).json({error: "No ID found."})
+    if (getIdY.length === 0) {
+      return res.status(404).json({ error: "No ID found." });
     }
-    console.log(getIdY)
-    return res.status(200).json({success : 
-      getIdY[0] // to remove []
-    })
-
-
-  }catch(err){
-    return res.status(500).json({error: err.message})
+    console.log(getIdY);
+    return res.status(200).json({
+      success: getIdY[0], // to remove []
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
   }
-}
+};
 
 const updateY = async (req, res) => {
   const { updateTweet } = req.body;
   const { id } = req.params; // or cosnt tweet_id = req.params.id, the current jsut destructure the params
   const tokenId = req.user.id;
-  
+
   console.log(id);
   try {
     if (!updateTweet) {
@@ -152,13 +148,66 @@ const deleteY = async (req, res) => {
   }
 };
 
+const updateLike = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
 
-const postLike = (req,res) =>{
-  const {id} = useParams();
-  const add = 1;
-  const user = req.user.id;
-  
+  try {
+    if (!id || !userId) {
+      return res.status(500).json({ error: "No Id found " });
+    }
 
-}
+    const [getTweet_id] = await pool.query(
+      "SELECT tweet_id from tweets WHERE tweet_id = ?",
+      [id]
+    );
 
-module.exports = { postY, getY, getYDetails, updateY, deleteY, postLike };
+    if (getTweet_id.length === 0)
+      return res.status(404).json({ error: "Tweet not found" });
+
+    const [checker] = await pool.query(
+      "SELECT * from likedId WHERE userId = ? AND tweet_id = ?",
+      [userId, id]
+    );
+
+    // to unlike
+    if (checker.length > 0) {
+      const checkerForNegative = await pool.query(
+        "SELECT heart from tweets WHERE tweet_id = ?",
+        [id]
+      );
+      console.log(checkerForNegative[0].heart)
+
+      if (checkerForNegative[0].heart < 0) {
+        return res.status(500).json({ error: "Cannot be negative" });
+      }
+
+      const minusLike = await pool.query(
+        "UPDATE tweets SET heart = heart - 1 WHERE tweet_id = ?",
+        [id]
+      );
+      console.log("eto")
+      const deleteId = await pool.query("DELETE from likedId WHERE userId= ? AND tweet_id = ?",[userId, id])
+      console.log("?")
+      return res.status(200).json({ success: "Unliked success" });
+    }
+
+    if (checker.length === 0) {
+      console.log("herer");
+      const insertForCheck = await pool.query(
+        "INSERT INTO likedId (userId, tweet_id) VALUES (?,?)",
+        [userId, id]
+      );
+
+      const addLike = await pool.query(
+        "UPDATE tweets SET heart = heart + 1 WHERE tweet_id = ?",
+        [id]
+      );
+      return res.status(200).json({ success: "Added like" });
+    }
+  } catch (err) {
+    return res.status(500).status({ error: err.message });
+  }
+};
+
+module.exports = { postY, getY, getYDetails, updateY, deleteY, updateLike };
