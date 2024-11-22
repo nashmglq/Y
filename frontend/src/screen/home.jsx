@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getYActions, postYActions } from "../actions/crudActions";
 import TimePosted from "../component/timePosted";
+import Like from "../component/like";
 
 const Home = () => {
   const [tweet, setTweet] = useState("");
@@ -57,18 +58,19 @@ const fileNameReset = useRef(null);
                     to={`/home/${tweets.tweet_id}`}
                     class="text-decoration-none"
                   >
-                    <div class="card mt-2 p-2">
+                    <div class="card mt-2 p-2" value = {tweets.tweet_id}>
                       <div>
                         <img
                           src={
                             `http://localhost:5001/uploads/${tweets.profile_image}` ||
                             "default.jpg"
                           }
-                          style={{ height: "8%", width: "8%" }}
-                          class="rounded-circle mt-1"
+                          style={{ width: "40px", height: "40px" }}
+                          className="rounded-circle img-fluid mt-2"
                         />{" "}
-                        <p class = "text-body-primary"><b>{tweets.name}</b></p>
+                        <small class = "text-body-primary"><b>{tweets.name} </b></small>
                         <small class = "mr-2">{`@${tweets.username}`} · <TimePosted time = {tweets.date_published}/></small>
+                        <small><small> {tweets.updated === 1 ? "· Edited" : null}</small></small>
                       </div>
                       <p>{tweets.tweet}</p>
                       {tweets.img ? (
@@ -80,7 +82,6 @@ const fileNameReset = useRef(null);
                         />
                         </div>
                       ) : null}
-                   
                     </div>
                   </Link>
                 ))

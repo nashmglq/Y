@@ -1,7 +1,7 @@
 justify-content = center X axis
 align-items-center = center Y axis
 container-fluid = across the screen
-d-flex = is needed for chaning postion (row is a flex), and be obedient to its class
+d-flex = is needed for chaning postion (row is a flex), and be obedient to its class (OR IT WILL ROW THEM BY DEFAULT)
 min = You can be this tall at least, but if you need more space, you can grow taller (minimum height)
 flex-column = flex-column stacks items vertically (Y-axis) and centers them. If space is tight, they may get squeezed. Without it, items align horizontally (X-axis).
 ReactTyped = for animation of typing

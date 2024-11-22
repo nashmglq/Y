@@ -37,7 +37,7 @@ const getY = async (req, res) => {
   try {
     // ORDER BY tweets.date_published DESC (descending order) = to descend order & ASC = ascend order?
     const [getTweets] = await pool.query(
-      "SELECT authentication.id, authentication.username, authentication.name ,profile.profile_image, tweets.tweet_id, tweets.tweet, tweets.img, tweets.date_published FROM tweets LEFT JOIN profile ON tweets.userId = profile.user_id LEFT JOIN authentication ON profile.user_id = authentication.id ORDER BY tweets.date_published DESC"
+      "SELECT authentication.id, authentication.username, authentication.name ,profile.profile_image, tweets.tweet_id, tweets.tweet, tweets.img, tweets.date_published, tweets.updated FROM tweets LEFT JOIN profile ON tweets.userId = profile.user_id LEFT JOIN authentication ON profile.user_id = authentication.id ORDER BY tweets.date_published DESC"
     );
 
     if (getTweets.length === 0) {
@@ -65,7 +65,7 @@ const getYDetails = async (req, res) => {
 
     console.log(id);
     const [getIdY] = await pool.query(
-      "SELECT tweets.*, authentication.username, profile.profile_image FROM tweets LEFT JOIN authentication ON tweets.userId = authentication.id LEFT JOIN profile ON authentication.id = profile.user_id WHERE tweet_id = ? ",
+      "SELECT tweets.*, authentication.username, authentication.name, profile.profile_image FROM tweets LEFT JOIN authentication ON tweets.userId = authentication.id LEFT JOIN profile ON authentication.id = profile.user_id WHERE tweet_id = ? ",
       [id]
     );
 
