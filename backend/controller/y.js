@@ -231,5 +231,43 @@ const getUserY = async(req,res)  => {
   }
 }
 
+const getCountOfLikes = async(req,res) =>{
+  const {id} = req.params;
 
-module.exports = { postY, getY, getYDetails, updateY, deleteY, updateLike, getUserY };
+  try{
+    if(!id){
+      return res.status(400).json({error: "No ID found"})
+    }
+    // access success.heart
+    const [getLike] = await pool.query("SELECT heart FROM tweets WHERE tweet_id = ?", [id])
+    return res.status(200).json({success: getLike})
+
+  }catch(err){
+    return res.status(500).json({error: err.message})}
+}
+
+
+// connect it later prioritize the like first
+const postComment = async(req,res) => {
+
+  const {comment} = req.body;
+  const userId = req.user.id
+  const {id} = req.params
+
+  try{
+
+    if(!comment || !userId || ! id){
+      return res.status(400).json({error: "No comment added"})
+    }
+
+    const postComment = await pool.query("INSERT INTO comments (comment, tweetId ,userId) VALUES (?,?, ?)", [comment, id ,userId])
+
+    return res.status(200).json({success: "Comment Success"})
+    
+  }catch(err){
+    return res.status(500).json({error: err.mesage})
+  }
+}
+
+
+module.exports = { postY, getY, getYDetails, updateY, deleteY, updateLike, getUserY, postComment, getCountOfLikes };

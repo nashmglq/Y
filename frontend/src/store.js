@@ -2,7 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { thunk } from "redux-thunk";
 import { emailVerificationReducer, getProfileReducer, loginReducer, registerReducer, resendEmailVerificationReducer, updateProfileReducer } from "./reducers/authReducer";
 import { emailVerifyAction } from "./actions/authActions";
-import { deleteYReducer, detailYReducer, getUserYReducer, getYReducer, likeReducer, postYreducer, updateYReducer } from "./reducers/crudReducer";
+import { deleteYReducer, detailYReducer, getUserYReducer, getYReducer, likeCountReducer, likeReducer, postYreducer, updateYReducer } from "./reducers/crudReducer";
 
 // put all reducers here
 const reducer = combineReducers({
@@ -18,7 +18,8 @@ const reducer = combineReducers({
     deleteY : deleteYReducer,
     updateY: updateYReducer,
     likeY: likeReducer,
-    getUserY: getUserYReducer
+    getUserY: getUserYReducer,
+    likeCount : likeCountReducer
 
 })
 

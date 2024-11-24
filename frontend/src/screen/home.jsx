@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getYActions, postYActions } from "../actions/crudActions";
 import TimePosted from "../component/timePosted";
 import Like from "../component/like";
+import CountLike from "../component/count";
 
 const Home = () => {
   const [tweet, setTweet] = useState("");
@@ -115,6 +116,7 @@ const Home = () => {
                   </Link>
                   <div class="d-flex">
                     <Like id={tweets.tweet_id} /> {tweets.heart}
+                    {/* <CountLike id={tweets.tweet_id} /> */}
                   </div>
                 </div>
               ))
