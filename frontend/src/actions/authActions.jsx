@@ -50,22 +50,21 @@ export const loginActions = (formData) => async (dispatch) => {
 export const registerAction = (formData) => async (dispatch) => {
   try {
     dispatch({ type: REGISTER_REQUEST });
-    console.log(formData)
+
     const response = await axios.post(
       "http://localhost:5001/register",
       formData
     );
 
     if (response.status === 200) {
-      console.log(response);
+
       return dispatch({
         type: REGISTER_SUCCESS,
         payload: response.data.success,
       });
     }
   } catch (err) {
-    // err reposent the "resposne"
-    console.log(err.response.data.error);
+
     return dispatch({
       type: REGISTER_FAIL,
       payload:

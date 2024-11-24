@@ -18,7 +18,7 @@ const authenticatorChecker = (req, res, next) => {
 
     // manually setting this ( this is not a built-in of EXPRESS OR  NODE)
     req.user = compareSignature;
-    console.log(compareSignature);
+    console.log(token)
     next();
   } catch (err) {
     return res.status(500).json({ error: err.message });

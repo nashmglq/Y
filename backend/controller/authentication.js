@@ -89,21 +89,25 @@ const login = async (req, res) => {
       [email]
     );
 
+    
+
     if (checkUser.length === 0) {
       return res
         .status(404)
         .json({ error: "User is not yet registered on our records" });
     }
+
+    // return true or false
     const compareHash = await bcrypt.compare(password, checkUser[0].password);
 
+
     if (compareHash && checkUser[0].is_verified === 1) {
+      const [getLiked] = await pool.query("SELECT * FROM likedid WHERE userId = ? ", checkUser[0].id)
       const token = jwt.sign(
-        { email: email, username: checkUser[0].username, id: checkUser[0].id },
+        { email: email, username: checkUser[0].username, id: checkUser[0].id, likedId: getLiked },
         process.env.jwt_secret,
         { expiresIn: "2hr" }
       );
-
-      console.log(req.header);
       return res.status(200).json({
         success: {
           userInfo: {
@@ -111,6 +115,7 @@ const login = async (req, res) => {
             email: checkUser[0].email,
             username: checkUser[0].username,
             id: checkUser[0].id,
+            likedId: getLiked
           },
         },
       });

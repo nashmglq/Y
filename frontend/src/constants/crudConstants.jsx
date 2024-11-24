@@ -23,3 +23,12 @@ export const DELETE_Y_FAIL = "DELETE_Y_FAIL";
 export const UPDATE_Y_REQUEST = "UPDATE_Y_REQUEST";
 export const UPDATE_Y_SUCCESS = "UPDATE_Y_SUCCESS";
 export const UPDATE_Y_FAIL = "UPDATE_Y_FAIL";
+
+export const LIKE_Y_REQUEST = "LIKE_Y_REQUEST";
+export const LIKE_Y_SUCCESS = "LIKE_Y_SUCCESS";
+export const LIKE_Y_FAIL = "LIKE_Y_FAIL";
+
+
+export const GET_USER_Y_REQUEST = "GET_USER_Y_REQUEST";
+export const GET_USER_Y_SUCCESS = "GET_USER_Y_SUCCESS";
+export const GET_USER_Y_FAIL = "GET_USER_Y_FAIL";

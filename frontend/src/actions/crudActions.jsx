@@ -14,6 +14,12 @@ import {
   UPDATE_Y_REQUEST,
   UPDATE_Y_SUCCESS,
   UPDATE_Y_FAIL,
+  LIKE_Y_REQUEST,
+  LIKE_Y_SUCCESS,
+  LIKE_Y_FAIL,
+  GET_USER_Y_REQUEST,
+  GET_USER_Y_SUCCESS,
+  GET_USER_Y_FAIL
 } from "../constants/crudConstants";
 import axios from "axios";
 
@@ -181,7 +187,7 @@ export const updateYAction = (id, formData) => async (dispatch) => {
         }
       : null;
 
-      console.log(id, formData, config)
+    console.log(id, formData, config);
 
     const response = await axios.patch(
       `http://localhost:5001/update-y/${id}`,
@@ -189,7 +195,7 @@ export const updateYAction = (id, formData) => async (dispatch) => {
       config
     );
 
-    console.log(response)
+    console.log(response);
 
     if (response.data && response.data.success) {
       dispatch(detailYActions(id));
@@ -205,6 +211,79 @@ export const updateYAction = (id, formData) => async (dispatch) => {
         err.response && err.response.data
           ? err.response.data.error
           : "Something went wrong!",
+    });
+  }
+};
+
+export const likeActions = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: LIKE_Y_REQUEST });
+
+    const getToken = JSON.parse(localStorage.getItem("userInfo"));
+    const token = getToken ? getToken.token : null;
+    console.log(token);
+    const config = token
+      ? {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      : null;
+
+    console.log(config);
+    // when update, post we need to pass three params (url, formdata, config)
+    const response = await axios.patch(
+      `http://localhost:5001/update-like/${id}`,
+      {},
+      config
+    );
+
+    if (response.data && response.data.success) {
+      dispatch(getYActions());
+      dispatch(getUserYActions())
+      return dispatch({ type: LIKE_Y_SUCCESS, payload: response.data.success });
+    }
+  } catch (err) {
+    return dispatch({
+      type: LIKE_Y_FAIL,
+      payload:
+        err.response.data && err.response.data.error
+          ? err.response.data.error
+          : "Something went wrong.",
+    });
+  }
+};
+
+export const getUserYActions = () => async (dispatch) => {
+  try {
+    dispatch({ type: GET_USER_Y_REQUEST });
+
+    const getToken = JSON.parse(localStorage.getItem("userInfo"));
+    const token = getToken ? getToken.token : null;
+    const config = token
+      ? {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      : null;
+
+    const response = await axios.get(
+      "http://localhost:5001/get-user-y",
+      config
+    );
+    if (response.data && response.data.success) {
+      return dispatch({type: GET_USER_Y_SUCCESS, payload : response.data.success})
+    }
+  } catch (err) {
+    return dispatch({
+      type: GET_USER_Y_FAIL,
+      payload:
+        err.response.data && err.response.data.error
+          ? err.response.data.error
+          : "Something went wrong.",
     });
   }
 };

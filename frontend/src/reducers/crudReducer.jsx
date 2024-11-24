@@ -86,3 +86,29 @@ export const updateYReducer =  (state = { loading: false, success: false, error:
     default:
       return state;
 }}
+
+export const likeReducer = (state = {loading: false, success: false, error: false, message: ''}, actions) =>{
+  switch(actions.type){
+    case "LIKE_Y_REQUEST":
+      return {loading: true, success: false, error: false, message:''}
+    case "LIKE_Y_SUCCESS":
+      return {loading: false, success: true, error: false, message: actions.payload}
+    case "LIKE_Y_FAIL":
+      return {loading: false, success: false, error: true, message: actions.payload}
+    default:
+      return state;
+  }
+}
+
+export const getUserYReducer = (state = {loading: false, success: false, error: false, y: '', message: ''},actions) => {
+  switch(actions.type){
+    case "GET_USER_Y_REQUEST":
+      return {loading: true, success: false, error: false}
+    case "GET_USER_Y_SUCCESS":
+      return {loading: false, success: true, error: false, y: actions.payload}
+    case "GET_USER_Y_FAIL":
+      return {loading: false, success: false, error: true, message: actions.payload}
+    default:
+      return state;
+    }
+}

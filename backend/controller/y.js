@@ -37,7 +37,7 @@ const getY = async (req, res) => {
   try {
     // ORDER BY tweets.date_published DESC (descending order) = to descend order & ASC = ascend order?
     const [getTweets] = await pool.query(
-      "SELECT authentication.id, authentication.username, authentication.name ,profile.profile_image, tweets.tweet_id, tweets.tweet, tweets.img, tweets.date_published, tweets.updated FROM tweets LEFT JOIN profile ON tweets.userId = profile.user_id LEFT JOIN authentication ON profile.user_id = authentication.id ORDER BY tweets.date_published DESC"
+      "SELECT authentication.id, authentication.username, authentication.name ,profile.profile_image, tweets.tweet_id, tweets.tweet, tweets.img, tweets.date_published, tweets.updated, tweets.heart FROM tweets LEFT JOIN profile ON tweets.userId = profile.user_id LEFT JOIN authentication ON profile.user_id = authentication.id ORDER BY tweets.date_published DESC"
     );
 
     if (getTweets.length === 0) {
@@ -65,7 +65,10 @@ const getYDetails = async (req, res) => {
 
     console.log(id);
     const [getIdY] = await pool.query(
-      "SELECT tweets.*, authentication.username, authentication.name, profile.profile_image FROM tweets LEFT JOIN authentication ON tweets.userId = authentication.id LEFT JOIN profile ON authentication.id = profile.user_id WHERE tweet_id = ? ",
+      `SELECT tweets.*, authentication.username, authentication.name, profile.profile_image 
+      FROM tweets LEFT JOIN authentication ON 
+      tweets.userId = authentication.id LEFT JOIN profile ON authentication.id = profile.user_id 
+      WHERE tweet_id = ? `,
       [id]
     );
 
@@ -154,7 +157,7 @@ const updateLike = async (req, res) => {
 
   try {
     if (!id || !userId) {
-      return res.status(500).json({ error: "No Id found " });
+      return res.status(500).json({ error: "No Id found" });
     }
 
     const [getTweet_id] = await pool.query(
@@ -186,14 +189,11 @@ const updateLike = async (req, res) => {
         "UPDATE tweets SET heart = heart - 1 WHERE tweet_id = ?",
         [id]
       );
-      console.log("eto")
       const deleteId = await pool.query("DELETE from likedId WHERE userId= ? AND tweet_id = ?",[userId, id])
-      console.log("?")
       return res.status(200).json({ success: "Unliked success" });
     }
 
     if (checker.length === 0) {
-      console.log("herer");
       const insertForCheck = await pool.query(
         "INSERT INTO likedId (userId, tweet_id) VALUES (?,?)",
         [userId, id]
@@ -210,4 +210,26 @@ const updateLike = async (req, res) => {
   }
 };
 
-module.exports = { postY, getY, getYDetails, updateY, deleteY, updateLike };
+const getUserY = async(req,res)  => {
+  const userId = req.user.id
+  try{
+    if(!userId){
+      return res.status(400).json({success: "No ID found"})
+    }
+
+    const [getuserY] = await pool.query
+  (`SELECT authentication.id, authentication.username, authentication.name, 
+    profile.profile_image, tweets.* from authentication 
+    LEFT JOIN profile ON authentication.id = profile.user_id LEFT JOIN tweets ON profile.user_id = userId 
+    WHERE id = ? ORDER BY tweets.date_published DESC`
+    , [userId]
+  )
+
+  return res.status(200).json({success: getuserY})
+  }catch(err){
+    return res.status(500).json({error: err.message})
+  }
+}
+
+
+module.exports = { postY, getY, getYDetails, updateY, deleteY, updateLike, getUserY };
