@@ -36,3 +36,6 @@ const file = e.target.files[0];
 new FormData = create a new object to append new key and value, we use this becuase we have the FILE which contains a lot of values, 
 we cannot destructure that using {} becuase this only destructure single values like username and bio, 
 so we appen all in new object which can take a lot like the file
+
+
+BRUH been doing this for more than 10 days now
