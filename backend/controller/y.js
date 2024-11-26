@@ -247,6 +247,10 @@ const getCountOfLikes = async(req,res) =>{
 }
 
 
+
+// DO the detail users first
+
+
 // connect it later prioritize the like first
 const postComment = async(req,res) => {
 
@@ -268,6 +272,8 @@ const postComment = async(req,res) => {
     return res.status(500).json({error: err.mesage})
   }
 }
+
+
 
 
 module.exports = { postY, getY, getYDetails, updateY, deleteY, updateLike, getUserY, postComment, getCountOfLikes };
