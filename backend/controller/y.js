@@ -249,7 +249,7 @@ const getCountOfLikes = async(req,res) =>{
 
 
 // DO the detail users first
-
+// SKIPPING ANOTHER DAY, NEED TO DO SCHOOL WORKS
 
 // connect it later prioritize the like first
 const postComment = async(req,res) => {
