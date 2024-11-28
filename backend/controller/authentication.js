@@ -9,7 +9,7 @@ const { error } = require("console");
 const registerUser = async (req, res) => {
   const { email, username, name, password, password2 } = req.body;
   console.log("trigger");
-  console.log(req.body)
+  console.log(req.body);
 
   try {
     if (!email || !username || !name || !password || !password2) {
@@ -27,7 +27,7 @@ const registerUser = async (req, res) => {
     }
 
     if (username.length < 4) {
-      console.log(username.length)
+      console.log(username.length);
       return res
         .status(400)
         .json({ error: "Username must be at least 4 characters long." });
@@ -36,23 +36,23 @@ const registerUser = async (req, res) => {
     // To check both username and email if existing
     const [checkEmail] = await pool.query(
       "SELECT email, username FROM authentication WHERE  email = ? OR username = ?",
-      [email,username]
+      [email, username]
     );
 
     // this is better, so if there is something it would do the inside logic
     // however, if it is outside if NOTHING is there it wont contain the username
     if (checkEmail.length > 0) {
-      if(checkEmail[0].email === email){
-        return res.status(400).json({error : "Email already exist."})
+      if (checkEmail[0].email === email) {
+        return res.status(400).json({ error: "Email already exist." });
       }
-      if(checkEmail[0].username === username){
-        return res.status(400).json({error : "Username already exist."})
+      if (checkEmail[0].username === username) {
+        return res.status(400).json({ error: "Username already exist." });
       }
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
     const verificationToken = crypto.randomBytes(20).toString("hex"); // get the 20 bytes and turn into hexadecimals
-    const verificationExpiration = Date.now() + 3600 * 10; 
+    const verificationExpiration = Date.now() + 3600 * 10;
 
     const registerUser = await pool.query(
       "INSERT INTO authentication (email, username, name, password, verif_token, verif_expiration) VALUES (?, ?, ?, ?, ?, ?)",
@@ -89,8 +89,6 @@ const login = async (req, res) => {
       [email]
     );
 
-    
-
     if (checkUser.length === 0) {
       return res
         .status(404)
@@ -100,11 +98,18 @@ const login = async (req, res) => {
     // return true or false
     const compareHash = await bcrypt.compare(password, checkUser[0].password);
 
-
     if (compareHash && checkUser[0].is_verified === 1) {
-      const [getLiked] = await pool.query("SELECT * FROM likedid WHERE userId = ? ", checkUser[0].id)
+      const [getLiked] = await pool.query(
+        "SELECT * FROM likedid WHERE userId = ? ",
+        checkUser[0].id
+      );
       const token = jwt.sign(
-        { email: email, username: checkUser[0].username, id: checkUser[0].id, likedId: getLiked },
+        {
+          email: email,
+          username: checkUser[0].username,
+          id: checkUser[0].id,
+          likedId: getLiked,
+        },
         process.env.jwt_secret,
         { expiresIn: "2hr" }
       );
@@ -115,7 +120,7 @@ const login = async (req, res) => {
             email: checkUser[0].email,
             username: checkUser[0].username,
             id: checkUser[0].id,
-            likedId: getLiked
+            likedId: getLiked,
           },
         },
       });
@@ -251,7 +256,7 @@ const getPeople = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   // destructure to get the values
-  const { name ,username,bio } = req.body;
+  const { name, username, bio } = req.body;
   // to be unique, pick the filename, no need destructure because we are not getting any values, we only pick
   // take body, when initial is being passed
   const profile_image = req.file ? req.file.filename : req.body.profile_image;
@@ -292,11 +297,34 @@ const updateProfile = async (req, res) => {
   }
 };
 
+const getIdUser = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    if (!id) {
+      return res.status(400).json({ error: "No ID found" });
+    }
+    const [getUserId] = await pool.query(
+      `SELECT authentication.id, authentication.username, authentication.name, profile.profile_image, profile.bio
+      from authentication LEFT JOIN profile ON authentication.id = profile.user_id WHERE id = ?`,
+      [id]
+    );
+
+    if (getIdUser.length === 0) {
+      return res.status(404).json({ error: "No user found" });
+    }
+    return res.status(200).json({ success: getUserId });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
 module.exports = {
   registerUser,
   login,
   verifyEmail,
   resendEmailVerification,
   getPeople,
+  getIdUser,
   updateProfile,
 };

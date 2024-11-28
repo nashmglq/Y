@@ -2,6 +2,8 @@ import {
   GET_PROFILE_FAIL,
   GET_PROFILE_REQUEST,
   GET_PROFILE_SUCCESS,
+  GET_PROFILE_USER_REQUEST,
+  GET_PROFILE_USER_SUCCESS,
   LOGIN_FAIL,
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
@@ -206,3 +208,25 @@ export const updateProfileAction = (formData) => async (dispatch) => {
     });
   }
 };
+
+
+export const getUserIdActions = (id) => async(dispatch)=> {
+
+  try{
+    dispatch({type: GET_PROFILE_USER_REQUEST})
+
+    const getToken = JSON.parse(localStorage.getItem("userInfo"));
+    const token = getToken ? getToken.token : null;
+    const config = token ? {headers: {Accept: "application/json", Authorization: `Bearer ${token}`}} : null;
+
+    const response = await axios.get(`http://localhost:5001/profile/${id}`, config)
+
+    if(response.data && response.data.success){
+     return dispatch({type: GET_PROFILE_USER_SUCCESS, payload: response.data.success})
+    }
+
+  }catch(err){
+    return dispatch({type: GET_PROFILE_FAIL, payload: err.response.data && err.response.data.error ? err.response.data.error : "Something went wrong."})
+  }
+  
+}

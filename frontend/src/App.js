@@ -9,6 +9,7 @@ import Navbar from "./component/header";
 import Home from "./screen/home";
 import Routing from "./utils/routing"
 import DetailY from "./screen/detailY";
+import UserProfile from "./screen/userProfile"
 
 function App() {
 
@@ -27,6 +28,8 @@ function App() {
           <Route path="/profile" element={<Routing><Profile /></Routing>}></Route>
           <Route path = "/home" element={<Routing><Home/></Routing>}></Route>
           <Route path = "/home/:id" element={<Routing><DetailY/></Routing>}></Route>
+          <Route path = "/profile/:id" element={<Routing><UserProfile/></Routing>}></Route>
+          
 
 
            {/* none registerd url, (*) means all path or url, Navigate automatically nav to "to" 

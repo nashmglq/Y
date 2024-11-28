@@ -76,11 +76,11 @@ const Home = () => {
             {y ? (
               y.map((tweets) => (
                 <div class="card mt-2 p-2" value={tweets.tweet_id}>
-                  <Link
-                    to={`/home/${tweets.tweet_id}`}
-                    class="text-decoration-none text-dark"
-                  >
-                    <div>
+                  <div>
+                    <Link
+                      to={`/profile/${tweets.id}`}
+                      class="text-dark text-decoration-none"
+                    >
                       <img
                         src={
                           `http://localhost:5001/uploads/${tweets.profile_image}` ||
@@ -96,14 +96,16 @@ const Home = () => {
                         {`@${tweets.username}`} ·{" "}
                         <TimePosted time={tweets.date_published} />
                       </small>
-                      <small>
-                        <small>
-                          {" "}
-                          {tweets.updated === 1 ? "· Edited" : null}
-                        </small>
-                      </small>
-                    </div>
-                    <p class = "mt-2">{tweets.tweet}</p>
+                    </Link>
+                    <small>
+                      <small> {tweets.updated === 1 ? "· Edited" : null}</small>
+                    </small>
+                  </div>
+                  <Link
+                    to={`/home/${tweets.tweet_id}`}
+                    class="text-decoration-none text-dark"
+                  >
+                    <p class="mt-2">{tweets.tweet}</p>
                     {tweets.img ? (
                       <div class="d-flex p-2 align-items-center justify-content-center">
                         <img

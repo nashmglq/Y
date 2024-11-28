@@ -142,9 +142,51 @@ export const updateProfileReducer = (
     case "UPDATE_PROFILE_REQUEST":
       return { loading: true, success: false, error: false };
     case "UPDATE_PROFILE_SUCCESS":
-      return { loading: false, success: true, error: false, message: actions.payload};
+      return {
+        loading: false,
+        success: true,
+        error: false,
+        message: actions.payload,
+      };
     case "UPDATE_PROFILE_FAIL":
-      return { loading: false, success: false, error: true, message: actions.payload};
+      return {
+        loading: false,
+        success: false,
+        error: true,
+        message: actions.payload,
+      };
+    default:
+      return state;
+  }
+};
+
+export const getUserIdReducer = (
+  state = {
+    loading: false,
+    success: false,
+    error: false,
+    profile: "",
+    message: "",
+  },
+  actions
+) => {
+  switch (actions.type) {
+    case "GET_PROFILE_USER_REQUEST":
+      return { loading: true, success: false, error: false };
+    case "GET_PROFILE_USER_SUCCESS":
+      return {
+        loading: false,
+        success: true,
+        error: false,
+        profile: actions.payload,
+      };
+    case "GET_PROFILE_USER_FAIL":
+      return {
+        loading: false,
+        success: false,
+        error: true,
+        message: actions.payload,
+      };
     default:
       return state;
   }
