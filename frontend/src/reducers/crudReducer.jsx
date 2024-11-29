@@ -189,6 +189,34 @@ export const getUserYReducer = (
   }
 };
 
+
+export const getUserYOtherReducer = (
+  state = { loading: false, success: false, error: false, y: "", message: "" },
+  actions
+) => {
+  switch (actions.type) {
+    case "GET_USER_Y_OTHER_REQUEST":
+      return { loading: true, success: false, error: false };
+    case "GET_USER_Y_OTHER_SUCCESS":
+      return {
+        loading: false,
+        success: true,
+        error: false,
+        y: actions.payload,
+      };
+    case "GET_USER_Y_OTHER_FAIL":
+      return {
+        loading: false,
+        success: false,
+        error: true,
+        message: actions.payload,
+      };
+    default:
+      return state;
+  }
+};
+
+
 export const likeCountReducer = (
   state = { loading: false, success: false, erorr: false, count: "" },
   actions

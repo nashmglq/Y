@@ -57,7 +57,6 @@ const getY = async (req, res) => {
 
 const getYDetails = async (req, res) => {
   const { id } = req.params;
-
   try {
     if (!id) {
       return res.status(400).json({ error: "No ID recieve." });
@@ -231,6 +230,27 @@ const getUserY = async(req,res)  => {
   }
 }
 
+const getOtherY = async (req,res)  => {
+  const {id} = req.params;
+  try{
+    if(!id){
+      return res.status(400).json({success: "No ID found"})
+    }
+
+    const [getuserY] = await pool.query
+  (`SELECT authentication.id, authentication.username, authentication.name, 
+    profile.profile_image, tweets.* from authentication 
+    LEFT JOIN profile ON authentication.id = profile.user_id LEFT JOIN tweets ON profile.user_id = userId 
+    WHERE id = ? ORDER BY tweets.date_published DESC`
+    , [id]
+  )
+
+  return res.status(200).json({success: getuserY})
+  }catch(err){
+    return res.status(500).json({error: err.message})
+  }
+}
+
 const getCountOfLikes = async(req,res) =>{
   const {id} = req.params;
 
@@ -273,4 +293,4 @@ const postComment = async(req,res) => {
 
 
 
-module.exports = { postY, getY, getYDetails, updateY, deleteY, updateLike, getUserY, postComment, getCountOfLikes };
+module.exports = { postY, getY, getYDetails,getOtherY, updateY, deleteY, updateLike, getUserY, postComment, getCountOfLikes };

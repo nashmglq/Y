@@ -222,6 +222,7 @@ export const getUserIdActions = (id) => async(dispatch)=> {
     const response = await axios.get(`http://localhost:5001/profile/${id}`, config)
 
     if(response.data && response.data.success){
+      console.log(response.data.success)
      return dispatch({type: GET_PROFILE_USER_SUCCESS, payload: response.data.success})
     }
 

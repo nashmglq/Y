@@ -1,7 +1,7 @@
 const express = require('express');
 const route = express.Router(); // making this a variable of the function that creates routing
 const {registerUser, login, verifyEmail, resendEmailVerification, getPeople, updateProfile, getIdUser} = require('../controller/authentication') // if {} as export, please import as {}
-const {postY, getY, updateY, deleteY, getYDetails, updateLike, getUserY, postComment, getCountOfLikes} = require("../controller/y")
+const {postY, getY, updateY, deleteY, getYDetails, updateLike, getUserY, postComment, getCountOfLikes, getOtherY} = require("../controller/y")
 
 const {authenticatorChecker, upload} = require("../config/middleware")
 
@@ -22,5 +22,6 @@ route.get("/get-user-y", authenticatorChecker,  getUserY)
 route.get("/like-count/:id", authenticatorChecker,  getCountOfLikes)
 route.post("/comment/:id", authenticatorChecker, postComment)
 route.get("/profile/:id", authenticatorChecker, getIdUser)
+route.get("/get-user-other/:id", authenticatorChecker, getOtherY)
 
 module.exports = route;

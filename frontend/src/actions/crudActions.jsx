@@ -22,6 +22,9 @@ import {
   GET_USER_Y_FAIL,
   GET_LIKE_COUNT_REQUEST,
   GET_LIKE_COUNT_SUCCESS,
+  GET_USER_Y_OTHER_REQUEST,
+  GET_USER_Y_OTHER_SUCCESS,
+  GET_USER_Y_OTHER_FAIL,
 } from "../constants/crudConstants";
 import axios from "axios";
 
@@ -280,7 +283,7 @@ export const likeActions = (id) => async (dispatch) => {
 
     if (response.data && response.data.success) {
       // dispatch(likeCountActions(id));
-      dispatch(getYActions())
+      dispatch(getYActions());
       dispatch(getUserYActions());
       return dispatch({ type: LIKE_Y_SUCCESS, payload: response.data.success });
     }
@@ -323,6 +326,45 @@ export const getUserYActions = () => async (dispatch) => {
   } catch (err) {
     return dispatch({
       type: GET_USER_Y_FAIL,
+      payload:
+        err.response.data && err.response.data.error
+          ? err.response.data.error
+          : "Something went wrong.",
+    });
+  }
+};
+
+export const getUserYOtherActions = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: GET_USER_Y_OTHER_REQUEST });
+
+    const getToken = JSON.parse(localStorage.getItem("userInfo"));
+    const token = getToken ? getToken.token : null;
+    const config = token
+      ? {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      : null;
+
+    const response = await axios.get(
+      `http://localhost:5001/get-user-other/${id}`,
+      config
+    );
+
+    console.log(response)
+    if (response.data && response.data.success) {
+      return dispatch({
+        type: GET_USER_Y_OTHER_SUCCESS,
+        payload: response.data.success,
+      });
+    }
+  } catch (err) {
+    console.log(err.response)
+    return dispatch({
+      type: GET_USER_Y_OTHER_FAIL,
       payload:
         err.response.data && err.response.data.error
           ? err.response.data.error
