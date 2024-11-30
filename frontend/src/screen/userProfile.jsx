@@ -124,7 +124,7 @@ const UserProfile = () => {
                   </div>
                 </div>
               ))
-            : "Something went wrong"}
+            : "Empty space."}
         </div>
       </div>
     </div>

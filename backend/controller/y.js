@@ -224,6 +224,11 @@ const getUserY = async(req,res)  => {
     , [userId]
   )
 
+  console.log(getuserY[0].tweet_id)
+  if(getuserY[0].tweet_id === null){
+    return res.status(400).json({error: "No tweet yet."})
+  }
+
   return res.status(200).json({success: getuserY})
   }catch(err){
     return res.status(500).json({error: err.message})
@@ -244,6 +249,10 @@ const getOtherY = async (req,res)  => {
     WHERE id = ? ORDER BY tweets.date_published DESC`
     , [id]
   )
+
+  if(getuserY[0].tweet_id === null){
+    return res.status(400).json({error: "No tweets yet."})
+  }
 
   return res.status(200).json({success: getuserY})
   }catch(err){

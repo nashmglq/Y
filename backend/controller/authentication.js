@@ -319,6 +319,66 @@ const getIdUser = async (req, res) => {
   }
 };
 
+
+const follow = async( req,res) => {
+  const userId = req.user.id;
+  const {id} = req.params;
+  
+  try{
+
+    if(!userId || !id){
+      return res.status(400).json({error: "ID not found"})
+    }
+
+    if(userId == id){
+      return res.status(400).json({error: "You cannot follow your own"})
+    }
+
+  const [checkFollowers] = await pool.query(`SELECT userId, followers_id from follow WHERE userId = ? and followers_id = ?`, [userId, id])
+
+  if(checkFollowers.length > 0){
+    const unfollow = await pool.query(`DELETE from follow WHERE followers_id = ?`, [id])
+    return res.status(200).json({success: "Successfully unfollowed"})
+  }
+
+
+    const follow = await pool.query(`INSERT into follow  (userId, followers_id) VALUES (?,?)`, [userId, id])
+
+    return res.status(200).json({success: "Followed successfully"})
+
+
+
+
+  }catch(err){
+    return res.status(500).json({erorr: err.message})
+
+  }
+}
+
+const getFollowing = async( req,res) => {
+  const userId = req.user.id;
+
+  
+  try{
+
+    if(!userId){
+      return res.status(400).json({error: "ID not found"})
+    }
+
+    const [getFollow] = await pool.query(`SELECT * from follow WHERE userId = ?`, [userId])
+
+
+    return res.status(200).json({success: getFollow})
+
+  }catch(err){
+    return res.status(500).json({erorr: err.message})
+
+  }
+}
+
+
+
+
 module.exports = {
   registerUser,
   login,
@@ -327,4 +387,6 @@ module.exports = {
   getPeople,
   getIdUser,
   updateProfile,
+  follow,
+  getFollowing
 };

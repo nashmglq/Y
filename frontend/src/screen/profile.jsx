@@ -121,7 +121,7 @@ const Profile = () => {
                   </div>
                 </div>
               ))
-            : "Something went wrong"}
+            : "Share your own Y"}
         </div>
       </div>
     </div>
