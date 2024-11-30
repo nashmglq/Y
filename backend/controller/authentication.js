@@ -376,7 +376,17 @@ const getFollowing = async( req,res) => {
   }
 }
 
+const getFollowInt = async(req,res) => {
+  const userId = req.user.id
 
+  try{
+    const [getFollow] = await pool.query(`SELECT * from follow WHERE userId = ?`, [userId])
+
+    return res.status(200).json({success: getFollow.length})
+  }catch(err){
+    return res.status(500).json({error: err.message})
+  }
+}
 
 
 module.exports = {
@@ -388,5 +398,6 @@ module.exports = {
   getIdUser,
   updateProfile,
   follow,
-  getFollowing
+  getFollowing,
+  getFollowInt
 };
