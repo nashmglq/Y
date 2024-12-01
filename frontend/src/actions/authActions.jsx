@@ -1,4 +1,7 @@
 import {
+  FOLLOW_FAIL,
+  FOLLOW_REQUEST,
+  FOLLOW_SUCCESS,
   GET_PROFILE_FAIL,
   GET_PROFILE_REQUEST,
   GET_PROFILE_SUCCESS,
@@ -59,14 +62,12 @@ export const registerAction = (formData) => async (dispatch) => {
     );
 
     if (response.status === 200) {
-
       return dispatch({
         type: REGISTER_SUCCESS,
         payload: response.data.success,
       });
     }
   } catch (err) {
-
     return dispatch({
       type: REGISTER_FAIL,
       payload:
@@ -191,7 +192,7 @@ export const updateProfileAction = (formData) => async (dispatch) => {
     ); // so (url, data, headers)
 
     if (response.data && response.data.success) {
-      dispatch(getProfileActions())
+      dispatch(getProfileActions());
       return dispatch({
         type: UPDATE_PROFILE_SUCCESS,
         payload: response.data.success,
@@ -209,25 +210,75 @@ export const updateProfileAction = (formData) => async (dispatch) => {
   }
 };
 
-
-export const getUserIdActions = (id) => async(dispatch)=> {
-
-  try{
-    dispatch({type: GET_PROFILE_USER_REQUEST})
+export const getUserIdActions = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: GET_PROFILE_USER_REQUEST });
 
     const getToken = JSON.parse(localStorage.getItem("userInfo"));
     const token = getToken ? getToken.token : null;
-    const config = token ? {headers: {Accept: "application/json", Authorization: `Bearer ${token}`}} : null;
+    const config = token
+      ? {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      : null;
 
-    const response = await axios.get(`http://localhost:5001/profile/${id}`, config)
+    const response = await axios.get(
+      `http://localhost:5001/profile/${id}`,
+      config
+    );
 
-    if(response.data && response.data.success){
-      console.log(response.data.success)
-     return dispatch({type: GET_PROFILE_USER_SUCCESS, payload: response.data.success})
+    if (response.data && response.data.success) {
+      console.log(response.data.success);
+      return dispatch({
+        type: GET_PROFILE_USER_SUCCESS,
+        payload: response.data.success,
+      });
     }
-
-  }catch(err){
-    return dispatch({type: GET_PROFILE_FAIL, payload: err.response.data && err.response.data.error ? err.response.data.error : "Something went wrong."})
+  } catch (err) {
+    return dispatch({
+      type: GET_PROFILE_FAIL,
+      payload:
+        err.response.data && err.response.data.error
+          ? err.response.data.error
+          : "Something went wrong.",
+    });
   }
-  
-}
+};
+
+export const followActions = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: FOLLOW_REQUEST });
+
+    const getToken = JSON.parse(localStorage.getItem("userInfo"));
+    const token = getToken ? getToken.token : null;
+    const config = token
+      ? {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      : null;
+      console.log(id)
+
+    const response = await axios.post(
+      `http://localhost:5001/follow/${id}`,
+      {},
+      config
+    );
+
+    if (response.data && response.data.success) {
+      return dispatch({ type: FOLLOW_SUCCESS, payload: response.data.success });
+    }
+  } catch (err) {
+    return dispatch({
+      type: FOLLOW_FAIL,
+      payload: err.response.data
+        ? err.response.data.error
+        : "Something went wrong.",
+    });
+  }
+};

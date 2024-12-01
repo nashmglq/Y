@@ -5,6 +5,7 @@ import { getUserYActions, getUserYOtherActions } from "../actions/crudActions";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import TimePosted from "../component/timePosted";
 import Like from "../component/like";
+import Follow from "../component/follow";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
@@ -22,6 +23,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     dispatch(getUserYOtherActions(id));
+    console.log(id)
   }, [dispatch]);
 
   useEffect(() => {
@@ -61,11 +63,14 @@ const UserProfile = () => {
                         : "You are not authenticated"}{" "}
                     </small>
                     <br />
-                    <small class="mb-4 mt-2">
+                    <small class="mb-4 mt-2 mb-2">
                       {profileUser && profileUser.bio
                         ? `${profileUser.bio}`
                         : "No bio yet."}
                     </small>{" "}
+
+                        <Follow  id = {profileUser.id}/>
+
                   </div>
                 ))
               : "Not authenticated."}

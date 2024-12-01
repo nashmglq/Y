@@ -191,3 +191,20 @@ export const getUserIdReducer = (
       return state;
   }
 };
+
+// use object because we are returning a key value pair
+export const followReducer = (state = {loading: false, success: false, error: false, message: ""}, actions)=>{
+  switch(actions.type){
+    case "FOLLOW_REQUEST":
+      return {loading: false, success: false, error: false}
+     
+    case "FOLLOW_SUCCESS":
+      return {loading: false, success:true, error: false, message: actions.payload}
+    
+    case "FOLLOW_FAIL":
+      return {loading: false, success:false, error: true, message:actions.payload}
+
+    default:
+      return state
+  }
+}
