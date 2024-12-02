@@ -1,4 +1,7 @@
 import {
+  CHECK_FOLLOW_FAIL,
+  CHECK_FOLLOW_REQUEST,
+  CHECK_FOLLOW_SUCCESS,
   FOLLOW_FAIL,
   FOLLOW_REQUEST,
   FOLLOW_SUCCESS,
@@ -231,7 +234,6 @@ export const getUserIdActions = (id) => async (dispatch) => {
     );
 
     if (response.data && response.data.success) {
-      console.log(response.data.success);
       return dispatch({
         type: GET_PROFILE_USER_SUCCESS,
         payload: response.data.success,
@@ -262,7 +264,7 @@ export const followActions = (id) => async (dispatch) => {
           },
         }
       : null;
-      console.log(id)
+    console.log(id);
 
     const response = await axios.post(
       `http://localhost:5001/follow/${id}`,
@@ -271,6 +273,7 @@ export const followActions = (id) => async (dispatch) => {
     );
 
     if (response.data && response.data.success) {
+      dispatch(checkIfFollowActions(id));
       return dispatch({ type: FOLLOW_SUCCESS, payload: response.data.success });
     }
   } catch (err) {
@@ -279,6 +282,43 @@ export const followActions = (id) => async (dispatch) => {
       payload: err.response.data
         ? err.response.data.error
         : "Something went wrong.",
+    });
+  }
+};
+
+export const checkIfFollowActions = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: CHECK_FOLLOW_REQUEST });
+
+    const getToken = JSON.parse(localStorage.getItem("userInfo"));
+    const token = getToken ? getToken.token : null;
+    const config = token
+      ? {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      : null;
+    const response = await axios.get(
+      `http://localhost:5001/check-if-follow/${id}`,
+      config
+    );
+
+    console.log(response.data.success);
+    if (response.data && response.data.success) {
+      return dispatch({
+        type: CHECK_FOLLOW_SUCCESS,
+        payload: response.data.success,
+      });
+    }
+  } catch (err) {
+    return dispatch({
+      type: CHECK_FOLLOW_FAIL,
+      type:
+        err.response.data && err.response.data.error
+          ? err.response.data.error
+          : "Something went wrong!",
     });
   }
 };

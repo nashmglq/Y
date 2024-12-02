@@ -1,19 +1,31 @@
-import { useDispatch } from "react-redux";
-import { followActions } from "../actions/authActions";
+import { useDispatch, useSelector } from "react-redux";
+import { followActions, checkIfFollowActions } from "../actions/authActions";
+import { useEffect } from "react";
 
-const Follow = ({id}) => {
+const Follow = ({ id }) => {
   const dispatch = useDispatch();
+  const { message } = useSelector((state) => state.checkIfFollow);
 
+  useEffect(() => {
+    dispatch(checkIfFollowActions(id));
+  }, [dispatch]);
 
-
-  const followButton = () =>{
-    dispatch(followActions(id))
-    console.log(id)
-  }
+  const followButton = () => {
+    dispatch(followActions(id));
+    console.log(id);
+  };
 
   return (
     <div>
-      <button class="btn btn-primary" onClick={followButton}>Follow</button>
+      {message == true ? (
+        <button class="btn btn-primary" onClick={followButton}>
+          Unfollow
+        </button>
+      ) : (
+        <button class="btn btn-primary" onClick={followButton}>
+          Follow
+        </button>
+      )}
     </div>
   );
 };

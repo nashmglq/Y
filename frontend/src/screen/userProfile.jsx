@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserIdActions } from "../actions/authActions";
+import { checkIfFollowActions, getUserIdActions } from "../actions/authActions";
 import { getUserYActions, getUserYOtherActions } from "../actions/crudActions";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import TimePosted from "../component/timePosted";
@@ -17,18 +17,17 @@ const UserProfile = () => {
   const { id } = useParams();
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const nav = useNavigate();
-  useEffect(() => {
-    dispatch(getUserIdActions(id));
-  }, [dispatch]);
+
+
 
   useEffect(() => {
+    dispatch(getUserIdActions(id));
     dispatch(getUserYOtherActions(id));
-    console.log(id)
   }, [dispatch]);
+
 
   useEffect(() => {
     const userId = userInfo.id;
-
     if (userId == id) {
       nav("/profile");
     }

@@ -378,7 +378,7 @@ const getFollowing = async( req,res) => {
 
 const getFollowInt = async(req,res) => {
   const userId = req.user.id
-
+  const {id} = req.params
   try{
     const [getFollow] = await pool.query(`SELECT * from follow WHERE userId = ?`, [userId])
 
@@ -388,6 +388,31 @@ const getFollowInt = async(req,res) => {
   }
 }
 
+
+// now in the frontend just check if the return is true, and else just dont do anything
+const checkForFollow = async(req,res) => {
+  const userId = req.user.id
+  const {id} = req.params
+  
+
+  try{
+    console.log(userId, id)
+    if(!userId || !id ){
+      return res.status(400).json({error: "No ID found."})
+    }
+    
+    const [getUserFollowing] = await pool.query("SELECT userId, followers_id from follow WHERE userId = ? and followers_id = ?", [userId, id])
+
+    if(getUserFollowing.length > 0){
+      return res.status(200).json({success: true})
+    }
+
+    return res.status(200).json({success: false})
+
+  }catch(err){
+    return res.status(500).json({error: err.message})
+  }
+}
 
 module.exports = {
   registerUser,
@@ -399,5 +424,6 @@ module.exports = {
   updateProfile,
   follow,
   getFollowing,
-  getFollowInt
+  getFollowInt,
+  checkForFollow
 };
