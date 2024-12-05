@@ -38,20 +38,26 @@ const getY = async (req, res) => {
     // ORDER BY tweets.date_published DESC (descending order) = to descend order & ASC = ascend order?
     const [getTweets] = await pool.query(
       `SELECT authentication.id, authentication.username, authentication.name ,profile.profile_image, 
-      tweets.tweet_id, tweets.tweet, tweets.img, tweets.date_published, tweets.updated, tweets.heart FROM 
-      tweets LEFT JOIN profile ON tweets.userId = profile.user_id LEFT JOIN authentication ON profile.user_id = authentication.id 
+      tweets.tweet_id, tweets.tweet, tweets.img, tweets.date_published, tweets.updated, tweets.heart 
+      FROM 
+      tweets LEFT JOIN profile ON tweets.userId = profile.user_id LEFT JOIN authentication ON 
+      profile.user_id = authentication.id 
       ORDER BY 
       tweets.date_published DESC`
     );
-    // const []
 
+
+    
     if (getTweets.length === 0) {
       return res.status(400).json({ error: "Empty space." });
     }
 
+
     return res.status(200).json({
-      success: getTweets
+      success: getTweets,
     });
+
+
   } catch (err) {
     return res.status(500).json({ error: err });
   }
@@ -180,7 +186,7 @@ const updateLike = async (req, res) => {
         "SELECT heart from tweets WHERE tweet_id = ?",
         [id]
       );
-      console.log(checkerForNegative[0].heart)
+      console.log(checkerForNegative[0].heart);
 
       if (checkerForNegative[0].heart < 0) {
         return res.status(500).json({ error: "Cannot be negative" });
@@ -190,7 +196,10 @@ const updateLike = async (req, res) => {
         "UPDATE tweets SET heart = heart - 1 WHERE tweet_id = ?",
         [id]
       );
-      const deleteId = await pool.query("DELETE from likedId WHERE userId= ? AND tweet_id = ?",[userId, id])
+      const deleteId = await pool.query(
+        "DELETE from likedId WHERE userId= ? AND tweet_id = ?",
+        [userId, id]
+      );
       return res.status(200).json({ success: "Unliked success" });
     }
 
@@ -211,99 +220,106 @@ const updateLike = async (req, res) => {
   }
 };
 
-const getUserY = async(req,res)  => {
-  const userId = req.user.id
-  try{
-    if(!userId){
-      return res.status(400).json({success: "No ID found"})
+const getUserY = async (req, res) => {
+  const userId = req.user.id;
+  try {
+    if (!userId) {
+      return res.status(400).json({ success: "No ID found" });
     }
 
-    const [getuserY] = await pool.query
-  (`SELECT authentication.id, authentication.username, authentication.name, 
+    const [getuserY] = await pool.query(
+      `SELECT authentication.id, authentication.username, authentication.name, 
     profile.profile_image, tweets.* from authentication 
     LEFT JOIN profile ON authentication.id = profile.user_id LEFT JOIN tweets ON profile.user_id = userId 
-    WHERE id = ? ORDER BY tweets.date_published DESC`
-    , [userId]
-  )
+    WHERE id = ? ORDER BY tweets.date_published DESC`,
+      [userId]
+    );
 
-  console.log(getuserY[0].tweet_id)
-  if(getuserY[0].tweet_id === null){
-    return res.status(400).json({error: "No tweet yet."})
-  }
-
-  return res.status(200).json({success: getuserY})
-  }catch(err){
-    return res.status(500).json({error: err.message})
-  }
-}
-
-const getOtherY = async (req,res)  => {
-  const {id} = req.params;
-  try{
-    if(!id){
-      return res.status(400).json({success: "No ID found"})
+    console.log(getuserY[0].tweet_id);
+    if (getuserY[0].tweet_id === null) {
+      return res.status(400).json({ error: "No tweet yet." });
     }
 
-    const [getuserY] = await pool.query
-  (`SELECT authentication.id, authentication.username, authentication.name, 
+    return res.status(200).json({ success: getuserY });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+const getOtherY = async (req, res) => {
+  const { id } = req.params;
+  try {
+    if (!id) {
+      return res.status(400).json({ success: "No ID found" });
+    }
+
+    const [getuserY] = await pool.query(
+      `SELECT authentication.id, authentication.username, authentication.name, 
     profile.profile_image, tweets.* from authentication 
     LEFT JOIN profile ON authentication.id = profile.user_id LEFT JOIN tweets ON profile.user_id = userId 
-    WHERE id = ? ORDER BY tweets.date_published DESC`
-    , [id]
-  )
+    WHERE id = ? ORDER BY tweets.date_published DESC`,
+      [id]
+    );
 
-  if(getuserY[0].tweet_id === null){
-    return res.status(400).json({error: "No tweets yet."})
+    if (getuserY[0].tweet_id === null) {
+      return res.status(400).json({ error: "No tweets yet." });
+    }
+
+    return res.status(200).json({ success: getuserY });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
   }
+};
 
-  return res.status(200).json({success: getuserY})
-  }catch(err){
-    return res.status(500).json({error: err.message})
-  }
-}
+const getCountOfLikes = async (req, res) => {
+  const { id } = req.params;
 
-const getCountOfLikes = async(req,res) =>{
-  const {id} = req.params;
-
-  try{
-    if(!id){
-      return res.status(400).json({error: "No ID found"})
+  try {
+    if (!id) {
+      return res.status(400).json({ error: "No ID found" });
     }
     // access success.heart
-    const [getLike] = await pool.query("SELECT heart FROM tweets WHERE tweet_id = ?", [id])
-    return res.status(200).json({success: getLike})
-
-  }catch(err){
-    return res.status(500).json({error: err.message})}
-}
-
-
+    const [getLike] = await pool.query(
+      "SELECT heart FROM tweets WHERE tweet_id = ?",
+      [id]
+    );
+    return res.status(200).json({ success: getLike });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
 
 // connect it later prioritize the like first
-const postComment = async(req,res) => {
+const postComment = async (req, res) => {
+  const { comment } = req.body;
+  const userId = req.user.id;
+  const { id } = req.params;
 
-  const {comment} = req.body;
-  const userId = req.user.id
-  const {id} = req.params
-
-  try{
-
-    if(!comment || !userId || ! id){
-      return res.status(400).json({error: "No comment added"})
+  try {
+    if (!comment || !userId || !id) {
+      return res.status(400).json({ error: "No comment added" });
     }
 
-    const postComment = await pool.query("INSERT INTO comments (comment, tweetId ,userId) VALUES (?,?, ?)", [comment, id ,userId])
+    const postComment = await pool.query(
+      "INSERT INTO comments (comment, tweetId ,userId) VALUES (?,?, ?)",
+      [comment, id, userId]
+    );
 
-    return res.status(200).json({success: "Comment Success"})
-    
-  }catch(err){
-    return res.status(500).json({error: err.mesage})
+    return res.status(200).json({ success: "Comment Success" });
+  } catch (err) {
+    return res.status(500).json({ error: err.mesage });
   }
-}
+};
 
-
-
-
-
-
-module.exports = { postY, getY, getYDetails,getOtherY, updateY, deleteY, updateLike, getUserY, postComment, getCountOfLikes };
+module.exports = {
+  postY,
+  getY,
+  getYDetails,
+  getOtherY,
+  updateY,
+  deleteY,
+  updateLike,
+  getUserY,
+  postComment,
+  getCountOfLikes,
+};

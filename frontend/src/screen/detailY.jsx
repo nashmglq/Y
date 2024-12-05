@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { detailYActions } from "../actions/crudActions";
+import { checkDetailLikeActions, detailYActions } from "../actions/crudActions";
 import DeleteY from "../component/deleteY";
 import Updatetweet from "../component/update";
 import TimePosted from "../component/timePosted";
 import { FaEllipsisH } from "react-icons/fa";
+import {Like, Unlike} from "../component/like";
 
 const DetailY = () => {
   const { id } = useParams();
@@ -14,10 +15,14 @@ const DetailY = () => {
   const { loading, success, error, message } = useSelector(
     (state) => state.detailY
   );
+  const { message: checkIfLiked } = useSelector(
+    (state) => state.checkDetailLike
+  );
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const localId = userInfo.id;
   useEffect(() => {
     dispatch(detailYActions(id));
+    dispatch(checkDetailLikeActions(id));
   }, [dispatch]);
 
   return (
@@ -48,9 +53,7 @@ const DetailY = () => {
                     <small>{message.updated === 1 ? "· Edited" : null}</small>
                   </small>
                 </div>
-
                 <h6 class="mt-2">{message.tweet}</h6>
-
                 {message.img ? (
                   <img
                     src={`http://localhost:5001/uploads/${message.img}`}
@@ -60,12 +63,16 @@ const DetailY = () => {
               </div>
             ) : null}
 
-                  <div class = "d-flex">
-                      {message.userId === localId ? <DeleteY id={id} /> : null}
-                      {message.userId === localId ? (
-                        <Updatetweet id={id} tweet={message.tweet} />
-                      ) : null}
-                    </div>
+            <div class="d-flex">
+              <small>
+                {" "}
+              {checkIfLiked == true ? (<div><Unlike id={message.tweet_id} /><p>{message.heart}</p></div>) : (<div><Like id={message.tweet_id} /><p>{message.heart}</p></div>)}
+              </small>
+              {message.userId === localId ? <DeleteY id={id} /> : null}
+              {message.userId === localId ? (
+                <Updatetweet id={id} tweet={message.tweet} />
+              ) : null}
+            </div>
           </div>
         </div>
       </div>

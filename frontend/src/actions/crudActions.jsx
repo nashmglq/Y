@@ -25,6 +25,9 @@ import {
   GET_USER_Y_OTHER_REQUEST,
   GET_USER_Y_OTHER_SUCCESS,
   GET_USER_Y_OTHER_FAIL,
+  CHECK_DETAIL_LIKE_REQUEST,
+  CHECK_DETAIL_LIKE_SUCCESS,
+  CHECK_DETAIL_LIKE_FAIL,
 } from "../constants/crudConstants";
 import axios from "axios";
 
@@ -285,6 +288,8 @@ export const likeActions = (id) => async (dispatch) => {
       // dispatch(likeCountActions(id));
       dispatch(getYActions());
       dispatch(getUserYActions());
+      dispatch(detailYActions(id));
+      dispatch(checkDetailLikeActions(id))
       return dispatch({ type: LIKE_Y_SUCCESS, payload: response.data.success });
     }
   } catch (err) {
@@ -354,7 +359,7 @@ export const getUserYOtherActions = (id) => async (dispatch) => {
       config
     );
 
-    console.log(response)
+    console.log(response);
     if (response.data && response.data.success) {
       return dispatch({
         type: GET_USER_Y_OTHER_SUCCESS,
@@ -362,13 +367,49 @@ export const getUserYOtherActions = (id) => async (dispatch) => {
       });
     }
   } catch (err) {
-    console.log(err.response)
+    console.log(err.response);
     return dispatch({
       type: GET_USER_Y_OTHER_FAIL,
       payload:
         err.response.data && err.response.data.error
           ? err.response.data.error
           : "Something went wrong.",
+    });
+  }
+};
+
+export const checkDetailLikeActions = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: CHECK_DETAIL_LIKE_REQUEST });
+
+    const getToken = JSON.parse(localStorage.getItem("userInfo"));
+    const token = getToken ? getToken.token : null;
+    const config = token
+      ? {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      : null;
+
+    const response = await axios.get(
+      `http://localhost:5001/check-user-like/${id}`, config
+    );
+    console.log(response.data.success)
+    if (response.data && response.data.success) {
+      return dispatch({
+        type: CHECK_DETAIL_LIKE_SUCCESS,
+        payload: response.data.success,
+      });
+    }
+  } catch (err) {
+    return dispatch({
+      type: CHECK_DETAIL_LIKE_FAIL,
+      payload:
+        err.response && err.response.data
+          ? err.response.data.error
+          : "Something went wrong!",
     });
   }
 };

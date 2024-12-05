@@ -189,7 +189,6 @@ export const getUserYReducer = (
   }
 };
 
-
 export const getUserYOtherReducer = (
   state = { loading: false, success: false, error: false, y: "", message: "" },
   actions
@@ -216,7 +215,6 @@ export const getUserYOtherReducer = (
   }
 };
 
-
 export const likeCountReducer = (
   state = { loading: false, success: false, erorr: false, count: "" },
   actions
@@ -225,9 +223,35 @@ export const likeCountReducer = (
     case "GET_LIKE_COUNT_REQUEST":
       return { loading: true, success: false, error: false };
     case "GET_LIKE_COUNT_SUCCESS":
-      return { loading: false, success: true, error: false, count: actions.payload };
+      return {
+        loading: false,
+        success: true,
+        error: false,
+        count: actions.payload,
+      };
     case "GET_LIKE_COUNT_FAIL":
-      return { loading: false, success: false, error: true, count: actions.payload  };
+      return {
+        loading: false,
+        success: false,
+        error: true,
+        count: actions.payload,
+      };
+    default:
+      return state;
+  }
+};
+
+export const checkDetailLikeReducer = (
+  state = { loading: false, success: false, error: false, message: "" },
+  actions
+) => {
+  switch (actions.type) {
+    case "CHECK_DETAIL_LIKE_REQUEST":
+      return { loading: true, success: false, error: false, message: "" };
+    case "CHECK_DETAIL_LIKE_SUCCESS":
+      return { loading: false, success: true, error: false, message: actions.payload };
+    case "CHECK_DETAIL_LIKE_FAIL":
+      return { loading: false, success: false, error: true, message: actions.payload };
     default:
       return state;
   }
