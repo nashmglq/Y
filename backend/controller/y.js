@@ -37,18 +37,20 @@ const getY = async (req, res) => {
   try {
     // ORDER BY tweets.date_published DESC (descending order) = to descend order & ASC = ascend order?
     const [getTweets] = await pool.query(
-      "SELECT authentication.id, authentication.username, authentication.name ,profile.profile_image, tweets.tweet_id, tweets.tweet, tweets.img, tweets.date_published, tweets.updated, tweets.heart FROM tweets LEFT JOIN profile ON tweets.userId = profile.user_id LEFT JOIN authentication ON profile.user_id = authentication.id ORDER BY tweets.date_published DESC"
+      `SELECT authentication.id, authentication.username, authentication.name ,profile.profile_image, 
+      tweets.tweet_id, tweets.tweet, tweets.img, tweets.date_published, tweets.updated, tweets.heart FROM 
+      tweets LEFT JOIN profile ON tweets.userId = profile.user_id LEFT JOIN authentication ON profile.user_id = authentication.id 
+      ORDER BY 
+      tweets.date_published DESC`
     );
+    // const []
 
     if (getTweets.length === 0) {
       return res.status(400).json({ error: "Empty space." });
     }
 
     return res.status(200).json({
-      success: {
-        // u cannot create an object like this id : getTweets.id, becuase u are getting a lot
-        getTweets,
-      },
+      success: getTweets
     });
   } catch (err) {
     return res.status(500).json({ error: err });
@@ -298,6 +300,8 @@ const postComment = async(req,res) => {
     return res.status(500).json({error: err.mesage})
   }
 }
+
+
 
 
 

@@ -46,10 +46,10 @@ export const getYActions = () => async (dispatch) => {
 
     const response = await axios.get("http://localhost:5001/get-y", config);
 
-    if (response.data && response.data.success.getTweets) {
+    if (response.data && response.data.success) {
       return dispatch({
         type: GET_Y_SUCCESS,
-        payload: response.data.success.getTweets,
+        payload: response.data.success,
       });
     }
   } catch (err) {

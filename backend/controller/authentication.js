@@ -319,100 +319,126 @@ const getIdUser = async (req, res) => {
   }
 };
 
-
-const follow = async( req,res) => {
+const follow = async (req, res) => {
   const userId = req.user.id;
-  const {id} = req.params;
-  
-  try{
+  const { id } = req.params;
 
-    if(!userId || !id){
-      return res.status(400).json({error: "ID not found"})
+  try {
+    if (!userId || !id) {
+      return res.status(400).json({ error: "ID not found" });
     }
 
-    if(userId == id){
-      return res.status(400).json({error: "You cannot follow your own"})
+    if (userId == id) {
+      return res.status(400).json({ error: "You cannot follow your own" });
     }
 
-  const [checkFollowers] = await pool.query(`SELECT userId, followers_id from follow WHERE userId = ? and followers_id = ?`, [userId, id])
+    const [checkFollowers] = await pool.query(
+      `SELECT userId, followers_id from follow WHERE userId = ? and followers_id = ?`,
+      [userId, id]
+    );
 
-  if(checkFollowers.length > 0){
-    const unfollow = await pool.query(`DELETE from follow WHERE followers_id = ?`, [id])
-    return res.status(200).json({success: "Successfully unfollowed"})
+    if (checkFollowers.length > 0) {
+      const unfollow = await pool.query(
+        `DELETE from follow WHERE followers_id = ?`,
+        [id]
+      );
+      return res.status(200).json({ success: "Successfully unfollowed" });
+    }
+
+    const follow = await pool.query(
+      `INSERT into follow  (userId, followers_id) VALUES (?,?)`,
+      [userId, id]
+    );
+
+    return res.status(200).json({ success: "Followed successfully" });
+  } catch (err) {
+    return res.status(500).json({ erorr: err.message });
   }
+};
 
-
-    const follow = await pool.query(`INSERT into follow  (userId, followers_id) VALUES (?,?)`, [userId, id])
-
-    return res.status(200).json({success: "Followed successfully"})
-
-
-
-
-  }catch(err){
-    return res.status(500).json({erorr: err.message})
-
-  }
-}
-
-const getFollowing = async( req,res) => {
+const getFollowing = async (req, res) => {
   const userId = req.user.id;
 
-  
-  try{
-
-    if(!userId){
-      return res.status(400).json({error: "ID not found"})
+  try {
+    if (!userId) {
+      return res.status(400).json({ error: "ID not found" });
     }
 
-    const [getFollow] = await pool.query(`SELECT * from follow WHERE userId = ?`, [userId])
+    const [getFollow] = await pool.query(
+      `SELECT * from follow WHERE userId = ?`,
+      [userId]
+    );
 
-
-    return res.status(200).json({success: getFollow})
-
-  }catch(err){
-    return res.status(500).json({erorr: err.message})
-
+    return res.status(200).json({ success: getFollow });
+  } catch (err) {
+    return res.status(500).json({ erorr: err.message });
   }
-}
+};
 
-const getFollowInt = async(req,res) => {
-  const userId = req.user.id
-  const {id} = req.params
-  try{
-    const [getFollow] = await pool.query(`SELECT * from follow WHERE userId = ?`, [userId])
+const getFollowInt = async (req, res) => {
+  const userId = req.user.id;
+  const { id } = req.params;
+  try {
+    const [getFollow] = await pool.query(
+      `SELECT * from follow WHERE userId = ?`,
+      [userId]
+    );
 
-    return res.status(200).json({success: getFollow.length})
-  }catch(err){
-    return res.status(500).json({error: err.message})
+    return res.status(200).json({ success: getFollow.length });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
   }
-}
-
+};
 
 // now in the frontend just check if the return is true, and else just dont do anything
-const checkForFollow = async(req,res) => {
-  const userId = req.user.id
-  const {id} = req.params
-  
+const checkForFollow = async (req, res) => {
+  const userId = req.user.id;
+  const { id } = req.params;
 
-  try{
-    console.log(userId, id)
-    if(!userId || !id ){
-      return res.status(400).json({error: "No ID found."})
-    }
-    
-    const [getUserFollowing] = await pool.query("SELECT userId, followers_id from follow WHERE userId = ? and followers_id = ?", [userId, id])
-
-    if(getUserFollowing.length > 0){
-      return res.status(200).json({success: true})
+  try {
+    console.log(userId, id);
+    if (!userId || !id) {
+      return res.status(400).json({ error: "No ID found." });
     }
 
-    return res.status(200).json({success: false})
+    const [getUserFollowing] = await pool.query(
+      "SELECT userId, followers_id from follow WHERE userId = ? and followers_id = ?",
+      [userId, id]
+    );
 
-  }catch(err){
-    return res.status(500).json({error: err.message})
+    if (getUserFollowing.length > 0) {
+      return res.status(200).json({ success: true });
+    }
+
+    return res.status(200).json({ success: false });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
   }
-}
+};
+
+const checkUserLike = async (req, res) => {
+  const userId = req.user.id;
+  const { id } = req.params;
+
+  try {
+    if (!id || !userId) {
+      return res.status(400).json({ error: "No ID found." });
+    }
+
+    const [checkLike] = await pool.query(
+      "SELECT userId, tweet_id from likedid WHERE userId = ? and tweet_id = ?",
+      [userId, id]
+    );
+
+    if (checkLike.length > 0) {
+      return res.status(200).json({ success: true });
+    }
+
+    return res.status(200).json({ success: false });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
 
 module.exports = {
   registerUser,
@@ -425,5 +451,6 @@ module.exports = {
   follow,
   getFollowing,
   getFollowInt,
-  checkForFollow
+  checkForFollow,
+  checkUserLike,
 };
