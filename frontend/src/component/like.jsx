@@ -10,6 +10,7 @@ const Like = ({ id }) => {
   const dispatch = useDispatch();
   const likeHandler = (e) => {
     dispatch(likeActions(id));
+    console.log(id)
   };
 
   return (
@@ -36,6 +37,7 @@ const Unlike = ({ id }) => {
     </div>
   );
 };
-
-export { Like, Unlike }; // Named exports
-export default Like; // Default export
+// default = main function
+// named = {} additional function
+export default Like; 
+export {Unlike} ; 

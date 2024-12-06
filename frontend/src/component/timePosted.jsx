@@ -12,8 +12,6 @@ const TimePosted = ({ time }) => {
   const months = posted.toLocaleString("en-US", { month: "short" });
   const year = posted.getFullYear();
 
-  console.log(posted)
-
 
   return <small>{months} {days}, {year} · {hours}:{minutes} </small>;
 };

@@ -6,7 +6,7 @@ import DeleteY from "../component/deleteY";
 import Updatetweet from "../component/update";
 import TimePosted from "../component/timePosted";
 import { FaEllipsisH } from "react-icons/fa";
-import {Like, Unlike} from "../component/like";
+import Like, { Unlike } from "../component/like";
 
 const DetailY = () => {
   const { id } = useParams();
@@ -66,7 +66,17 @@ const DetailY = () => {
             <div class="d-flex">
               <small>
                 {" "}
-              {checkIfLiked == true ? (<div><Unlike id={message.tweet_id} /><p>{message.heart}</p></div>) : (<div><Like id={message.tweet_id} /><p>{message.heart}</p></div>)}
+                {checkIfLiked == true ? (
+                <div class = "d-flex">
+                    <Unlike id={message.tweet_id} />
+                    <p>{message.heart}</p>
+                  </div>
+                ) : (
+                  <div class = "d-flex">
+                    <Like id={message.tweet_id} />
+                    <p>{message.heart}</p>
+                  </div>
+                )}
               </small>
               {message.userId === localId ? <DeleteY id={id} /> : null}
               {message.userId === localId ? (

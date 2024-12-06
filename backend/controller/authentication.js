@@ -103,6 +103,7 @@ const login = async (req, res) => {
         "SELECT * FROM likedid WHERE userId = ? ",
         checkUser[0].id
       );
+      // console.log(getLiked)
       const token = jwt.sign(
         {
           email: email,

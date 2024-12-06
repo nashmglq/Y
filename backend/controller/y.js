@@ -4,8 +4,6 @@ const postY = async (req, res) => {
   const { tweet } = req.body;
   const tweet_img = req.file ? req.file.filename : null;
   const userId = req.user.id;
-  console.log(req.file);
-  console.log(req.body);
 
   try {
     const getUserId = await pool.query(
@@ -34,32 +32,28 @@ const postY = async (req, res) => {
 };
 
 const getY = async (req, res) => {
+  const userId = req.user.id
   try {
     // ORDER BY tweets.date_published DESC (descending order) = to descend order & ASC = ascend order?
     const [getTweets] = await pool.query(
       `SELECT authentication.id, authentication.username, authentication.name ,profile.profile_image, 
       tweets.tweet_id, tweets.tweet, tweets.img, tweets.date_published, tweets.updated, tweets.heart 
-      FROM 
-      tweets LEFT JOIN profile ON tweets.userId = profile.user_id LEFT JOIN authentication ON 
+      FROM tweets LEFT JOIN profile ON tweets.userId = profile.user_id 
+      LEFT JOIN authentication ON 
       profile.user_id = authentication.id 
       ORDER BY 
       tweets.date_published DESC`
     );
-
-
-    
     if (getTweets.length === 0) {
       return res.status(400).json({ error: "Empty space." });
     }
-
+  
 
     return res.status(200).json({
       success: getTweets,
     });
-
-
   } catch (err) {
-    return res.status(500).json({ error: err });
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -70,7 +64,6 @@ const getYDetails = async (req, res) => {
       return res.status(400).json({ error: "No ID recieve." });
     }
 
-    console.log(id);
     const [getIdY] = await pool.query(
       `SELECT tweets.*, authentication.username, authentication.name, profile.profile_image 
       FROM tweets LEFT JOIN authentication ON 
@@ -82,9 +75,8 @@ const getYDetails = async (req, res) => {
     if (getIdY.length === 0) {
       return res.status(404).json({ error: "No ID found." });
     }
-    console.log(getIdY);
     return res.status(200).json({
-      success: getIdY[0], // to remove []
+      success: getIdY[0],
     });
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -96,7 +88,6 @@ const updateY = async (req, res) => {
   const { id } = req.params; // or cosnt tweet_id = req.params.id, the current jsut destructure the params
   const tokenId = req.user.id;
 
-  console.log(id);
   try {
     if (!updateTweet) {
       return res.status(400).json({ error: "No tweet" });
@@ -186,7 +177,6 @@ const updateLike = async (req, res) => {
         "SELECT heart from tweets WHERE tweet_id = ?",
         [id]
       );
-      console.log(checkerForNegative[0].heart);
 
       if (checkerForNegative[0].heart < 0) {
         return res.status(500).json({ error: "Cannot be negative" });
@@ -235,7 +225,6 @@ const getUserY = async (req, res) => {
       [userId]
     );
 
-    console.log(getuserY[0].tweet_id);
     if (getuserY[0].tweet_id === null) {
       return res.status(400).json({ error: "No tweet yet." });
     }
@@ -256,7 +245,8 @@ const getOtherY = async (req, res) => {
     const [getuserY] = await pool.query(
       `SELECT authentication.id, authentication.username, authentication.name, 
     profile.profile_image, tweets.* from authentication 
-    LEFT JOIN profile ON authentication.id = profile.user_id LEFT JOIN tweets ON profile.user_id = userId 
+    LEFT JOIN profile ON authentication.id = profile.user_id 
+    LEFT JOIN tweets ON profile.user_id = tweets.userId 
     WHERE id = ? ORDER BY tweets.date_published DESC`,
       [id]
     );
@@ -264,7 +254,6 @@ const getOtherY = async (req, res) => {
     if (getuserY[0].tweet_id === null) {
       return res.status(400).json({ error: "No tweets yet." });
     }
-
     return res.status(200).json({ success: getuserY });
   } catch (err) {
     return res.status(500).json({ error: err.message });

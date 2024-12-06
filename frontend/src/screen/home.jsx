@@ -1,12 +1,17 @@
 import { useEffect, useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getYActions, postYActions } from "../actions/crudActions";
+import {
+  getYActions,
+  postYActions,
+  checkDetailLikeActions,
+} from "../actions/crudActions";
 import TimePosted from "../component/timePosted";
-import Like from "../component/like";
+import Like, { Unlike } from "../component/like";
 import CountLike from "../component/count";
 
 const Home = () => {
+  const { id } = useParams();
   const [tweet, setTweet] = useState("");
   const [tweet_img, setTweet_img] = useState("");
   const maxtext = 999;
@@ -16,6 +21,10 @@ const Home = () => {
   const { loading, success, error, y, message } = useSelector(
     (state) => state.getY
   );
+  const { message: checkIfLiked } = useSelector(
+    (state) => state.checkDetailLike
+  );
+
 
   // useRef stores a reference to a DOM element (like a file input)
   // to interact with it directly without updating the component.
@@ -33,6 +42,7 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(getYActions());
+    dispatch(checkDetailLikeActions(id));
   }, [dispatch]);
 
   useEffect(() => {
@@ -117,8 +127,17 @@ const Home = () => {
                     ) : null}
                   </Link>
                   <div class="d-flex">
-                    <Like id={tweets.tweet_id} /> {tweets.heart}
-                    {/* <CountLike id={tweets.tweet_id} /> */}
+                    {checkIfLiked == true ? (
+                    <div class = "d-flex">
+                        <Unlike id={tweets.tweet_id} />
+                        <p>{tweets.heart}</p>
+                      </div>
+                    ) : (
+                      <div class = "d-flex">
+                        <Like id={tweets.tweet_id} />
+                        <p>{tweets.heart}</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))
