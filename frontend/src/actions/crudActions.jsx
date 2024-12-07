@@ -28,6 +28,9 @@ import {
   CHECK_DETAIL_LIKE_REQUEST,
   CHECK_DETAIL_LIKE_SUCCESS,
   CHECK_DETAIL_LIKE_FAIL,
+  LIKE_COUNT_REQUEST,
+  LIKE_COUNT_SUCCESS,
+  LIKE_COUNT_FAIL
 } from "../constants/crudConstants";
 import axios from "axios";
 
@@ -223,6 +226,8 @@ export const updateYAction = (id, formData) => async (dispatch) => {
   }
 };
 
+
+
 export const likeCountActions = (id) => async (dispatch) => {
   try {
     dispatch({ type: GET_LIKE_COUNT_REQUEST });
@@ -237,6 +242,7 @@ export const likeCountActions = (id) => async (dispatch) => {
           },
         }
       : null;
+
 
     const response = await axios.get(
       `http://localhost:5001/like-count/${id}`,
@@ -260,6 +266,7 @@ export const likeCountActions = (id) => async (dispatch) => {
     });
   }
 };
+
 
 export const likeActions = (id) => async (dispatch) => {
   try {
@@ -285,11 +292,10 @@ export const likeActions = (id) => async (dispatch) => {
     );
 
     if (response.data && response.data.success) {
-      // dispatch(likeCountActions(id));
-      dispatch(getYActions());
-      dispatch(getUserYActions());
-      dispatch(detailYActions(id));
+      dispatch(getYActions())
       dispatch(checkDetailLikeActions(id))
+      dispatch(likeCountActions(id))
+
       return dispatch({ type: LIKE_Y_SUCCESS, payload: response.data.success });
     }
   } catch (err) {
@@ -413,3 +419,5 @@ export const checkDetailLikeActions = (id) => async (dispatch) => {
     });
   }
 };
+
+

@@ -1,7 +1,11 @@
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { checkDetailLikeActions, detailYActions } from "../actions/crudActions";
+import {
+  checkDetailLikeActions,
+  detailYActions,
+  likeCountActions,
+} from "../actions/crudActions";
 import DeleteY from "../component/deleteY";
 import Updatetweet from "../component/update";
 import TimePosted from "../component/timePosted";
@@ -12,17 +16,22 @@ const DetailY = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const nav = useNavigate();
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const localId = userInfo.id;
+
   const { loading, success, error, message } = useSelector(
     (state) => state.detailY
   );
   const { message: checkIfLiked } = useSelector(
     (state) => state.checkDetailLike
   );
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  const localId = userInfo.id;
+
+  const { count: countLikes } = useSelector((state) => state.likeCount);
+
   useEffect(() => {
     dispatch(detailYActions(id));
     dispatch(checkDetailLikeActions(id));
+    dispatch(likeCountActions(id));
   }, [dispatch]);
 
   return (
@@ -67,14 +76,18 @@ const DetailY = () => {
               <small>
                 {" "}
                 {checkIfLiked == true ? (
-                <div class = "d-flex">
+                  <div class="d-flex">
                     <Unlike id={message.tweet_id} />
-                    <p>{message.heart}</p>
+                    {countLikes
+                      ? countLikes.map((counts) => <span class ="mt-2">{counts.heart}</span>)
+                      : null}
                   </div>
                 ) : (
-                  <div class = "d-flex">
+                  <div class="d-flex">
                     <Like id={message.tweet_id} />
-                    <p>{message.heart}</p>
+                    {countLikes
+                      ? countLikes.map((counts) => <span class ="mt-2">{counts.heart}</span>)
+                      : null}
                   </div>
                 )}
               </small>

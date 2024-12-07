@@ -15,7 +15,7 @@ const Like = ({ id }) => {
 
   return (
     <div>
-      <button class="btn btn-link btn-sm" onClick={likeHandler}>
+      <button class="btn btn-link btn-sm mt-1" onClick={likeHandler}>
         <FontAwesomeIcon icon={faHeart} />
       </button>
     </div>
@@ -31,7 +31,7 @@ const Unlike = ({ id }) => {
 
   return (
     <div>
-      <button class="btn btn-link btn-sm" onClick={likeHandler}>
+      <button class="btn btn-link btn-sm mt-1" onClick={likeHandler}>
       <FontAwesomeIcon icon={faHeart} style={{ color: 'red' }} />
       </button>
     </div>

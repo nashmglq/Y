@@ -323,6 +323,3 @@ export const checkIfFollowActions = (id) => async (dispatch) => {
   }
 };
 
-
-// do the actions for like, cant code today (busy)
-// code all day long thurs and friday

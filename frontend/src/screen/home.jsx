@@ -126,18 +126,9 @@ const Home = () => {
                       </div>
                     ) : null}
                   </Link>
-                  <div class="d-flex">
-                    {checkIfLiked == true ? (
-                    <div class = "d-flex">
-                        <Unlike id={tweets.tweet_id} />
-                        <p>{tweets.heart}</p>
-                      </div>
-                    ) : (
-                      <div class = "d-flex">
-                        <Like id={tweets.tweet_id} />
-                        <p>{tweets.heart}</p>
-                      </div>
-                    )}
+                  <div class="d-flex align-items-center">
+                  <Like id={tweets.tweet_id} />
+                  <span class ="mt-1">{tweets.heart}</span>
                   </div>
                 </div>
               ))

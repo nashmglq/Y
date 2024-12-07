@@ -32,7 +32,7 @@ const postY = async (req, res) => {
 };
 
 const getY = async (req, res) => {
-  const userId = req.user.id
+
   try {
     // ORDER BY tweets.date_published DESC (descending order) = to descend order & ASC = ascend order?
     const [getTweets] = await pool.query(
@@ -44,11 +44,11 @@ const getY = async (req, res) => {
       ORDER BY 
       tweets.date_published DESC`
     );
+
     if (getTweets.length === 0) {
       return res.status(400).json({ error: "Empty space." });
     }
   
-
     return res.status(200).json({
       success: getTweets,
     });
