@@ -49,3 +49,15 @@ and && if true
 
 if  = updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP == this will add time before updated_at
 if = updated_at TIMESTAMP DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP == only add time when update
+
+
+FOR CORRELATIONAL FOREIGN KEY
+
+CREATE TABLE likedid (
+    like_id INT PRIMARY KEY AUTO_INCREMENT,
+    tweet_id INT NOT NULL,
+    user_id INT NOT NULL,
+    FOREIGN KEY (tweet_id) REFERENCES tweets(tweet_id) ON DELETE CASCADE
+);
+
+ALTER TABLE table_name ADD created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;

@@ -32,7 +32,6 @@ const postY = async (req, res) => {
 };
 
 const getY = async (req, res) => {
-
   try {
     // ORDER BY tweets.date_published DESC (descending order) = to descend order & ASC = ascend order?
     const [getTweets] = await pool.query(
@@ -48,7 +47,7 @@ const getY = async (req, res) => {
     if (getTweets.length === 0) {
       return res.status(400).json({ error: "Empty space." });
     }
-  
+
     return res.status(200).json({
       success: getTweets,
     });
@@ -300,6 +299,84 @@ const postComment = async (req, res) => {
   }
 };
 
+const getComments = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    if (!id) return res.status(400).json({ error: "No ID found." });
+
+    const [getComment] = await pool.query(
+      `SELECT * from comments WHERE tweetId = ?`,
+      [id]
+    );
+
+    if (getComment.length === 0) {
+      return res.status(200).json({ success: "No comment yet" });
+    }
+
+    return res.status(200).json({ success: getComment });
+  } catch (err) {
+    return res.status(400).json({ error: err.message });
+  }
+};
+
+const deleteComments = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    if (!id) return res.status(400).json({ error: "No ID FOUND" });
+
+    const [getComment] = await pool.query(
+      `SELECT * from comments WHERE comment_id = ?`,
+      [id]
+    );
+
+    if (getComment.length === 0) {
+      return res.status(400).json({ error: "No tweet found" });
+    }
+
+    const [deleteComment] = await pool.query(
+      "DELETE from comments WHERE comment_id = ?",
+      id
+    );
+
+    return res.status(200).json({ success: "Successfully deleted" });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+const updateComments = async (req, res) => {
+  const { id } = req.params;
+  const {comment} = req.body
+  try {
+    if(!id) return res.status(400).json({err})
+
+      const [getComment] = await pool.query(
+        `SELECT * from comments WHERE comment_id = ?`,
+        [id]
+      );
+  
+      if (getComment.length === 0) {
+        return res.status(400).json({ error: "No tweet found" });
+      }
+
+
+      if(getComment[0].comment == comment){
+        return res.status(400).json({error: "You cannot put your current comment"})
+      }
+
+      const [updateComment] = await pool.query(`UPDATE comments SET comment = ?, updated = 1 WHERE comment_id = ?`, [comment, id])
+
+      return res.status(200).json({success: "Updated successfully"})
+
+  
+  } catch (err) {
+    return res.status(500).json({error: err.message})
+
+  }
+};
+
 module.exports = {
   postY,
   getY,
@@ -310,5 +387,8 @@ module.exports = {
   updateLike,
   getUserY,
   postComment,
+  getComments,
+  deleteComments,
+  updateComments,
   getCountOfLikes,
 };

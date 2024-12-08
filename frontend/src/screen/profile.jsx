@@ -116,8 +116,8 @@ const Profile = () => {
                     ) : null}
                   </Link>
 
-                  <div class="d-flex">
-                    <Like id={userY.tweet_id} /> {userY.heart}{" "}
+                  <div class="d-flex align-items-center">
+                    <Like id={userY.tweet_id} /> <span class = "mt-1">{userY.heart}</span>
                   </div>
                 </div>
               ))
