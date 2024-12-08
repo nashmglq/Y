@@ -1,3 +1,5 @@
+import { act } from "react";
+
 export const getYReducer = (
   state = { loading: false, success: false, error: false, y: "", message: "" },
   actions
@@ -249,9 +251,71 @@ export const checkDetailLikeReducer = (
     case "CHECK_DETAIL_LIKE_REQUEST":
       return { loading: true, success: false, error: false, message: "" };
     case "CHECK_DETAIL_LIKE_SUCCESS":
-      return { loading: false, success: true, error: false, message: actions.payload };
+      return {
+        loading: false,
+        success: true,
+        error: false,
+        message: actions.payload,
+      };
     case "CHECK_DETAIL_LIKE_FAIL":
-      return { loading: false, success: false, error: true, message: actions.payload };
+      return {
+        loading: false,
+        success: false,
+        error: true,
+        message: actions.payload,
+      };
+    default:
+      return state;
+  }
+};
+
+export const postCommentReducer = (
+  state = { loading: false, success: false, error: false, message: "" },
+  actions
+) => {
+  switch (actions) {
+    case "POST_COMMENT_REQUEST":
+      return { loading: true, success: false, error: false };
+    case "POST_COMMENT_SUCCESS":
+      return {
+        loading: false,
+        success: true,
+        error: false,
+        message: actions.payload,
+      };
+    case "POST_COMMENT_FAIL":
+      return {
+        loading: false,
+        success: false,
+        error: true,
+        message: actions.payload,
+      };
+    default:
+      return state;
+  }
+};
+
+export const getCommentReducer = (
+  state = { loading: false, success: false, error: false, message: "" },
+  actions
+) => {
+  switch (actions.type) {
+    case "GET_COMMENT_REQUEST":
+      return { loading: true, success: false, error: false };
+    case "GET_COMMENT_SUCCESS":
+      return {
+        loading: false,
+        success: true,
+        error: false,
+        message: actions.payload,
+      };
+    case "GET_COMMENT_FAIL":
+      return {
+        loading: false,
+        success: false,
+        error: true,
+        message: actions.payload,
+      };
     default:
       return state;
   }

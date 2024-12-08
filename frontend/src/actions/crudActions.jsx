@@ -1,4 +1,11 @@
 import {
+  GET_COMMENT_FAIL,
+  GET_COMMENT_SUCCESS,
+  POST_COMMENT_FAIL,
+  POST_COMMENT_REQUEST,
+  POST_COMMENT_SUCCESS,
+} from "../constants/authConstant";
+import {
   GET_Y_REQUEST,
   GET_Y_SUCCESS,
   GET_Y_FAIL,
@@ -413,6 +420,81 @@ export const checkDetailLikeActions = (id) => async (dispatch) => {
         err.response && err.response.data
           ? err.response.data.error
           : "Something went wrong!",
+    });
+  }
+};
+
+export const postCommentActions = (id, formData) => async (dispatch) => {
+  try {
+    dispatch({ type: POST_COMMENT_REQUEST });
+
+    const getToken = JSON.parse(localStorage.getItem("userInfo"));
+    const token = getToken ? getToken.token : null;
+    const config = token
+      ? {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      : null;
+
+    const response = await axios.post(
+      `http://localhost:5001/comment/${id}`,
+      formData,
+      config
+    );
+
+    if (response.data && response.data.success) {
+      return dispatch({
+        type: POST_COMMENT_SUCCESS,
+        payload: response.data.success,
+      });
+    }
+  } catch (err) {
+    return dispatch({
+      type: POST_COMMENT_FAIL,
+      payload:
+        err.response && err.response.data.error
+          ? err.response.data.error
+          : "Something went wrong.",
+    });
+  }
+};
+
+export const getCommentActions = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: GET_COMMENT_SUCCESS });
+
+    const getToken = JSON.parse(localStorage.getItem("userInfo"));
+    const token = getToken ? getToken.token : null;
+    const config = token
+      ? {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      : null;
+
+    const response = await axios.get(
+      `http://localhost:5001/comment/${id}`,
+      config
+    );
+
+    if (response.data && response.data.success) {
+      return dispatch({
+        type: GET_COMMENT_SUCCESS,
+        payload: response.data.success,
+      });
+    }
+  } catch (err) {
+    return dispatch({
+      type: GET_COMMENT_FAIL,
+      payload:
+        err.response && err.response.data.error
+          ? err.response.data.error
+          : "Something went wrong",
     });
   }
 };

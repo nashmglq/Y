@@ -2,7 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { thunk } from "redux-thunk";
 import { checkIfFollowReducer, emailVerificationReducer, followReducer, getProfileReducer, getUserIdReducer, loginReducer, registerReducer, resendEmailVerificationReducer, updateProfileReducer } from "./reducers/authReducer";
 import { emailVerifyAction } from "./actions/authActions";
-import { checkDetailLikeReducer, deleteYReducer, detailYReducer, getUserYOtherReducer, getUserYReducer, getYReducer, likeCountReducer, likeReducer, postYreducer, updateYReducer } from "./reducers/crudReducer";
+import { checkDetailLikeReducer, deleteYReducer, detailYReducer, getCommentReducer, getUserYOtherReducer, getUserYReducer, getYReducer, likeCountReducer, likeReducer, postCommentReducer, postYreducer, updateYReducer } from "./reducers/crudReducer";
 
 // put all reducers here
 const reducer = combineReducers({
@@ -24,7 +24,9 @@ const reducer = combineReducers({
     getUserYOther : getUserYOtherReducer,
     follow : followReducer,
     checkIfFollow : checkIfFollowReducer,
-    checkDetailLike : checkDetailLikeReducer
+    checkDetailLike : checkDetailLikeReducer,
+    postComment : postCommentReducer,
+    getComment : getCommentReducer
 
 })
 
