@@ -1,5 +1,6 @@
 import {
   GET_COMMENT_FAIL,
+  GET_COMMENT_REQUEST,
   GET_COMMENT_SUCCESS,
   POST_COMMENT_FAIL,
   POST_COMMENT_REQUEST,
@@ -464,7 +465,7 @@ export const postCommentActions = (id, formData) => async (dispatch) => {
 
 export const getCommentActions = (id) => async (dispatch) => {
   try {
-    dispatch({ type: GET_COMMENT_SUCCESS });
+    dispatch({ type: GET_COMMENT_REQUEST });
 
     const getToken = JSON.parse(localStorage.getItem("userInfo"));
     const token = getToken ? getToken.token : null;

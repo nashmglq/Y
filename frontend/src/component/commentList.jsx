@@ -15,9 +15,8 @@ const CommentList = ({ id }) => {
   const hideButton = () => setShow(false);
 
   useEffect(() => {
-    console.log("Use Effect for get Comments");
-    getCommentActions(id);
-    console.log(message);
+    console.log("Use Effect for get Comments with the id of", id);
+   dispatch( getCommentActions(id))
   }, [dispatch]);
 
   return (
