@@ -15,7 +15,9 @@ const CommentList = ({ id }) => {
   const hideButton = () => setShow(false);
 
   useEffect(() => {
+    console.log("Use Effect for get Comments");
     getCommentActions(id);
+    console.log(message);
   }, [dispatch]);
 
   return (
@@ -26,10 +28,18 @@ const CommentList = ({ id }) => {
 
       <Modal show={show} onHide={hideButton}>
         <Modal.Header closeButton>Comments</Modal.Header>
-        <Modal.Body> </Modal.Body>
+        <Modal.Body>
+          {message
+            ? message.map((comments) => (
+                <div>
+                  <h1>{comments.comment}</h1>
+                </div>
+              ))
+            : "No comments yet."}
+        </Modal.Body>
 
         <Modal.Footer className="d-flex flex-column">
-        <Comment id={id} />
+          <Comment id={id} />
         </Modal.Footer>
       </Modal>
     </div>

@@ -306,7 +306,10 @@ const getComments = async (req, res) => {
     if (!id) return res.status(400).json({ error: "No ID found." });
 
     const [getComment] = await pool.query(
-      `SELECT * from comments WHERE tweetId = ?`,
+      `SELECT authentication.id, authentication.name, authentication.username, profile.profile_image, comments.* from comments 
+      LEFT JOIN authentication ON comments.userId = authentication.id 
+      LEFT JOIN profile ON authentication.id = profile.user_id
+      WHERE tweetId = ?`,
       [id]
     );
 
