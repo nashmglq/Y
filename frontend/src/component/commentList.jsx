@@ -5,7 +5,7 @@ import { getCommentActions } from "../actions/crudActions";
 import { faComment } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Comment from "./comment";
-// Show all data from backend to frontend
+import TimePosted from "./timePosted";
 const CommentList = ({ id }) => {
   const [show, setShow] = useState(false);
   const { message } = useSelector((state) => state.getComment);
@@ -30,8 +30,22 @@ const CommentList = ({ id }) => {
         <Modal.Body>
           {message
             ? message.map((comments) => (
-                <div>
-                  <h1>{comments.comment}</h1>
+                <div class = "mt-2">
+                  <div class = "d-flex">
+                  <img src = {`http://localhost:5001/uploads/${comments.profile_image}` || "default.jpg"} 
+                   class = "rounded-circle img-fluid"
+                   style={{ width: "40px", height: "40px" }}
+                   />
+                   <small>
+                   <p class = "mb-1">@{comments.username}</p>
+                   <TimePosted time={comments.date_published} />
+                   </small>
+                  </div>
+   
+
+                   <h6>{comments.comment}</h6>
+
+
                 </div>
               ))
             : "No comments yet."}
