@@ -5,7 +5,7 @@ import { getCommentActions } from "../actions/crudActions";
 import { faComment } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Comment from "./comment";
-
+// Show all data from backend to frontend
 const CommentList = ({ id }) => {
   const [show, setShow] = useState(false);
   const { message } = useSelector((state) => state.getComment);
