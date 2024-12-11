@@ -24,7 +24,7 @@ const CommentList = ({ id }) => {
       <button onClick={showHandler} class="btn btn-link">
         <FontAwesomeIcon icon={faComment} />
       </button>
-
+{/* commit this first */}
       <Modal show={show} onHide={hideButton}>
         <Modal.Header closeButton>Comments</Modal.Header>
         <Modal.Body>
