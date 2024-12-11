@@ -24,8 +24,8 @@ const UpdateComment = ({ id, comments }) => {
   };
 
   return (
-    <div>
-      <button class="btn btn-link" onClick={handleShow}>
+    <div class = "m-2">
+      <button class="btn btn-primary" onClick={handleShow}>
         <FontAwesomeIcon icon={fas.faPencilAlt} />
       </button>
 

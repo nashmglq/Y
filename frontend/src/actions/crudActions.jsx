@@ -1,4 +1,7 @@
 import {
+  DELETE_COMMENT_FAIL,
+  DELETE_COMMENT_REQUEST,
+  DELETE_COMMENT_SUCCESS,
   GET_COMMENT_FAIL,
   GET_COMMENT_REQUEST,
   GET_COMMENT_SUCCESS,
@@ -450,7 +453,7 @@ export const postCommentActions = (id, formData) => async (dispatch) => {
     );
 
     if (response.data && response.data.success) {
-      dispatch(getCommentActions(id))
+      dispatch(getCommentActions(id));
       return dispatch({
         type: POST_COMMENT_SUCCESS,
         payload: response.data.success,
@@ -504,9 +507,50 @@ export const getCommentActions = (id) => async (dispatch) => {
   }
 };
 
-export const updateCommentActions = (id, formData, tweet_id) => async (dispatch) => {
+export const updateCommentActions =
+  (id, formData, tweet_id) => async (dispatch) => {
+    try {
+      dispatch({ type: UPDATE_COMMENT_REQUEST });
+
+      const getToken = JSON.parse(localStorage.getItem("userInfo"));
+      const token = getToken ? getToken.token : null;
+      const config = token
+        ? {
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        : null;
+
+      console.log(id, formData);
+      const response = await axios.put(
+        `http://localhost:5001/comment/${id}`,
+        formData,
+        config
+      );
+
+      if (response.data && response.data.success) {
+        dispatch(getCommentActions(tweet_id));
+        dispatch({
+          type: UPDATE_COMMENT_SUCCESS,
+          payload: response.data.success,
+        });
+      }
+    } catch (err) {
+      dispatch({
+        type: UPDATE_COMMENT_FAIL,
+        payload:
+          err.response && err.response.data
+            ? err.response.data.error
+            : "Something went wrong.",
+      });
+    }
+  };
+
+export const deleteCommentActions = (id, tweet_id) => async (dispatch) => {
   try {
-    dispatch({ type: UPDATE_COMMENT_REQUEST });
+    dispatch({ type: DELETE_COMMENT_REQUEST });
 
     const getToken = JSON.parse(localStorage.getItem("userInfo"));
     const token = getToken ? getToken.token : null;
@@ -514,32 +558,30 @@ export const updateCommentActions = (id, formData, tweet_id) => async (dispatch)
       ? {
           headers: {
             Accept: "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Beare ${token}`,
           },
         }
       : null;
 
-      console.log(id, formData)
-    const response = await axios.put(
+    const resposne = await axios.delete(
       `http://localhost:5001/comment/${id}`,
-      formData,
       config
     );
 
-    if (response.data && response.data.success) {
-      dispatch(getCommentActions(tweet_id))
-      dispatch({
-        type: UPDATE_COMMENT_SUCCESS,
-        payload: response.data.success,
+    if (resposne.data && resposne.data.success) {
+      dispatch(getCommentActions(tweet_id));
+      return dispatch({
+        type: DELETE_COMMENT_SUCCESS,
+        payload: resposne.data.success,
       });
     }
   } catch (err) {
-    dispatch({
-      type: UPDATE_COMMENT_FAIL,
+    return dispatch({
+      type: DELETE_COMMENT_FAIL,
       payload:
-        err.response && err.response.data
+        err.response.data && err.response.data.error
           ? err.response.data.error
-          : "Something went wrong.",
+          : "Something went wrong",
     });
   }
 };

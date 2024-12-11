@@ -346,3 +346,29 @@ export const updateCommentReducer = (
       return state;
   }
 };
+
+export const deleteCommentReducer = (
+  state = { loading: false, success: false, error: false, message: "" },
+  actions
+) => {
+  switch (actions.type) {
+    case "DELETE_COMMENT_REQUEST":
+      return { loading: true, success: false, error: false };
+    case "DELETE_COMMENT_SUCCESS":
+      return {
+        loading: false,
+        success: true,
+        error: false,
+        message: actions.payload,
+      };
+    case "DELETE_COMMENT_FAIL":
+      return {
+        loading: false,
+        success: false,
+        error: false,
+        message: actions.payload,
+      };
+    default:
+      return state;
+  }
+};

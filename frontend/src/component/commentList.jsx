@@ -7,14 +7,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Comment from "./comment";
 import TimePosted from "./timePosted";
 import UpdateComment from "./commentUpdate";
-
+import DeleteComment from "./commentDelete";
 
 const CommentList = ({ id }) => {
   const [show, setShow] = useState(false);
   const { message } = useSelector((state) => state.getComment);
   const dispatch = useDispatch();
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"))
-  const userId = userInfo ? userInfo.id :null;
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userId = userInfo ? userInfo.id : null;
 
   const showHandler = () => setShow(true);
   const hideButton = () => setShow(false);
@@ -36,7 +36,10 @@ const CommentList = ({ id }) => {
           {/* this will check the array if it has a value */}
           {message && Array.isArray(message)
             ? message.map((comments) => (
-                <div class="border-top border-secondary overflow-auto" style={{maxHeight: "200px"}}>
+                <div
+                  class="border-top border-secondary overflow-auto"
+                  style={{ maxHeight: "200px" }}
+                >
                   <div class="d-flex p-2">
                     <img
                       src={
@@ -54,11 +57,20 @@ const CommentList = ({ id }) => {
                       </b>
                       <small class="m-1">@{comments.username}</small>
                       <TimePosted time={comments.date_published} />
+                      <small>{comments.updated == 1 ? "Updated" : null}</small>
                     </small>
                   </div>
 
                   <h6 class="mt-2">{comments.comment}</h6>
-                  {comments.userId == userId ? (  <UpdateComment id = {comments.comment_id} comments = {comments.comment}/>) : null }
+                  {comments.userId == userId ? (
+                    <div class="d-flex m-2">
+                      <UpdateComment
+                        id={comments.comment_id}
+                        comments={comments.comment}
+                      /> 
+                      <DeleteComment id={comments.comment_id} />
+                    </div>
+                  ) : null}
                 </div>
               ))
             : "No comments yet."}
