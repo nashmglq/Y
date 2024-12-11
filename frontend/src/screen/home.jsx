@@ -56,7 +56,7 @@ const Home = () => {
       <div className="container d-flex mt-4 justify-content-center">
         <div className="row w-100">
           <div class="col-lg-3">
-            <div class="card sticky-top mt-2 p-4">
+            <div class="card mt-2 p-4">
               <form onSubmit={postHandler}>
                 <textarea
                   className="bg-light text-white w-100 form-control"

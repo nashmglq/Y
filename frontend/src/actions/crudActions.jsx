@@ -5,6 +5,9 @@ import {
   POST_COMMENT_FAIL,
   POST_COMMENT_REQUEST,
   POST_COMMENT_SUCCESS,
+  UPDATE_COMMENT_FAIL,
+  UPDATE_COMMENT_REQUEST,
+  UPDATE_COMMENT_SUCCESS,
 } from "../constants/authConstant";
 import {
   GET_Y_REQUEST,
@@ -447,6 +450,7 @@ export const postCommentActions = (id, formData) => async (dispatch) => {
     );
 
     if (response.data && response.data.success) {
+      dispatch(getCommentActions(id))
       return dispatch({
         type: POST_COMMENT_SUCCESS,
         payload: response.data.success,
@@ -483,7 +487,6 @@ export const getCommentActions = (id) => async (dispatch) => {
       config
     );
 
-
     if (response.data && response.data.success) {
       return dispatch({
         type: GET_COMMENT_SUCCESS,
@@ -497,6 +500,46 @@ export const getCommentActions = (id) => async (dispatch) => {
         err.response && err.response.data.error
           ? err.response.data.error
           : "Something went wrong",
+    });
+  }
+};
+
+export const updateCommentActions = (id, formData, tweet_id) => async (dispatch) => {
+  try {
+    dispatch({ type: UPDATE_COMMENT_REQUEST });
+
+    const getToken = JSON.parse(localStorage.getItem("userInfo"));
+    const token = getToken ? getToken.token : null;
+    const config = token
+      ? {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      : null;
+
+      console.log(id, formData)
+    const response = await axios.put(
+      `http://localhost:5001/comment/${id}`,
+      formData,
+      config
+    );
+
+    if (response.data && response.data.success) {
+      dispatch(getCommentActions(tweet_id))
+      dispatch({
+        type: UPDATE_COMMENT_SUCCESS,
+        payload: response.data.success,
+      });
+    }
+  } catch (err) {
+    dispatch({
+      type: UPDATE_COMMENT_FAIL,
+      payload:
+        err.response && err.response.data
+          ? err.response.data.error
+          : "Something went wrong.",
     });
   }
 };

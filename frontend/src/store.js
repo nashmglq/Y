@@ -3,6 +3,7 @@ import { thunk } from "redux-thunk";
 import { checkIfFollowReducer, emailVerificationReducer, followReducer, getProfileReducer, getUserIdReducer, loginReducer, registerReducer, resendEmailVerificationReducer, updateProfileReducer } from "./reducers/authReducer";
 import { emailVerifyAction } from "./actions/authActions";
 import { checkDetailLikeReducer, deleteYReducer, detailYReducer, getCommentReducer, getUserYOtherReducer, getUserYReducer, getYReducer, likeCountReducer, likeReducer, postCommentReducer, postYreducer, updateYReducer } from "./reducers/crudReducer";
+import { updateCommentActions } from "./actions/crudActions";
 
 // put all reducers here
 const reducer = combineReducers({
@@ -26,7 +27,8 @@ const reducer = combineReducers({
     checkIfFollow : checkIfFollowReducer,
     checkDetailLike : checkDetailLikeReducer,
     postComment : postCommentReducer,
-    getComment : getCommentReducer
+    getComment : getCommentReducer,
+    updateComment : updateCommentActions
 
 })
 

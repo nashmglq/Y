@@ -320,3 +320,29 @@ export const getCommentReducer = (
       return state;
   }
 };
+
+export const updateCommentReducer = (
+  state = { loading: false, success: false, error: false, message: "" },
+  actions
+) => {
+  switch (actions.type) {
+    case "UPDATE_COMMENT_REQUEST":
+      return { loading: true, success: false, error: false };
+    case "UPDATE_COMMENT_SUCCESS":
+      return {
+        loading: false,
+        success: true,
+        error: false,
+        message: actions.payload,
+      };
+    case "UPDATE_COMMENT_FAIL":
+      return {
+        loading: false,
+        success: false,
+        error: true,
+        message: actions.payload,
+      };
+    default:
+      return state;
+  }
+};

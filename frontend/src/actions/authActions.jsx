@@ -27,7 +27,7 @@ import {
   VERIFY_EMAIL_SUCCESS,
 } from "../constants/authConstant";
 import axios from "axios";
-
+import { getUserYActions } from "./crudActions";
 export const loginActions = (formData) => async (dispatch) => {
   try {
     dispatch({ type: LOGIN_REQUEST });
@@ -196,6 +196,7 @@ export const updateProfileAction = (formData) => async (dispatch) => {
 
     if (response.data && response.data.success) {
       dispatch(getProfileActions());
+      dispatch(getUserYActions())
       return dispatch({
         type: UPDATE_PROFILE_SUCCESS,
         payload: response.data.success,

@@ -6,17 +6,22 @@ import { faComment } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Comment from "./comment";
 import TimePosted from "./timePosted";
+import UpdateComment from "./commentUpdate";
+
+
 const CommentList = ({ id }) => {
   const [show, setShow] = useState(false);
   const { message } = useSelector((state) => state.getComment);
   const dispatch = useDispatch();
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"))
+  const userId = userInfo ? userInfo.id :null;
 
   const showHandler = () => setShow(true);
   const hideButton = () => setShow(false);
 
   useEffect(() => {
     console.log("Use Effect for get Comments with the id of", id);
-   dispatch( getCommentActions(id))
+    dispatch(getCommentActions(id));
   }, [dispatch]);
 
   return (
@@ -24,28 +29,36 @@ const CommentList = ({ id }) => {
       <button onClick={showHandler} class="btn btn-link">
         <FontAwesomeIcon icon={faComment} />
       </button>
-{/* commit this first */}
       <Modal show={show} onHide={hideButton}>
         <Modal.Header closeButton>Comments</Modal.Header>
         <Modal.Body>
-          {message
+          {/* message might be present but it is empty and it will cause an error */}
+          {/* this will check the array if it has a value */}
+          {message && Array.isArray(message)
             ? message.map((comments) => (
-                <div class = "mt-2">
-                  <div class = "d-flex">
-                  <img src = {`http://localhost:5001/uploads/${comments.profile_image}` || "default.jpg"} 
-                   class = "rounded-circle img-fluid"
-                   style={{ width: "40px", height: "40px" }}
-                   />
-                   <small>
-                   <p class = "mb-1">@{comments.username}</p>
-                   <TimePosted time={comments.date_published} />
-                   </small>
+                <div class="border-top border-secondary overflow-auto" style={{maxHeight: "200px"}}>
+                  <div class="d-flex p-2">
+                    <img
+                      src={
+                        `http://localhost:5001/uploads/${comments.profile_image}` ||
+                        "default.jpg"
+                      }
+                      class="rounded-circle img-fluid"
+                      style={{ width: "40px", height: "40px" }}
+                    />
+                    <small>
+                      <b>
+                        <small class="m-1" style={{ color: "white" }}>
+                          {comments.name}
+                        </small>
+                      </b>
+                      <small class="m-1">@{comments.username}</small>
+                      <TimePosted time={comments.date_published} />
+                    </small>
                   </div>
-   
 
-                   <h6>{comments.comment}</h6>
-
-
+                  <h6 class="mt-2">{comments.comment}</h6>
+                  {comments.userId == userId ? (  <UpdateComment id = {comments.comment_id} comments = {comments.comment}/>) : null }
                 </div>
               ))
             : "No comments yet."}

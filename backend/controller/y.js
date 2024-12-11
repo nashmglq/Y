@@ -309,7 +309,9 @@ const getComments = async (req, res) => {
       `SELECT authentication.id, authentication.name, authentication.username, profile.profile_image, comments.* from comments 
       LEFT JOIN authentication ON comments.userId = authentication.id 
       LEFT JOIN profile ON authentication.id = profile.user_id
-      WHERE tweetId = ?`,
+      WHERE tweetId = ?
+      ORDER BY 
+      comments.date_published DESC`,
       [id]
     );
 
@@ -352,6 +354,8 @@ const deleteComments = async (req, res) => {
 const updateComments = async (req, res) => {
   const { id } = req.params;
   const {comment} = req.body
+  console.log(req.body)
+  console.log(comment)
   try {
     if(!id) return res.status(400).json({err})
 
