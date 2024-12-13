@@ -386,8 +386,15 @@ const updateComments = async (req, res) => {
 
 const repostY = async(req,res) =>{
   const tweetId = req.params.id
+  const userId = req.user.id
 
   try{ 
+    if(!tweetId) return res.status(400).json({error: "NO ID FOUND"})
+
+      const [insertRepost] = await pool.query("INSERT INTO repost VALUE (?,?)", [tweetId, userId])
+
+
+      return res.status(200).json({success: "Reposted"})
 
   }catch(err){
     return res.status(500).json({error: err.message})
@@ -409,4 +416,5 @@ module.exports = {
   deleteComments,
   updateComments,
   getCountOfLikes,
+  repostY
 };
