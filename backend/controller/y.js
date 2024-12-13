@@ -384,6 +384,17 @@ const updateComments = async (req, res) => {
   }
 };
 
+const repostY = async(req,res) =>{
+  const tweetId = req.params.id
+
+  try{ 
+
+  }catch(err){
+    return res.status(500).json({error: err.message})
+  }
+
+}
+
 module.exports = {
   postY,
   getY,
