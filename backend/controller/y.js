@@ -208,7 +208,7 @@ const updateLike = async (req, res) => {
     return res.status(500).status({ error: err.message });
   }
 };
-
+// do the get here, added already database;
 const getUserY = async (req, res) => {
   const userId = req.user.id;
   try {
@@ -353,54 +353,55 @@ const deleteComments = async (req, res) => {
 
 const updateComments = async (req, res) => {
   const { id } = req.params;
-  const {comment} = req.body
-  console.log(req.body)
-  console.log(comment)
+  const { comment } = req.body;
+  console.log(req.body);
+  console.log(comment);
   try {
-    if(!id) return res.status(400).json({err})
+    if (!id) return res.status(400).json({ err });
 
-      const [getComment] = await pool.query(
-        `SELECT * from comments WHERE comment_id = ?`,
-        [id]
-      );
-  
-      if (getComment.length === 0) {
-        return res.status(400).json({ error: "No tweet found" });
-      }
+    const [getComment] = await pool.query(
+      `SELECT * from comments WHERE comment_id = ?`,
+      [id]
+    );
 
+    if (getComment.length === 0) {
+      return res.status(400).json({ error: "No tweet found" });
+    }
 
-      if(getComment[0].comment == comment){
-        return res.status(400).json({error: "You cannot put your current comment"})
-      }
+    if (getComment[0].comment == comment) {
+      return res
+        .status(400)
+        .json({ error: "You cannot put your current comment" });
+    }
 
-      const [updateComment] = await pool.query(`UPDATE comments SET comment = ?, updated = 1 WHERE comment_id = ?`, [comment, id])
+    const [updateComment] = await pool.query(
+      `UPDATE comments SET comment = ?, updated = 1 WHERE comment_id = ?`,
+      [comment, id]
+    );
 
-      return res.status(200).json({success: "Updated successfully"})
-
-  
+    return res.status(200).json({ success: "Updated successfully" });
   } catch (err) {
-    return res.status(500).json({error: err.message})
-
+    return res.status(500).json({ error: err.message });
   }
 };
 
-const repostY = async(req,res) =>{
-  const tweetId = req.params.id
-  const userId = req.user.id
+const repostY = async (req, res) => {
+  const tweetId = req.params.id;
+  const userId = req.user.id;
 
-  try{ 
-    if(!tweetId) return res.status(400).json({error: "NO ID FOUND"})
+  try {
+    if (!tweetId) return res.status(400).json({ error: "NO ID FOUND" });
 
-      const [insertRepost] = await pool.query("INSERT INTO repost VALUE (?,?)", [tweetId, userId])
+    const [insertRepost] = await pool.query("INSERT INTO repost VALUE (?,?)", [
+      tweetId,
+      userId,
+    ]);
 
-
-      return res.status(200).json({success: "Reposted"})
-
-  }catch(err){
-    return res.status(500).json({error: err.message})
+    return res.status(200).json({ success: "Reposted" });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
   }
-
-}
+};
 
 module.exports = {
   postY,
@@ -416,5 +417,5 @@ module.exports = {
   deleteComments,
   updateComments,
   getCountOfLikes,
-  repostY
+  repostY,
 };
