@@ -208,7 +208,7 @@ const updateLike = async (req, res) => {
     return res.status(500).status({ error: err.message });
   }
 };
-// do the get here, added already database;
+
 const getUserY = async (req, res) => {
   const userId = req.user.id;
   try {

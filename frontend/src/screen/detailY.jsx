@@ -72,7 +72,7 @@ const DetailY = () => {
                 ) : null}
               </div>
             ) : null}
-
+{/* move the comment modal to the something div */}
             <div class="d-flex">
               <small>
                 {" "}
