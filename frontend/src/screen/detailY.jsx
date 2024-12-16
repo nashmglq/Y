@@ -73,6 +73,7 @@ const DetailY = () => {
               </div>
             ) : null}
 {/* move the comment modal to the something div */}
+{/* maybe try to deploy first or color */}
             <div class="d-flex">
               <small>
                 {" "}
