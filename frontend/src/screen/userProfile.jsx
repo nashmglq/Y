@@ -4,7 +4,7 @@ import { checkIfFollowActions, getUserIdActions } from "../actions/authActions";
 import { getUserYActions, getUserYOtherActions } from "../actions/crudActions";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import TimePosted from "../component/timePosted";
-import Like from "../component/like";
+import Like, { Unlike } from "../component/like";
 import Follow from "../component/follow";
 
 const UserProfile = () => {
@@ -123,8 +123,8 @@ const UserProfile = () => {
                     ) : null}
                   </Link>
 
-                  <div class="d-flex">
-                    <Like id={userY.tweet_id} /> {userY.heart}{" "}
+                  <div class="d-flex align-items-center">
+                   {userY.isLiked ? <Unlike id={userY.tweet_id} /> : <Like id={userY.tweet_id} /> } <span>{userY.heart}</span>
                   </div>
                 </div>
               ))

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   checkDetailLikeActions,
@@ -38,16 +38,18 @@ const DetailY = () => {
   return (
     <div class="container mt-2">
       <div class="row">
-        <div class="col-3">
-          <div class="card">
-            <h4>Something...</h4>
+        <div class="col-4">
+          <div class="card p-2">
+            <h4>Comments</h4>
+            <CommentList id={id} />
           </div>
         </div>
-        <div class="col-6">
+        <div class="col-8">
           <div class="card p-3">
             {message ? (
               <div>
                 <div class="col-12">
+                  <Link to = {`/profile/${message.id}`} class = "text-decoration-none text-dark">
                   <img
                     src={
                       `http://localhost:5001/uploads/${message.profile_image}` ||
@@ -62,6 +64,7 @@ const DetailY = () => {
                     <TimePosted time={message.date_published} />
                     <small>{message.updated === 1 ? "· Edited" : null}</small>
                   </small>
+                  </Link>
                 </div>
                 <h6 class="mt-2">{message.tweet}</h6>
                 {message.img ? (
@@ -72,8 +75,8 @@ const DetailY = () => {
                 ) : null}
               </div>
             ) : null}
-{/* move the comment modal to the something div */}
-{/* maybe try to deploy first or color */}
+            {/* move the comment modal to the something div */}
+            {/* maybe try to deploy first or color */}
             <div class="d-flex">
               <small>
                 {" "}
@@ -98,12 +101,10 @@ const DetailY = () => {
                 )}
               </small>
 
-              <CommentList id = {id}/>
               {message.userId === localId ? <DeleteY id={id} /> : null}
               {message.userId === localId ? (
                 <Updatetweet id={id} tweet={message.tweet} />
               ) : null}
-
             </div>
           </div>
         </div>

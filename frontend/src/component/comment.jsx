@@ -22,6 +22,7 @@ const Comment = ({ id }) => {
       <input
         class="form-control"
         onChange={(e) => setComment(e.target.value)}
+        placeholder="Add a comment."
         value={comment}
       ></input>
       <button class="btn btn-link">

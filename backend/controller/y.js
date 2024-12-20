@@ -81,7 +81,7 @@ const getYDetails = async (req, res) => {
     }
 
     const [getIdY] = await pool.query(
-      `SELECT tweets.*, authentication.username, authentication.name, profile.profile_image 
+      `SELECT tweets.*, authentication.id, authentication.username, authentication.name, profile.profile_image 
       FROM tweets LEFT JOIN authentication ON 
       tweets.userId = authentication.id LEFT JOIN profile ON authentication.id = profile.user_id 
       WHERE tweet_id = ? `,
@@ -270,18 +270,33 @@ const getUserY = async (req, res) => {
 
 const getOtherY = async (req, res) => {
   const { id } = req.params;
+  const userId = req.user.id
   try {
     if (!id) {
       return res.status(400).json({ success: "No ID found" });
     }
 
     const [getuserY] = await pool.query(
-      `SELECT authentication.id, authentication.username, authentication.name, 
-    profile.profile_image, tweets.* from authentication 
-    LEFT JOIN profile ON authentication.id = profile.user_id 
-    LEFT JOIN tweets ON profile.user_id = tweets.userId 
-    WHERE id = ? ORDER BY tweets.date_published DESC`,
-      [id]
+      `SELECT 
+      authentication.id, 
+      authentication.username, 
+      authentication.name, 
+      profile.profile_image, 
+      tweets.*,
+      CASE
+        WHEN EXISTS(
+        SELECT 1
+        FROM likedid
+        WHERE likedid.userId = ? AND likedid.tweet_id = tweets.tweet_id 
+        ) THEN 1
+        ELSE 0
+      END AS isLiked
+      from authentication 
+      LEFT JOIN profile ON authentication.id = profile.user_id 
+      LEFT JOIN tweets ON profile.user_id = tweets.userId 
+      WHERE id = ? 
+      ORDER BY tweets.date_published DESC`,
+      [userId,id]
     );
 
     if (getuserY[0].tweet_id === null) {
@@ -436,6 +451,7 @@ const repostY = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
+
 
 module.exports = {
   postY,

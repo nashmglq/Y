@@ -391,6 +391,31 @@ const getFollowInt = async (req, res) => {
   }
 };
 
+const usersFollowers = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [result] = await pool.query(
+      `SELECT 
+      follow.*, 
+      authentication.name, 
+      authentication.username,
+      profile.profile_image
+      from follow 
+      LEFT JOIN authentication ON follow.userId = authentication.id
+      LEFT JOIN profile ON authentication.id = profile.user_id
+      WHERE userId = ?
+      `, 
+      [id]);
+
+      if(result.length === 0) return res.status(400).json({success: "No follow"})
+
+
+      return res.status(200).json({success: result.length, result})
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
 // now in the frontend just check if the return is true, and else just dont do anything
 const checkForFollow = async (req, res) => {
   const userId = req.user.id;
@@ -454,4 +479,5 @@ module.exports = {
   getFollowInt,
   checkForFollow,
   checkUserLike,
+  usersFollowers
 };
