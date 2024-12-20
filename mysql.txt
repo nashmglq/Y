@@ -61,3 +61,41 @@ CREATE TABLE likedid (
 );
 
 ALTER TABLE table_name ADD created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+    // ORDER BY tweets.date_published DESC (descending order) = to descend order & ASC = ascend order?
+
+CASE 
+  WHEN condition THEN true_value 
+  ELSE false_value 
+END
+
+
+
+
+
+
+
+
+
+CASE 
+          WHEN EXISTS (
+            SELECT 1 
+            FROM likedid 
+            WHERE likedid.userId = ? AND likedid.tweet_id = tweets.tweet_id
+          ) THEN 1 
+          ELSE 0 
+        END AS isLiked
+
+
+
+okay i get case, case is like if else, when is like saying when exist (check) if exist return 1 ELSE 0 END AS isLiked (this is the return from the query)
+
+Select 1 means row found or 1 is like a placeholder that just means "yes, something was found."
+
+
+so this is the flow
+
+If (when exists) true (SELEC 1 if found something from likedid ) THEN 1
+ELSE 0
+END AS isLIked is what we call
+
+

@@ -127,7 +127,7 @@ const Home = () => {
                     ) : null}
                   </Link>
                   <div class="d-flex align-items-center">
-                  <Like id={tweets.tweet_id} />
+                  {tweets.isLiked ?  <Unlike id = {tweets.tweet_id}/> : <Like id={tweets.tweet_id} />}
                   <span class ="mt-1">{tweets.heart}</span>
                   </div>
                 </div>

@@ -32,17 +32,34 @@ const postY = async (req, res) => {
 };
 
 const getY = async (req, res) => {
+  const userId = req.user.id
   try {
-    // ORDER BY tweets.date_published DESC (descending order) = to descend order & ASC = ascend order?
-    const [getTweets] = await pool.query(
-      `SELECT authentication.id, authentication.username, authentication.name ,profile.profile_image, 
-      tweets.tweet_id, tweets.tweet, tweets.img, tweets.date_published, tweets.updated, tweets.heart 
-      FROM tweets LEFT JOIN profile ON tweets.userId = profile.user_id 
-      LEFT JOIN authentication ON 
-      profile.user_id = authentication.id 
-      ORDER BY 
-      tweets.date_published DESC`
-    );
+    console.log(userId)
+    const [getTweets] = await pool.query(`
+      SELECT 
+        authentication.id, 
+        authentication.username, 
+        authentication.name, 
+        profile.profile_image, 
+        tweets.tweet_id, 
+        tweets.tweet, 
+        tweets.img, 
+        tweets.date_published, 
+        tweets.updated, 
+        tweets.heart, 
+        CASE 
+          WHEN EXISTS(
+            SELECT 1 
+            FROM likedid
+            WHERE likedid.userId = ? AND likedid.tweet_id = tweets.tweet_id
+          )THEN 1
+          ELSE 0
+          END AS isLiked
+      FROM tweets 
+      LEFT JOIN profile ON tweets.userId = profile.user_id 
+      LEFT JOIN authentication ON profile.user_id = authentication.id 
+      ORDER BY tweets.date_published DESC
+    `, [userId]);
 
     if (getTweets.length === 0) {
       return res.status(400).json({ error: "Empty space." });
@@ -217,12 +234,29 @@ const getUserY = async (req, res) => {
     }
 
     const [getuserY] = await pool.query(
-      `SELECT authentication.id, authentication.username, authentication.name, 
-    profile.profile_image, tweets.* from authentication 
-    LEFT JOIN profile ON authentication.id = profile.user_id LEFT JOIN tweets ON profile.user_id = userId 
-    WHERE id = ? ORDER BY tweets.date_published DESC`,
-      [userId]
+      `SELECT 
+      authentication.id, 
+      authentication.username, 
+      authentication.name, 
+      profile.profile_image, 
+      tweets.*, 
+      CASE 
+        WHEN EXISTS (
+          SELECT 1 
+          FROM likedid 
+          WHERE likedid.userId = ? AND likedid.tweet_id = tweets.tweet_id
+        ) THEN 1 
+        ELSE 0 
+      END AS isLiked
+    FROM authentication 
+    LEFT JOIN profile ON authentication.id = profile.user_id 
+    LEFT JOIN tweets ON profile.user_id = tweets.userId 
+    WHERE authentication.id = ? 
+    ORDER BY tweets.date_published DESC`,
+      [userId, userId]
     );
+    // no need to get the left join of the likedid because we are not letting it on the query
+    // we just used it for the if else
 
     if (getuserY[0].tweet_id === null) {
       return res.status(400).json({ error: "No tweet yet." });

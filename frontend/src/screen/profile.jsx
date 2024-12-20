@@ -6,7 +6,7 @@ import Header from "../component/header";
 import { Link, useNavigate } from "react-router-dom";
 import { getUserYActions } from "../actions/crudActions";
 import TimePosted from "../component/timePosted";
-import Like from "../component/like";
+import Like, {Unlike} from "../component/like";
 
 const Profile = () => {
   const token = localStorage.getItem("userInfo");
@@ -117,7 +117,12 @@ const Profile = () => {
                   </Link>
 
                   <div class="d-flex align-items-center">
-                    <Like id={userY.tweet_id} /> <span class = "mt-1">{userY.heart}</span>
+                    {userY.isLiked ? (
+                      <Unlike id={userY.tweet_id} />
+                    ) : (
+                      <Like id={userY.tweet_id} />
+                    )}
+                    <span class="mt-1">{userY.heart}</span>
                   </div>
                 </div>
               ))
