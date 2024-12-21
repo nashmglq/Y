@@ -13,6 +13,9 @@ import {
   LOGIN_FAIL,
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
+  OTHER_USER_FOLLOWERS_FAIL,
+  OTHER_USER_FOLLOWERS_REQUEST,
+  OTHER_USER_FOLLOWERS_SUCCESS,
   REGISTER_FAIL,
   REGISTER_REQUEST,
   REGISTER_SUCCESS,
@@ -324,3 +327,27 @@ export const checkIfFollowActions = (id) => async (dispatch) => {
   }
 };
 
+
+export const OtherUserFollowersAction = () => async(dispatch) => {
+
+  try{
+    dispatch({type: OTHER_USER_FOLLOWERS_REQUEST})
+
+    const getToken = JSON.parse(localStorage.getItem('userInfo'))
+    const token = getToken ? getToken.token : null;
+    const config = token ? {headers: {Accept: "application/json", Authorization: `Bearer ${token}`}} : null;
+
+    const response = await axios.get(`http://localhost:5001/get-other-followers/${id}`)
+
+    if(response && response.data.success){
+      return dispatch({type: OTHER_USER_FOLLOWERS_SUCCESS, payload: response.data.success})
+    }
+
+  }catch(err){
+    return dispatch({type: OTHER_USER_FOLLOWERS_FAIL, payload: err.response && err.response.data 
+      ? err.response.data : "Something went wrong"
+    })
+
+  }
+
+}
