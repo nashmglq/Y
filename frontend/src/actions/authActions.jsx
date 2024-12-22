@@ -254,6 +254,33 @@ export const getUserIdActions = (id) => async (dispatch) => {
   }
 };
 
+
+export const OtherUserFollowersAction = (id) => async(dispatch) => {
+
+  try{
+    dispatch({type: OTHER_USER_FOLLOWERS_REQUEST})
+
+    const getToken = JSON.parse(localStorage.getItem('userInfo'))
+    const token = getToken ? getToken.token : null;
+    const config = token ? {headers: {Accept: "application/json", Authorization: `Bearer ${token}`}} : null;
+
+    const response = await axios.get(`http://localhost:5001/get-other-followers/${id}`, config)
+
+    if(response && response.data.success){
+      console.log(response.data.success)
+      return dispatch({type: OTHER_USER_FOLLOWERS_SUCCESS, payload: response.data.success})
+    }
+
+  }catch(err){
+    console.log(err.response.data)
+    return dispatch({type: OTHER_USER_FOLLOWERS_FAIL, payload: err.response && err.response.data 
+      ? err.response.data : "Something went wrong"
+    })
+
+  }
+
+}
+
 export const followActions = (id) => async (dispatch) => {
   try {
     dispatch({ type: FOLLOW_REQUEST });
@@ -277,6 +304,7 @@ export const followActions = (id) => async (dispatch) => {
     );
 
     if (response.data && response.data.success) {
+      dispatch(OtherUserFollowersAction(id))
       dispatch(checkIfFollowActions(id));
       return dispatch({ type: FOLLOW_SUCCESS, payload: response.data.success });
     }
@@ -328,26 +356,3 @@ export const checkIfFollowActions = (id) => async (dispatch) => {
 };
 
 
-export const OtherUserFollowersAction = () => async(dispatch) => {
-
-  try{
-    dispatch({type: OTHER_USER_FOLLOWERS_REQUEST})
-
-    const getToken = JSON.parse(localStorage.getItem('userInfo'))
-    const token = getToken ? getToken.token : null;
-    const config = token ? {headers: {Accept: "application/json", Authorization: `Bearer ${token}`}} : null;
-
-    const response = await axios.get(`http://localhost:5001/get-other-followers/${id}`)
-
-    if(response && response.data.success){
-      return dispatch({type: OTHER_USER_FOLLOWERS_SUCCESS, payload: response.data.success})
-    }
-
-  }catch(err){
-    return dispatch({type: OTHER_USER_FOLLOWERS_FAIL, payload: err.response && err.response.data 
-      ? err.response.data : "Something went wrong"
-    })
-
-  }
-
-}

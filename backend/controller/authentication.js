@@ -346,12 +346,14 @@ const follow = async (req, res) => {
       return res.status(200).json({ success: "Successfully unfollowed" });
     }
 
-    const follow = await pool.query(
-      `INSERT into follow  (userId, followers_id) VALUES (?,?)`,
-      [userId, id]
-    );
-
-    return res.status(200).json({ success: "Followed successfully" });
+    if (checkFollowers.length === 0){
+      const follow = await pool.query(
+        `INSERT into follow  (userId, followers_id) VALUES (?,?)`,
+        [userId, id]
+      );
+  
+      return res.status(200).json({ success: "Followed successfully" });
+    }
   } catch (err) {
     return res.status(500).json({ erorr: err.message });
   }
@@ -394,6 +396,9 @@ const getFollowInt = async (req, res) => {
 const usersFollowers = async (req, res) => {
   const { id } = req.params;
   try {
+
+    // if(!id) return res.status(400).json({error: "No ID."})
+
     const [result] = await pool.query(
       `SELECT 
       follow.*, 
@@ -403,12 +408,9 @@ const usersFollowers = async (req, res) => {
       from follow 
       LEFT JOIN authentication ON follow.userId = authentication.id
       LEFT JOIN profile ON authentication.id = profile.user_id
-      WHERE userId = ?
+      WHERE followers_id = ?
       `, 
       [id]);
-
-      if(result.length === 0) return res.status(400).json({success: "No follow"})
-
 
       return res.status(200).json({success: result.length, result})
   } catch (err) {

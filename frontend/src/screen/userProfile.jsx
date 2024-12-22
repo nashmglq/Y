@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { checkIfFollowActions, getUserIdActions } from "../actions/authActions";
+import { checkIfFollowActions, getUserIdActions, OtherUserFollowersAction } from "../actions/authActions";
 import { getUserYActions, getUserYOtherActions } from "../actions/crudActions";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import TimePosted from "../component/timePosted";
@@ -14,6 +14,7 @@ const UserProfile = () => {
   );
 
   const { y } = useSelector((state) => state.getUserYOther);
+  const { message: followCount } = useSelector((state) => state.OtherUserFollowers);
   const { id } = useParams();
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const nav = useNavigate();
@@ -23,6 +24,7 @@ const UserProfile = () => {
   useEffect(() => {
     dispatch(getUserIdActions(id));
     dispatch(getUserYOtherActions(id));
+    dispatch(OtherUserFollowersAction(id))
   }, [dispatch]);
 
 
@@ -67,6 +69,8 @@ const UserProfile = () => {
                         ? `${profileUser.bio}`
                         : "No bio yet."}
                     </small>{" "}
+
+                    <p style={{color: "white"}}>{followCount ? `Followers: ${followCount}` : "Followers: 0"}</p>
 
                         <Follow  id = {profileUser.id}/>
 

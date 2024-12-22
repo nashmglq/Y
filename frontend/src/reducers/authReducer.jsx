@@ -248,3 +248,19 @@ export const checkIfFollowReducer = (
       return state;
   }
 };
+
+export const OtherUserFollowersReducer = (
+  state = { loading: false, success: false, error: false, message: "" },
+  actions
+) => {
+  switch (actions.type) {
+    case "OTHER_USER_FOLLOWERS_REQUEST":
+      return { loading: true, success: false, error: false };
+    case "OTHER_USER_FOLLOWERS_SUCCESS":
+      return { loading: false, success: true, error: false, message: actions.payload };
+    case "OTHER_USER_FOLLOWERS_FAIL":
+      return { loading: false, success: false, error: true, message: actions.payload };
+    default:
+      return state;
+  }
+};
