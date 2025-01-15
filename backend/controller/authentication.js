@@ -468,6 +468,39 @@ const checkUserLike = async (req, res) => {
   }
 };
 
+const updatePassword = async(req,res) => {
+  const {id} = req.user;
+  const {password1, password2} = req.body;
+  console.log(id)
+  try{
+    if(!id){
+      return res.status(400).json({error: "ID not found"})
+    }
+    if(!password1 || !password2){
+      return res.status(400).json({error: "Please provided the required fields"})
+    }
+    // forgot the destructure
+    const [checkOldPassword] = await pool.query(`SELECT password from authentication WHERE id = ?`, [id])
+    if(checkOldPassword < 1){
+      return res.status(400).json({error: "No password found"})
+    }
+    const compareHash = await bcrypt.compare(password1, checkOldPassword[0].password)
+    if(compareHash){
+      const hashedNewPassword = await bcrypt.hash(password2, 10)
+      const updateUserPassword = await pool.query(`UPDATE authentication SET password = ? WHERE id = ?`, [hashedNewPassword, id])
+      return res.status(200).json({success: "Password updated"})
+    }
+
+    return res.status(500).json({error: "Old password does not match"})
+
+  }catch(err){
+    res.status(500).json({error: err.message})
+  }
+}
+
+
+
+
 module.exports = {
   registerUser,
   login,
@@ -481,5 +514,6 @@ module.exports = {
   getFollowInt,
   checkForFollow,
   checkUserLike,
-  usersFollowers
+  usersFollowers,
+  updatePassword
 };
