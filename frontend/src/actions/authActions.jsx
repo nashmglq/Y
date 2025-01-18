@@ -1,4 +1,7 @@
 import {
+  CHANGE_PASSWORD_FAIL,
+  CHANGE_PASSWORD_REQUEST,
+  CHANGE_PASSWORD_SUCCESS,
   CHECK_FOLLOW_FAIL,
   CHECK_FOLLOW_REQUEST,
   CHECK_FOLLOW_SUCCESS,
@@ -199,7 +202,7 @@ export const updateProfileAction = (formData) => async (dispatch) => {
 
     if (response.data && response.data.success) {
       dispatch(getProfileActions());
-      dispatch(getUserYActions())
+      dispatch(getUserYActions());
       return dispatch({
         type: UPDATE_PROFILE_SUCCESS,
         payload: response.data.success,
@@ -254,32 +257,44 @@ export const getUserIdActions = (id) => async (dispatch) => {
   }
 };
 
+export const OtherUserFollowersAction = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: OTHER_USER_FOLLOWERS_REQUEST });
 
-export const OtherUserFollowersAction = (id) => async(dispatch) => {
-
-  try{
-    dispatch({type: OTHER_USER_FOLLOWERS_REQUEST})
-
-    const getToken = JSON.parse(localStorage.getItem('userInfo'))
+    const getToken = JSON.parse(localStorage.getItem("userInfo"));
     const token = getToken ? getToken.token : null;
-    const config = token ? {headers: {Accept: "application/json", Authorization: `Bearer ${token}`}} : null;
+    const config = token
+      ? {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      : null;
 
-    const response = await axios.get(`http://localhost:5001/get-other-followers/${id}`, config)
+    const response = await axios.get(
+      `http://localhost:5001/get-other-followers/${id}`,
+      config
+    );
 
-    if(response && response.data.success){
-      console.log(response.data.success)
-      return dispatch({type: OTHER_USER_FOLLOWERS_SUCCESS, payload: response.data.success})
+    if (response && response.data.success) {
+      console.log(response.data.success);
+      return dispatch({
+        type: OTHER_USER_FOLLOWERS_SUCCESS,
+        payload: response.data.success,
+      });
     }
-
-  }catch(err){
-    console.log(err.response.data)
-    return dispatch({type: OTHER_USER_FOLLOWERS_FAIL, payload: err.response && err.response.data 
-      ? err.response.data : "Something went wrong"
-    })
-
+  } catch (err) {
+    console.log(err.response.data);
+    return dispatch({
+      type: OTHER_USER_FOLLOWERS_FAIL,
+      payload:
+        err.response && err.response.data
+          ? err.response.data
+          : "Something went wrong",
+    });
   }
-
-}
+};
 
 export const followActions = (id) => async (dispatch) => {
   try {
@@ -304,7 +319,7 @@ export const followActions = (id) => async (dispatch) => {
     );
 
     if (response.data && response.data.success) {
-      dispatch(OtherUserFollowersAction(id))
+      dispatch(OtherUserFollowersAction(id));
       dispatch(checkIfFollowActions(id));
       return dispatch({ type: FOLLOW_SUCCESS, payload: response.data.success });
     }
@@ -355,4 +370,37 @@ export const checkIfFollowActions = (id) => async (dispatch) => {
   }
 };
 
-
+export const changePasswordActions = (data) => async (dispatch) => {
+  try {
+    dispatch({ type: CHANGE_PASSWORD_REQUEST });
+    const getToken = JSON.parse(localStorage.getItem("userInfo"))
+    const token = getToken ? getToken.token : null;
+    const config = token
+      ? {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      : null;
+    const response = await axios.put(
+      "http://localhost:5001/update/password",
+      data,
+      config
+    );
+    if (response.data && response.data.success) {
+      return dispatch({
+        type: CHANGE_PASSWORD_SUCCESS,
+        payload: response.data.success,
+      });
+    }
+  } catch (err) {
+    return dispatch({
+      type: CHANGE_PASSWORD_FAIL,
+      payload:
+        err.response && err.response.data.error
+          ? err.response.data.error
+          : "Something went wrong.",
+    });
+  }
+};

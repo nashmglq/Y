@@ -264,3 +264,18 @@ export const OtherUserFollowersReducer = (
       return state;
   }
 };
+
+
+export const changePasswordReducer = (state = {loading: false, success: false, error: false, message: ""}, actions) =>{
+
+  switch(actions.type){
+    case "CHANGE_PASSWORD_REQUEST":
+      return {loading: true, success: false, error: false}
+    case "CHANGE_PASSWORD_SUCCESS":
+      return {loading: false, success: true, error: false, message: actions.payload}
+    case "CHANGE_PASSWORD_FAIL":
+      return {loading: false, success: false, error: false, message: actions.payload}
+    default:
+        return state
+  }
+}
