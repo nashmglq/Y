@@ -32,10 +32,11 @@ const postY = async (req, res) => {
 };
 
 const getY = async (req, res) => {
-  const userId = req.user.id
+  const userId = req.user.id;
   try {
-    console.log(userId)
-    const [getTweets] = await pool.query(`
+    console.log(userId);
+    const [getTweets] = await pool.query(
+      `
       SELECT 
         authentication.id, 
         authentication.username, 
@@ -59,7 +60,9 @@ const getY = async (req, res) => {
       LEFT JOIN profile ON tweets.userId = profile.user_id 
       LEFT JOIN authentication ON profile.user_id = authentication.id 
       ORDER BY tweets.date_published DESC
-    `, [userId]);
+    `,
+      [userId]
+    );
 
     if (getTweets.length === 0) {
       return res.status(400).json({ error: "Empty space." });
@@ -139,27 +142,32 @@ const deleteY = async (req, res) => {
   const tweet_id = req.params.id;
 
   try {
-    if (!tweet_id) {
+    const [checkYId] = await pool.query(
+      `SELECT tweet_id from tweets WHERE tweet_id = ?`,
+      [tweet_id]
+    );
+
+    if (!tweet_id || checkYId === 0) {
       return res.status(400).json({ error: "No id found" });
     }
 
     const [checkId] = await pool.query(
-      "SELECT userId FROM tweets WHERE tweet_id = ?",
+      "SELECT tweets.userId, authentication.is_admin FROM tweets LEFT JOIN authentication ON tweets.userId = authentication.id WHERE tweet_id = ?",
       [tweet_id]
     );
 
-    if (checkId[0].userId !== tokenId) {
-      return res
-        .status(500)
-        .json({ error: "You are not the owner of this tweet" });
+    if (checkId[0].userId === tokenId || checkId[0].is_admin === 1) {
+      const deleteTweet = await pool.query(
+        "DELETE FROM tweets WHERE tweet_id = ?",
+        [tweet_id]
+      );
+
+      return res.status(200).json({ success: "Successfully Deleted" });
     }
 
-    const deleteTweet = await pool.query(
-      "DELETE FROM tweets WHERE tweet_id = ?",
-      [tweet_id]
-    );
-
-    return res.status(200).json({ success: "Successfully Deleted" });
+    return res
+      .status(500)
+      .json({ error: "You are not the owner of this tweet" });
   } catch (err) {
     return res.status(200).json({ error: err.message });
   }
@@ -270,7 +278,7 @@ const getUserY = async (req, res) => {
 
 const getOtherY = async (req, res) => {
   const { id } = req.params;
-  const userId = req.user.id
+  const userId = req.user.id;
   try {
     if (!id) {
       return res.status(400).json({ success: "No ID found" });
@@ -296,7 +304,7 @@ const getOtherY = async (req, res) => {
       LEFT JOIN tweets ON profile.user_id = tweets.userId 
       WHERE id = ? 
       ORDER BY tweets.date_published DESC`,
-      [userId,id]
+      [userId, id]
     );
 
     if (getuserY[0].tweet_id === null) {
@@ -452,9 +460,6 @@ const repostY = async (req, res) => {
   }
 };
 
-
-
-
 module.exports = {
   postY,
   getY,
@@ -471,5 +476,3 @@ module.exports = {
   getCountOfLikes,
   repostY,
 };
-
-
