@@ -84,7 +84,7 @@ const getYDetails = async (req, res) => {
     }
 
     const [getIdY] = await pool.query(
-      `SELECT tweets.*, authentication.id, authentication.username, authentication.name, profile.profile_image 
+      `SELECT tweets.*, authentication.id, authentication.username, authentication.name, authentication.is_admin, profile.profile_image 
       FROM tweets LEFT JOIN authentication ON 
       tweets.userId = authentication.id LEFT JOIN profile ON authentication.id = profile.user_id 
       WHERE tweet_id = ? `,
@@ -156,7 +156,9 @@ const deleteY = async (req, res) => {
       [tweet_id]
     );
 
-    if (checkId[0].userId === tokenId || checkId[0].is_admin === 1) {
+    const [checkAdmin] = await pool.query(`SELECT is_admin FROM authentication WHERE id = ?`, [tokenId])
+    console.log(checkAdmin[0].is_admin)
+    if (checkId[0].userId === tokenId || checkAdmin[0].is_admin === 1) {
       const deleteTweet = await pool.query(
         "DELETE FROM tweets WHERE tweet_id = ?",
         [tweet_id]

@@ -3,7 +3,8 @@ const route = express.Router(); // making this a variable of the function that c
 const {registerUser, login, verifyEmail, resendEmailVerification, getPeople, updateProfile, getIdUser, getFollowers, follow, getFollowing, getFollowInt, checkForFollow, checkUserLike, usersFollowers, updatePassword} = require('../controller/authentication') // if {} as export, please import as {}
 const {postY, getY, updateY, deleteY, getYDetails, updateLike, getUserY, postComment, getCountOfLikes, getOtherY, getComments, deleteComments, updateComments, repostY} = require("../controller/y")
 
-const {authenticatorChecker, upload} = require("../config/middleware")
+const {authenticatorChecker, upload} = require("../config/middleware");
+const { adminChecker } = require('../controller/admin');
 
 route.post("/register", registerUser)
 route.post("/login", login)
@@ -34,4 +35,5 @@ route.get("/check-user-like/:id", authenticatorChecker, checkUserLike)
 route.get("/get-other-followers/:id", authenticatorChecker, usersFollowers)
 route.post("/repost/:id", authenticatorChecker, repostY)
 route.put("/update/password", authenticatorChecker ,updatePassword)
+route.get("/admin-checker", authenticatorChecker, adminChecker)
 module.exports = route;

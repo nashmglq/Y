@@ -12,6 +12,7 @@ import TimePosted from "../component/timePosted";
 import { FaEllipsisH } from "react-icons/fa";
 import Like, { Unlike } from "../component/like";
 import CommentList from "../component/commentList";
+import { adminCheckerActions } from "../actions/adminActions";
 
 const DetailY = () => {
   const { id } = useParams();
@@ -28,11 +29,13 @@ const DetailY = () => {
   );
 
   const { count: countLikes } = useSelector((state) => state.likeCount);
-
+  // originalName : newName
+  const { message: adminCheck } = useSelector((state) => state.adminChecker);
   useEffect(() => {
     dispatch(detailYActions(id));
     dispatch(checkDetailLikeActions(id));
     dispatch(likeCountActions(id));
+    dispatch(adminCheckerActions());
   }, [dispatch]);
 
   return (
@@ -49,21 +52,24 @@ const DetailY = () => {
             {message ? (
               <div>
                 <div class="col-12">
-                  <Link to = {`/profile/${message.id}`} class = "text-decoration-none text-dark">
-                  <img
-                    src={
-                      `http://localhost:5001/uploads/${message.profile_image}` ||
-                      "default.jpg"
-                    }
-                    style={{ width: "40px", height: "40px" }}
-                    className="rounded-circle img-fluid"
-                  ></img>
-                  <small>
-                    <b> {message.name} </b>
-                    {`@${message.username}`} ·{" "}
-                    <TimePosted time={message.date_published} />
-                    <small>{message.updated === 1 ? "· Edited" : null}</small>
-                  </small>
+                  <Link
+                    to={`/profile/${message.id}`}
+                    class="text-decoration-none text-dark"
+                  >
+                    <img
+                      src={
+                        `http://localhost:5001/uploads/${message.profile_image}` ||
+                        "default.jpg"
+                      }
+                      style={{ width: "40px", height: "40px" }}
+                      className="rounded-circle img-fluid"
+                    ></img>
+                    <small>
+                      <b> {message.name} </b>
+                      {`@${message.username}`} ·{" "}
+                      <TimePosted time={message.date_published} />
+                      <small>{message.updated === 1 ? "· Edited" : null}</small>
+                    </small>
                   </Link>
                 </div>
                 <h6 class="mt-2">{message.tweet}</h6>
@@ -101,7 +107,7 @@ const DetailY = () => {
                 )}
               </small>
 
-              {message.userId === localId ? <DeleteY id={id} /> : null}
+              {message.userId === localId || adminCheck === 1 ? <DeleteY id={id} /> : null}
               {message.userId === localId ? (
                 <Updatetweet id={id} tweet={message.tweet} />
               ) : null}
