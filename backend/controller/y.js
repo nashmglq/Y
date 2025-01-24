@@ -386,6 +386,7 @@ const getComments = async (req, res) => {
 
 const deleteComments = async (req, res) => {
   const { id } = req.params;
+  const userId = req.user.id 
 
   try {
     if (!id) return res.status(400).json({ error: "No ID FOUND" });
@@ -394,17 +395,23 @@ const deleteComments = async (req, res) => {
       `SELECT * from comments WHERE comment_id = ?`,
       [id]
     );
+    const [checkAdmin] = await pool.query(`SELECT is_admin from authentication WHERE id = ?`,userId)
 
     if (getComment.length === 0) {
       return res.status(400).json({ error: "No tweet found" });
     }
 
-    const [deleteComment] = await pool.query(
-      "DELETE from comments WHERE comment_id = ?",
-      id
-    );
+    if(getComment[0].userId = userId || checkAdmin[0].id == userId){
 
-    return res.status(200).json({ success: "Successfully deleted" });
+      const [deleteComment] = await pool.query(
+        "DELETE from comments WHERE comment_id = ?",
+        id
+      );
+  
+      return res.status(200).json({ success: "Successfully deleted" });
+    }
+
+    return res.status(500).json({error: "You are not the owner of this Y"})
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }

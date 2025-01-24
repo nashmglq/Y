@@ -8,6 +8,7 @@ import Comment from "./comment";
 import TimePosted from "./timePosted";
 import UpdateComment from "./commentUpdate";
 import DeleteComment from "./commentDelete";
+import { adminCheckerActions } from "../actions/adminActions";
 
 const CommentList = ({ id }) => {
   const [show, setShow] = useState(false);
@@ -18,10 +19,12 @@ const CommentList = ({ id }) => {
 
   const showHandler = () => setShow(true);
   const hideButton = () => setShow(false);
+  const {message: checkAdmin} = useSelector(state => state.adminChecker)
 
   useEffect(() => {
     console.log("Use Effect for get Comments with the id of", id);
     dispatch(getCommentActions(id));
+    dispatch(adminCheckerActions())
   }, [dispatch]);
 
   return (
@@ -56,12 +59,14 @@ const CommentList = ({ id }) => {
               </div>
 
               <h6 class="mt-2">{comments.comment}</h6>
-              {comments.userId == userId ? (
+              {comments.userId == userId || checkAdmin === 1? (
                 <div class="d-flex m-2">
-                  <UpdateComment
+                  {comments.userId == userId ? 
+                  (        <UpdateComment
                     id={comments.comment_id}
                     comments={comments.comment}
-                  />
+                  />) : null  
+                }
                   <DeleteComment id={comments.comment_id} />
                 </div>
               ) : null}
