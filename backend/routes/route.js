@@ -4,7 +4,7 @@ const {registerUser, login, verifyEmail, resendEmailVerification, getPeople, upd
 const {postY, getY, updateY, deleteY, getYDetails, updateLike, getUserY, postComment, getCountOfLikes, getOtherY, getComments, deleteComments, updateComments, repostY} = require("../controller/y")
 
 const {authenticatorChecker, upload} = require("../config/middleware");
-const { adminChecker } = require('../controller/admin');
+const { adminChecker, adminUserList } = require('../controller/admin');
 
 route.post("/register", registerUser)
 route.post("/login", login)
@@ -36,4 +36,5 @@ route.get("/get-other-followers/:id", authenticatorChecker, usersFollowers)
 route.post("/repost/:id", authenticatorChecker, repostY)
 route.put("/update/password", authenticatorChecker ,updatePassword)
 route.get("/admin-checker", authenticatorChecker, adminChecker)
+route.get("/admin-user-list", authenticatorChecker, adminUserList)
 module.exports = route;

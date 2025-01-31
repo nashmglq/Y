@@ -33,7 +33,8 @@ import {
   updateCommentReducer,
   updateYReducer,
 } from "./reducers/crudReducer";
-import { adminCheckerReducer } from "./reducers/adminReducer";
+import { adminCheckerReducer, adminListOfUserReducer } from "./reducers/adminReducer";
+
 
 // put all reducers here
 const reducer = combineReducers({
@@ -62,7 +63,8 @@ const reducer = combineReducers({
   deleteComment: deleteCommentReducer,
   OtherUserFollowers: OtherUserFollowersReducer,
   changePassword: changePasswordReducer,
-  adminChecker : adminCheckerReducer
+  adminChecker : adminCheckerReducer,
+  adminListOfUser : adminListOfUserReducer
 });
 
 const intialState = {}; // initial state which can be used in our reducers

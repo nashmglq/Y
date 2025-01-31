@@ -1,5 +1,3 @@
-import { act } from "react";
-
 export const getYReducer = (
   state = { loading: false, success: false, error: false, y: "", message: "" },
   actions
@@ -372,3 +370,4 @@ export const deleteCommentReducer = (
       return state;
   }
 };
+

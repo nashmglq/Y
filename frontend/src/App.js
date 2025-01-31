@@ -11,6 +11,7 @@ import Routing from "./utils/routing"
 import DetailY from "./screen/detailY";
 import UserProfile from "./screen/userProfile"
 import ChangePassword from "./screen/changePassword";
+import AdminDashboard from "./screen/adminDashboard";
 
 function App() {
 
@@ -31,6 +32,7 @@ function App() {
           <Route path = "/home/:id" element={<Routing><DetailY/></Routing>}></Route>
           <Route path = "/profile/:id" element={<Routing><UserProfile/></Routing>}></Route>
           <Route path = "/information" element = {<Routing><ChangePassword/></Routing>}></Route>
+          <Route path = "/admin-dashboard" element = {<Routing><AdminDashboard/></Routing>} ></Route>
 
 
            {/* none registerd url, (*) means all path or url, Navigate automatically nav to "to" 

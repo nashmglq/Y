@@ -23,3 +23,18 @@ export const adminCheckerReducer = (
       return state;
   }
 };
+export const adminListOfUserReducer = (
+  state = { loading: false, success: false, error: false, message: "" },
+  actions
+) => {
+  switch (actions.type) {
+    case "ADMIN_USER_LIST_REQUEST":
+      return { loading: true, success: false, error: false };
+    case "ADMIN_USER_LIST_SUCCESS":
+      return { loading: true, success: true, error: false, message: actions.payload};
+    case "ADMIN_USER_LIST_FAIL":
+      return { loading: false, success: false, error: true, message: actions.payload };
+    default:
+      return state;
+  }
+};

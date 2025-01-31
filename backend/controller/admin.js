@@ -1,4 +1,5 @@
 const pool = require("../config/connect");
+
 const adminChecker = async (req, res) => {
   const adminId = req.user.id;
   try {
@@ -19,4 +20,30 @@ const adminChecker = async (req, res) => {
   }
 };
 
-module.exports = { adminChecker };
+
+
+const adminUserList = async(req,res) => {
+
+  const adminId = req.user.id
+  console.log(adminId)
+  try{
+    const [checkAdmin] = await pool.query(`SELECT is_admin FROM authentication WHERE id = ?`, [adminId])
+    
+    if(checkAdmin[0].is_admin == 1){
+      const [listOfUsers] = await pool.query(`SELECT 
+        authentication.id, 
+        authentication.email, 
+        authentication.username, 
+        authentication.name, 
+        authentication.is_admin,
+        profile.profile_image
+        FROM authentication LEFT JOIN profile ON authentication.id = profile.user_id`)
+      return res.status(200).json({success: listOfUsers})
+    }
+    return res.status(500).json({error: "You are not an admin."})
+  }catch(err){
+    return res.status(500).json({error : err.message})
+  }
+}
+
+module.exports = { adminChecker, adminUserList };
