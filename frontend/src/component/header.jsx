@@ -38,7 +38,7 @@ const Navbar = () => {
           <li className="nav-item">
            {message == 1 ? ( <Link to="/admin-dashboard" className="nav-link text-light">
               <h6 className="text-dark">Dashboard</h6>
-            </Link>): "w"}
+            </Link>): null}
           </li>
           <li className="nav-item">
             <Link to="/profile" className="nav-link text-light">
