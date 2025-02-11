@@ -1,2 +1,4 @@
 .env
 y.sql
+.node_modules
+node_modules
