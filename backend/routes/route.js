@@ -42,7 +42,6 @@ route.post("/login", login);
 route.get("/verify-email", verifyEmail);
 route.post("/resend-email", resendEmailVerification);
 route.get("/profile", authenticatorChecker, getPeople);
-// .single('profile_image') single upload usng the profile_image being get
 route.patch(
   "/profile-update",
   authenticatorChecker,
@@ -73,6 +72,6 @@ route.post("/repost/:id", authenticatorChecker, repostY);
 route.put("/update/password", authenticatorChecker, updatePassword);
 route.get("/admin-checker", authenticatorChecker, adminChecker);
 route.get("/admin-user-list", authenticatorChecker, adminUserList);
-route.delete("/admin/delete-user", authenticatorChecker, adminDeleteUser);
-route.patch("admin/suspend", authenticatorChecker, suspendAdminUser)
+route.delete("/admin/delete-user/:id", authenticatorChecker, adminDeleteUser);
+route.put("/admin/suspend/:id", authenticatorChecker, suspendAdminUser)
 module.exports = route;

@@ -22,7 +22,6 @@ const adminChecker = async (req, res) => {
 
 const adminUserList = async (req, res) => {
   const adminId = req.user.id;
-  console.log(adminId);
   try {
     const [checkAdmin] = await pool.query(
       `SELECT is_admin FROM authentication WHERE id = ?`,
@@ -36,6 +35,7 @@ const adminUserList = async (req, res) => {
         authentication.username, 
         authentication.name, 
         authentication.is_admin,
+        authentication.is_verified,
         profile.profile_image
         FROM authentication LEFT JOIN profile ON authentication.id = profile.user_id`);
       return res.status(200).json({ success: listOfUsers });
@@ -47,8 +47,9 @@ const adminUserList = async (req, res) => {
 };
 
 const adminDeleteUser = async (req, res) => {
-  const userId = req.params;
+  const userId = req.params.id;
   const adminId = req.user.id;
+  console.log(userId)
 
   try {
     const [checkIfAdmin] = await pool.query(
@@ -56,11 +57,13 @@ const adminDeleteUser = async (req, res) => {
       [adminId]
     );
 
-    if (checkIfAdmin.is_admin === 1) {
+    if (checkIfAdmin[0].is_admin === 1) {
       const [deleteUser] = await pool.query(
         `DELETE FROM authentication WHERE id = ?`,
         [userId]
       );
+
+      console.log(deleteUser)
 
       return res.status(200).json({ success: "User Deleted" });
     }
@@ -72,7 +75,7 @@ const adminDeleteUser = async (req, res) => {
 };
 
 const suspendAdminUser = async (req, res) => {
-  const userId = req.params;
+  const userId = req.params.id;
   const adminId = req.user.id;
 
   try {
@@ -81,13 +84,13 @@ const suspendAdminUser = async (req, res) => {
       [adminId]
     );
 
-    if (checkIfAdmin.is_admin === 1) {
+    if (checkIfAdmin[0].is_admin === 1) {
       const [checkVerification] = await pool.query(
         `SELECT is_verified FROM authentication WHERE id = ?`,
         [userId]
       );
 
-      if (checkVerification === 1) {
+      if (checkVerification[0].is_verified === 1) {
         const [suspendUser] = await pool.query(
           `UPDATE authentication SET is_verified = ? WHERE id = ?`,
           [0, userId]
@@ -96,7 +99,7 @@ const suspendAdminUser = async (req, res) => {
         return res.status(200).json({ success: "Account suspended" });
       }
 
-      if (checkVerification === 0) {
+      if (checkVerification[0].is_verified === 0) {
         const [unsuspendUser] = await pool.query(
           `UPDATE authentication SET is_verified = ? WHERE id = ?`,
           [1, userId]

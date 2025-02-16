@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { adminListOfUserActions } from "../actions/adminActions";
+import DeleteUser from "../component/deleteUser";
+import SuspendUser from "../component/suspendUser";
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
@@ -9,6 +11,8 @@ const AdminDashboard = () => {
   useEffect(() => {
     dispatch(adminListOfUserActions());
   }, []);
+
+  
   return (
     <div>
       <div className="container mt-2">
@@ -44,17 +48,13 @@ const AdminDashboard = () => {
                         </td>
                         <td>@{usersList.username}</td>
                         <td>{usersList.email}</td>
-                        <td>{usersList.is_admin === 1 ? "Admin" : "User"}</td>
+                        <td>{usersList.is_admin === 1 ? "Admin" : "User"}{" "}{usersList.is_verified === 1 ? "(Active)" : "(Inactive)" }</td>
                         <td className="justify-content-center d-flex">
                           {" "}
-                          <button className="btn btn-warning">
-                            Suspend Account
-                          </button>
+                            <SuspendUser id = {usersList.id} check = {usersList.is_verified}/>
                         </td>
                         <td>
-                          <button className="btn btn-danger">
-                            Delete Account
-                          </button>
+                          <DeleteUser id = {usersList.id}/>
                         </td>
                       </tr>
                     ))

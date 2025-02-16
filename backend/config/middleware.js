@@ -9,6 +9,7 @@ const authenticatorChecker = (req, res, next) => {
 
   try {
     if (!token) {
+      console.log(token)
       return res.status(400).json({ error: "You are not authenticated" });
     }
 
