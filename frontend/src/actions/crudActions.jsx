@@ -302,10 +302,10 @@ export const likeActions = (id) => async (dispatch) => {
     );
 
     if (response.data && response.data.success) {
-      dispatch(checkDetailLikeActions(id));
+      // dispatch(checkDetailLikeActions(id));
       dispatch(likeCountActions(id));
-      dispatch(getYActions())
-      dispatch(getUserYActions())
+      // dispatch(getYActions())
+      // dispatch(getUserYActions())
       // dispatch(getUserYOtherActions(id))
 
       return dispatch({ type: LIKE_Y_SUCCESS, payload: response.data.success });

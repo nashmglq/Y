@@ -5,13 +5,15 @@ import {
   getYActions,
   postYActions,
   checkDetailLikeActions,
+  likeCountActions
 } from "../actions/crudActions";
 import TimePosted from "../component/timePosted";
 import Like, { Unlike } from "../component/like";
-import CountLike from "../component/count";
+
 
 const Home = () => {
   const { id } = useParams();
+
   const [tweet, setTweet] = useState("");
   const [tweet_img, setTweet_img] = useState("");
   const maxtext = 999;
@@ -21,10 +23,6 @@ const Home = () => {
   const { loading, success, error, y, message } = useSelector(
     (state) => state.getY
   );
-  const { message: checkIfLiked } = useSelector(
-    (state) => state.checkDetailLike
-  );
-
 
   // useRef stores a reference to a DOM element (like a file input)
   // to interact with it directly without updating the component.
@@ -46,6 +44,7 @@ const Home = () => {
   }, [dispatch]);
 
   useEffect(() => {
+
     if (!getItem) {
       nav("/");
     }
@@ -128,7 +127,8 @@ const Home = () => {
                   </Link>
                   <div class="d-flex align-items-center">
                   {tweets.isLiked ?  <Unlike id = {tweets.tweet_id}/> : <Like id={tweets.tweet_id} />}
-                  <span class ="mt-1">{tweets.heart}</span>
+                  <span>{tweets.heart}</span>
+              
                   </div>
                 </div>
               ))

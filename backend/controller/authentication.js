@@ -85,7 +85,7 @@ const login = async (req, res) => {
     }
 
     const [checkUser] = await pool.query(
-      "SELECT username, id,password, is_verified FROM authentication WHERE email = ?",
+      "SELECT username, id,password, is_verified, is_admin FROM authentication WHERE email = ?",
       [email]
     );
 
@@ -99,17 +99,11 @@ const login = async (req, res) => {
     const compareHash = await bcrypt.compare(password, checkUser[0].password);
 
     if (compareHash && checkUser[0].is_verified === 1) {
-      const [getLiked] = await pool.query(
-        "SELECT * FROM likedid WHERE userId = ? ",
-        checkUser[0].id
-      );
-      // console.log(getLiked)
+
       const token = jwt.sign(
         {
-          email: email,
-          username: checkUser[0].username,
           id: checkUser[0].id,
-          likedId: getLiked,
+          is_admin: checkUser[0].is_admin
         },
         process.env.jwt_secret,
         { expiresIn: "2hr" }
@@ -118,10 +112,8 @@ const login = async (req, res) => {
         success: {
           userInfo: {
             token: token,
-            email: checkUser[0].email,
-            username: checkUser[0].username,
             id: checkUser[0].id,
-            likedId: getLiked,
+            is_admin: checkUser[0].is_admin
           },
         },
       });
