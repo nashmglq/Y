@@ -1,45 +1,36 @@
-import { useState } from "react";
-import Heart from "react-animated-heart";
+import { useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
-import { useDispatch } from "react-redux";
-import { likeActions, likeCountActions } from "../actions/crudActions";
+import { faHeart as faHeartSolid } from "@fortawesome/free-solid-svg-icons";
+import { likeActions } from "../actions/crudActions";
 
 const Like = ({ id }) => {
-  const [click, setClick] = useState(false);
   const dispatch = useDispatch();
-  const likeHandler = (e) => {
-    dispatch(likeActions(id));
-    dispatch(likeCountActions(id))
-    
-    console.log(id)
+
+  const likeHandler = () => {
+    dispatch(likeActions(id)); // Handles both like and unlike
   };
 
   return (
-    <div>
-      <button class="btn btn-link btn-sm mt-1" onClick={likeHandler}>
-        <FontAwesomeIcon icon={faHeart} />
-      </button>
-    </div>
+    <button className="btn btn-link btn-sm mt-1" onClick={likeHandler}>
+      <FontAwesomeIcon icon={faHeart} />
+    </button>
   );
 };
 
 const Unlike = ({ id }) => {
-  const [click, setClick] = useState(false);
   const dispatch = useDispatch();
-  const likeHandler = (e) => {
-    dispatch(likeActions(id));
+
+  const likeHandler = () => {
+    dispatch(likeActions(id)); // Reusing the same action
   };
 
   return (
-    <div>
-      <button class="btn btn-link btn-sm mt-1" onClick={likeHandler}>
-      <FontAwesomeIcon icon={faHeart} style={{ color: 'red' }} />
-      </button>
-    </div>
+    <button className="btn btn-link btn-sm mt-1" onClick={likeHandler}>
+      <FontAwesomeIcon icon={faHeartSolid} style={{ color: "red" }} />
+    </button>
   );
 };
-// default = main function
-// named = {} additional function
-export default Like; 
-export {Unlike} ; 
+
+export default Like;
+export { Unlike };

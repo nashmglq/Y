@@ -28,6 +28,29 @@ export const getYReducer = (
         message: actions.payload,
       };
 
+
+    case "OPTIMISTIC_LIKE_UPDATE":
+      return {
+        ...state,
+        y: state.y.map((tweet) =>
+          // check if the id of like is equal to the id of the tweet
+          tweet.tweet_id === actions.payload.id
+            ? {
+              // return state, !isLiked, heart
+                ...tweet,
+                // isLiked is updated updated, so that Liked or Unliked component will change
+                isLiked: !tweet.isLiked,
+                // return heart as new value
+                heart: tweet.isLiked ? tweet.heart - 1 : tweet.heart + 1,
+              }
+            : tweet
+        ),
+      };
+
+    case "REVERT_OPTIMISTIC_UPDATE":
+      // return state if error (from actions)
+      return state;
+
     default:
       return state;
   }
@@ -370,4 +393,3 @@ export const deleteCommentReducer = (
       return state;
   }
 };
-

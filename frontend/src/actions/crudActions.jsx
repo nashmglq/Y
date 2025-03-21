@@ -280,6 +280,13 @@ export const likeCountActions = (id) => async (dispatch) => {
 
 export const likeActions = (id) => async (dispatch) => {
   try {
+    // First dispatch optimistic update to immediately update UI
+    dispatch({ 
+      type: "OPTIMISTIC_LIKE_UPDATE", 
+      payload: { id } 
+    });
+    
+    // Then start the actual API request
     dispatch({ type: LIKE_Y_REQUEST });
 
     const getToken = JSON.parse(localStorage.getItem("userInfo"));
@@ -294,7 +301,7 @@ export const likeActions = (id) => async (dispatch) => {
         }
       : null;
 
-    // when update, post we need to pass three params (url, formdata, config)
+
     const response = await axios.patch(
       `http://localhost:5001/update-like/${id}`,
       {},
@@ -302,19 +309,19 @@ export const likeActions = (id) => async (dispatch) => {
     );
 
     if (response.data && response.data.success) {
-      // dispatch(checkDetailLikeActions(id));
+      dispatch(checkDetailLikeActions(id));
       dispatch(likeCountActions(id));
-      // dispatch(getYActions())
-      // dispatch(getUserYActions())
-      // dispatch(getUserYOtherActions(id))
 
       return dispatch({ type: LIKE_Y_SUCCESS, payload: response.data.success });
     }
   } catch (err) {
+    // If there's an error, revert the optimistic update
+    dispatch({ type: "REVERT_OPTIMISTIC_UPDATE", payload: { id } });
+    
     return dispatch({
       type: LIKE_Y_FAIL,
       payload:
-        err.response.data && err.response.data.error
+        err.response && err.response.data && err.response.data.error
           ? err.response.data.error
           : "Something went wrong.",
     });

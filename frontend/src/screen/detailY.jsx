@@ -29,8 +29,7 @@ const DetailY = () => {
   );
 
   const { count: countLikes } = useSelector((state) => state.likeCount);
-  // originalName : newName
-  const { message: adminCheck } = useSelector((state) => state.adminChecker);
+
   useEffect(() => {
     dispatch(detailYActions(id));
     dispatch(checkDetailLikeActions(id));
@@ -81,8 +80,6 @@ const DetailY = () => {
                 ) : null}
               </div>
             ) : null}
-            {/* move the comment modal to the something div */}
-            {/* maybe try to deploy first or color */}
             <div class="d-flex">
               <small>
                 {" "}
@@ -107,9 +104,11 @@ const DetailY = () => {
                 )}
               </small>
 
-              {message.userId === localId || adminCheck === 1 ? <DeleteY id={id} /> : null}
               {message.userId === localId ? (
-                <Updatetweet id={id} tweet={message.tweet} />
+                <div className="d-flex gap-3">
+                  <DeleteY id={id} />
+                  <Updatetweet id={id} tweet={message.tweet} />
+                </div>
               ) : null}
             </div>
           </div>

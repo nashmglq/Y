@@ -24,6 +24,8 @@ const Home = () => {
     (state) => state.getY
   );
 
+  const holderOfLike = null
+
   // useRef stores a reference to a DOM element (like a file input)
   // to interact with it directly without updating the component.
   const fileNameReset = useRef(null);
@@ -125,7 +127,7 @@ const Home = () => {
                       </div>
                     ) : null}
                   </Link>
-                  <div class="d-flex align-items-center">
+                  <div className="d-flex align-items-center">
                   {tweets.isLiked ?  <Unlike id = {tweets.tweet_id}/> : <Like id={tweets.tweet_id} />}
                   <span>{tweets.heart}</span>
               

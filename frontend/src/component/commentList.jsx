@@ -19,60 +19,69 @@ const CommentList = ({ id }) => {
 
   const showHandler = () => setShow(true);
   const hideButton = () => setShow(false);
-  const {message: checkAdmin} = useSelector(state => state.adminChecker)
+  const { message: checkAdmin } = useSelector((state) => state.adminChecker);
 
   useEffect(() => {
     console.log("Use Effect for get Comments with the id of", id);
     dispatch(getCommentActions(id));
-    dispatch(adminCheckerActions())
+    dispatch(adminCheckerActions());
   }, [dispatch]);
 
   return (
     <div class="align-items-center justify-content">
       {/* message might be present but it is empty and it will cause an error */}
       {/* this will check the array if it has a value */}
-      {message && Array.isArray(message)
-        ? message.map((comments) => (
-            <div
-              class="border-top border-secondary overflow-auto"
-              style={{ maxHeight: "200px" }}
-            >
-              <div class="d-flex p-2">
-                <img
-                  src={
-                    `http://localhost:5001/uploads/${comments.profile_image}` ||
-                    "default.jpg"
-                  }
-                  class="rounded-circle img-fluid"
-                  style={{ width: "40px", height: "40px" }}
-                />
-                <small>
-                  <b>
-                    <small class="m-1" style={{ color: "white" }}>
-                      {comments.name}
-                    </small>
-                  </b>
-                  <small class="m-1">@{comments.username}</small>
-                  <TimePosted time={comments.date_published} />
-                  <small>{comments.updated == 1 ? "Updated" : null}</small>
-                </small>
-              </div>
-
-              <h6 class="mt-2">{comments.comment}</h6>
-              {comments.userId == userId || checkAdmin === 1? (
-                <div class="d-flex m-2">
-                  {comments.userId == userId ? 
-                  (        <UpdateComment
-                    id={comments.comment_id}
-                    comments={comments.comment}
-                  />) : null  
+      {message && Array.isArray(message) ? (
+        message.map((comments) => (
+          <div
+            class="border-top border-secondary overflow-auto"
+            style={{ maxHeight: "200px" }}
+          >
+            <div class="d-flex p-2">
+              <img
+                src={
+                  `http://localhost:5001/uploads/${comments.profile_image}` ||
+                  "default.jpg"
                 }
-                  <DeleteComment id={comments.comment_id} />
-                </div>
-              ) : null}
+                class="rounded-circle img-fluid"
+                style={{ width: "44px", height: "44px" }}
+              />
+              <small>
+                <b>
+                  <h6 class="m-1" style={{ color: "white" }}>
+                    {comments.name}
+                  </h6>
+                </b>
+                <small class="m-1">@{comments.username}</small>
+                <TimePosted time={comments.date_published} />
+                <small>{comments.updated == 1 ? "Updated" : null}</small>
+              </small>
             </div>
-          ))
-        : <p class = "p-2"> No comments yet.</p>}
+
+            <h6 class="mt-2">{comments.comment}</h6>
+
+            {comments.userId == userId || checkAdmin === 1 ? (
+              <div class="d-flex">
+                {comments.userId == userId ? (
+                  <div className="d-flex ">
+                    <UpdateComment
+                      id={comments.comment_id}
+                      comments={comments.comment}
+                    />
+                    <DeleteComment id={comments.comment_id} />
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+        ))
+      ) : (
+        <p class="p-2"> No comments yet.</p>
+      )}
+
+
+
+      
 
       <Comment id={id} />
     </div>
