@@ -17,7 +17,7 @@ const Navbar = () => {
     dispatch(adminCheckerActions());
   }, []);
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-dark">
+    <nav className="navbar navbar-expand-lg navbar-light bg-dark sticky-top">
       <Link to="/home">
         <img src="Y-final-bg.png" alt="Y logo" style={{ height: 60 }} />
       </Link>

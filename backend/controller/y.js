@@ -469,6 +469,24 @@ const repostY = async (req, res) => {
   }
 };
 
+
+const searchY = async(req,res) => {
+  const {query} = req.body
+  console.log(query)
+  try{
+
+  if (!query) return res.status(200).json({success: "Empty Y, but Y?"})
+
+  const [queryDb] = await pool.query(`SELECT tweet from tweets WHERE tweet LIKE "%${query}%"`)
+
+  return res.status(200).json({success: queryDb})
+    
+  }catch(err){
+    return res.status(500).json({error: err.mesage})
+  }
+}
+
+
 module.exports = {
   postY,
   getY,
@@ -484,4 +502,5 @@ module.exports = {
   updateComments,
   getCountOfLikes,
   repostY,
+  searchY
 };

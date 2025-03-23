@@ -49,7 +49,7 @@ const adminUserList = async (req, res) => {
 const adminDeleteUser = async (req, res) => {
   const userId = req.params.id;
   const adminId = req.user.id;
-  console.log(userId)
+  console.log(userId);
 
   try {
     const [checkIfAdmin] = await pool.query(
@@ -63,7 +63,7 @@ const adminDeleteUser = async (req, res) => {
         [userId]
       );
 
-      console.log(deleteUser)
+      console.log(deleteUser);
 
       return res.status(200).json({ success: "User Deleted" });
     }
@@ -114,9 +114,76 @@ const suspendAdminUser = async (req, res) => {
   }
 };
 
+const searchUserAdmin = async (req, res) => {
+  const userId = req.params.id;
+  const adminId = req.user.id;
+  const { query } = req.body;
+  try {
+    const [checkIfAdmin] = await pool.query(
+      `SELECT is_admin FROM authentication WHERE id = ?`,
+      [adminId]
+    );
+
+    if (!query)
+      return res.status(200).json({ success: "No user with that email" });
+
+    if (checkIfAdmin[0].is_admin === 0)
+      return res.status(500).json({ error: "You are not an Admin" });
+
+    const [queryDb] = await pool.query(
+      `SELECT email from authentication WHERE email like "%${query}%"`
+    );
+
+    return res.status(200).json({ success: queryDb });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+const setAdmin = async (req, res) => {
+  const adminId = req.user.id;
+  const { id } = req.params;
+  try {
+    if (!id) return res.status(400).json({ error: "No ID found." });
+    const [checkIfAdmin] = await pool.query(
+      `SELECT is_admin FROM authentication WHERE id = ?`,
+      [adminId]
+    );
+
+    if (checkIfAdmin[0].is_admin === 0)
+      return res.status(500).json({ error: "You are not an Admin" });
+
+    const [checkUserStatus] = await pool.query(`SELECT is_admin from authentication WHERE id = ?`, [id])
+
+    if(checkUserStatus[0].is_admin === 0) {
+      const [updateAdmin] = await pool.query(
+        `UPDATE authentication SET is_admin = 1 WHERE id = ?`,
+        [id]
+      );
+      return res.status(200).json({success: "Added admin rights"})
+    }
+
+    
+    if(checkUserStatus[0].is_admin === 1) {
+      const [updateAdmin] = await pool.query(
+        `UPDATE authentication SET is_admin = 0 WHERE id = ?`,
+        [id]
+      );
+      return res.status(200).json({success: "Removed admin rights"})
+    }
+
+
+   
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
 module.exports = {
   adminChecker,
   adminUserList,
   adminDeleteUser,
   suspendAdminUser,
+  searchUserAdmin,
+  setAdmin,
 };

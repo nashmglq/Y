@@ -32,10 +32,11 @@ const {
   deleteComments,
   updateComments,
   repostY,
+  searchY,
 } = require("../controller/y");
 
 const { authenticatorChecker, upload } = require("../config/middleware");
-const { adminChecker, adminUserList, adminDeleteUser, suspendAdminUser } = require("../controller/admin");
+const { adminChecker, adminUserList, adminDeleteUser, suspendAdminUser, searchUserAdmin, setAdmin } = require("../controller/admin");
 
 route.post("/register", registerUser);
 route.post("/login", login);
@@ -74,4 +75,7 @@ route.get("/admin-checker", authenticatorChecker, adminChecker);
 route.get("/admin-user-list", authenticatorChecker, adminUserList);
 route.delete("/admin/delete-user/:id", authenticatorChecker, adminDeleteUser);
 route.put("/admin/suspend/:id", authenticatorChecker, suspendAdminUser)
+route.post("/get-y-query", authenticatorChecker, searchY)
+route.post("/admin-search-user", authenticatorChecker, searchUserAdmin)
+route.put("/admin-setter/:id", authenticatorChecker, setAdmin)
 module.exports = route;
