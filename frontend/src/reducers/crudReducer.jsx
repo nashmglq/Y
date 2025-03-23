@@ -28,27 +28,24 @@ export const getYReducer = (
         message: actions.payload,
       };
 
-
     case "OPTIMISTIC_LIKE_UPDATE":
       return {
+        // call state, overwrite y, who action calls reducer will be payload
+        // y is payload, it contains all, update the like and heart count, return the whole payload but only for the certain id
         ...state,
         y: state.y.map((tweet) =>
-          // check if the id of like is equal to the id of the tweet
+          // actions.payload.id is the {id}
+          // this is just to manually do it
           tweet.tweet_id === actions.payload.id
             ? {
-              // return state, !isLiked, heart
                 ...tweet,
-                // isLiked is updated updated, so that Liked or Unliked component will change
                 isLiked: !tweet.isLiked,
-                // return heart as new value
                 heart: tweet.isLiked ? tweet.heart - 1 : tweet.heart + 1,
               }
             : tweet
         ),
       };
-
     case "REVERT_OPTIMISTIC_UPDATE":
-      // return state if error (from actions)
       return state;
 
     default:
@@ -187,7 +184,7 @@ export const likeReducer = (
 };
 
 export const getUserYReducer = (
-  state = { loading: false, success: false, error: false, y: "", message: "" },
+  state = { loading: false, success: false, error: false, y: [], message: [] },
   actions
 ) => {
   switch (actions.type) {
@@ -207,13 +204,34 @@ export const getUserYReducer = (
         error: true,
         message: actions.payload,
       };
+
+    
+      case "OPTIMISTIC_LIKE_UPDATE":
+        return {
+          // call state, overwrite y, who action calls reducer will be payload
+          // y is payload, it contains all, update the like and heart count, return the whole payload but only for the certain id
+          ...state,
+          y: state.y.map((tweet) =>
+            // actions.payload.id is the {id}
+            // this is just to manually do it
+            tweet.tweet_id === actions.payload.id
+              ? {
+                  ...tweet,
+                  isLiked: !tweet.isLiked,
+                  heart: tweet.isLiked ? tweet.heart - 1 : tweet.heart + 1,
+                }
+              : tweet
+          ),
+        };
+      case "REVERT_OPTIMISTIC_UPDATE":
+        return state;
     default:
       return state;
   }
 };
 
 export const getUserYOtherReducer = (
-  state = { loading: false, success: false, error: false, y: "", message: "" },
+  state = { loading: false, success: false, error: false, y: [], message: [] },
   actions
 ) => {
   switch (actions.type) {
@@ -233,6 +251,26 @@ export const getUserYOtherReducer = (
         error: true,
         message: actions.payload,
       };
+      case "OPTIMISTIC_LIKE_UPDATE":
+        return {
+          // call state, overwrite y, who action calls reducer will be payload
+          // y is payload, it contains all, update the like and heart count, return the whole payload but only for the certain id
+          ...state,
+          y: state.y.map((tweet) =>
+            // actions.payload.id is the {id}
+            // this is just to manually do it
+            tweet.tweet_id === actions.payload.id
+              ? {
+                  ...tweet,
+                  isLiked: !tweet.isLiked,
+                  heart: tweet.isLiked ? tweet.heart - 1 : tweet.heart + 1,
+                }
+              : tweet
+          ),
+        };
+      case "REVERT_OPTIMISTIC_UPDATE":
+        return state;
+      
     default:
       return state;
   }

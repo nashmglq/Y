@@ -45,6 +45,8 @@ import {
   LIKE_COUNT_REQUEST,
   LIKE_COUNT_SUCCESS,
   LIKE_COUNT_FAIL,
+  OPTIMISTIC_LIKE_UPDATE,
+  REVERT_OPTIMISTIC_UPDATE,
 } from "../constants/crudConstants";
 import axios from "axios";
 
@@ -280,13 +282,12 @@ export const likeCountActions = (id) => async (dispatch) => {
 
 export const likeActions = (id) => async (dispatch) => {
   try {
-    // First dispatch optimistic update to immediately update UI
+
     dispatch({ 
-      type: "OPTIMISTIC_LIKE_UPDATE", 
+      type: OPTIMISTIC_LIKE_UPDATE, 
       payload: { id } 
     });
     
-    // Then start the actual API request
     dispatch({ type: LIKE_Y_REQUEST });
 
     const getToken = JSON.parse(localStorage.getItem("userInfo"));
@@ -315,8 +316,8 @@ export const likeActions = (id) => async (dispatch) => {
       return dispatch({ type: LIKE_Y_SUCCESS, payload: response.data.success });
     }
   } catch (err) {
-    // If there's an error, revert the optimistic update
-    dispatch({ type: "REVERT_OPTIMISTIC_UPDATE", payload: { id } });
+
+    dispatch({ type: REVERT_OPTIMISTIC_UPDATE});
     
     return dispatch({
       type: LIKE_Y_FAIL,

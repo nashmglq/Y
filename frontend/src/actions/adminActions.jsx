@@ -12,10 +12,13 @@ import {
   ADMIN_USER_LIST_FAIL,
   ADMIN_USER_LIST_REQUEST,
   ADMIN_USER_LIST_SUCCESS,
+  OPTIMISTIC_SUSPEND_LIST_UPDATE,
+  OPTIMISTIC_SUSPEND_UPDATE,
 } from "../constants/adminConstant";
 
 export const adminCheckerActions = () => async (dispatch) => {
   try {
+
     dispatch({ type: ADMIN_CHECKER_REQUEST });
 
     const getToken = JSON.parse(localStorage.getItem("userInfo"));
@@ -127,9 +130,9 @@ export const AdminDeleteUserActions = (id) => async (dispatch) => {
 
 export const AdminUserSuspendAction = (id) => async (dispatch) => {
   try {
-    dispatch({type: ADMIN_SUSPEND_USER_REQUEST })
+    dispatch({type: OPTIMISTIC_SUSPEND_UPDATE, payload: {id} })
   
-
+    dispatch({type: ADMIN_SUSPEND_USER_REQUEST })
     const getToken = JSON.parse(localStorage.getItem("userInfo"));
     const token = getToken ? getToken.token : null;
     const config = token
@@ -147,13 +150,14 @@ export const AdminUserSuspendAction = (id) => async (dispatch) => {
     );
 
     if (response.data && response.data.success) {
+      // console.log(response.data.success)
       return dispatch({
         type: ADMIN_SUSPEND_USER_SUCCESS,
         payload: response.data.success,
       });
     }
   } catch (err) {
-    console.log(err.response.data.error)
+    dispatch({type: OPTIMISTIC_SUSPEND_LIST_UPDATE, payload: {id}})
     return dispatch({
       type: ADMIN_SUSPEND_USER_FAIL,
       payload:

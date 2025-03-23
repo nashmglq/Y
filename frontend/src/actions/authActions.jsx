@@ -142,7 +142,6 @@ export const resendEmailVerificationAction = (email) => async (dispatch) => {
 export const getProfileActions = () => async (dispatch) => {
   try {
     dispatch({ type: GET_PROFILE_REQUEST });
-    // parse strings to json
     const getToken = JSON.parse(localStorage.getItem("userInfo"));
     const token = getToken ? getToken.token : null;
     console.log(getToken);
@@ -150,7 +149,6 @@ export const getProfileActions = () => async (dispatch) => {
     const config = token
       ? {
           headers: {
-            // "Content-type": "application/json", // having (-) you need "" because object does not take (-)
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
           },

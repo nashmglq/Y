@@ -24,7 +24,7 @@ export const adminCheckerReducer = (
   }
 };
 export const adminListOfUserReducer = (
-  state = { loading: false, success: false, error: false, message: "" },
+  state = { loading: false, success: false, error: false, message: [] },
   actions
 ) => {
   switch (actions.type) {
@@ -44,6 +44,20 @@ export const adminListOfUserReducer = (
         error: true,
         message: actions.payload,
       };
+
+    case "OPTIMISTIC_SUSPEND_UPDATE":
+      return {
+        ...state,
+        message: state.message.map((users) => 
+          users.id === actions.payload.id
+            ? { ...users, is_verified : users.is_verified  === 1 ? 0 :1}
+            : users
+        )
+      };
+
+    case "REVERT_OPTIMISTIC_LIST_UPDATE":
+      return state;
+
     default:
       return state;
   }

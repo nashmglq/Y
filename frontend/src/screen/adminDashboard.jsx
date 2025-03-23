@@ -16,7 +16,7 @@ const AdminDashboard = () => {
       nav("/")
     }
     dispatch(adminListOfUserActions());
-  }, []);
+  }, [dispatch]);
 
   
   return (
