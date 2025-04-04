@@ -55,7 +55,7 @@ const Home = () => {
 
   return (
     <div>
-      {/* <SearchY/> */}
+
       <div className="container d-flex mt-4 justify-content-center">
         <div className="row w-100">
           <div class="col-lg-3">

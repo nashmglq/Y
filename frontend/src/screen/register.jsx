@@ -28,7 +28,6 @@ const Register = () => {
   const handleRegister = (e) => {
     e.preventDefault();
     const formData = { email, username, name, password, password2 };
-    console.log(formData.username)
     dispatch(registerAction(formData));
   };
 

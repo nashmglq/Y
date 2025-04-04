@@ -12,6 +12,7 @@ import DetailY from "./screen/detailY";
 import UserProfile from "./screen/userProfile"
 import ChangePassword from "./screen/changePassword";
 import AdminDashboard from "./screen/adminDashboard";
+import SeachQuery from "./screen/searchQuery";
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
           <Route path = "/profile/:id" element={<Routing><UserProfile/></Routing>}></Route>
           <Route path = "/information" element = {<Routing><ChangePassword/></Routing>}></Route>
           <Route path = "/admin-dashboard" element = {<Routing><AdminDashboard/></Routing>} ></Route>
+          <Route path= "/search" element = {<Routing><SeachQuery/></Routing>}></Route>
 
 
            {/* none registerd url, (*) means all path or url, Navigate automatically nav to "to" 

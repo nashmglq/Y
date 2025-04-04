@@ -47,6 +47,9 @@ import {
   LIKE_COUNT_FAIL,
   OPTIMISTIC_LIKE_UPDATE,
   REVERT_OPTIMISTIC_UPDATE,
+  SEARCH_Y_REQUEST,
+  SEARCH_Y_SUCCESS,
+  SEARCH_Y_FAIL,
 } from "../constants/crudConstants";
 import axios from "axios";
 
@@ -282,12 +285,11 @@ export const likeCountActions = (id) => async (dispatch) => {
 
 export const likeActions = (id) => async (dispatch) => {
   try {
-
-    dispatch({ 
-      type: OPTIMISTIC_LIKE_UPDATE, 
-      payload: { id } 
+    dispatch({
+      type: OPTIMISTIC_LIKE_UPDATE,
+      payload: { id },
     });
-    
+
     dispatch({ type: LIKE_Y_REQUEST });
 
     const getToken = JSON.parse(localStorage.getItem("userInfo"));
@@ -302,7 +304,6 @@ export const likeActions = (id) => async (dispatch) => {
         }
       : null;
 
-
     const response = await axios.patch(
       `http://localhost:5001/update-like/${id}`,
       {},
@@ -316,9 +317,8 @@ export const likeActions = (id) => async (dispatch) => {
       return dispatch({ type: LIKE_Y_SUCCESS, payload: response.data.success });
     }
   } catch (err) {
+    dispatch({ type: REVERT_OPTIMISTIC_UPDATE });
 
-    dispatch({ type: REVERT_OPTIMISTIC_UPDATE});
-    
     return dispatch({
       type: LIKE_Y_FAIL,
       payload:
@@ -592,6 +592,44 @@ export const deleteCommentActions = (id, tweet_id) => async (dispatch) => {
         err.response.data && err.response.data.error
           ? err.response.data.error
           : "Something went wrong",
+    });
+  }
+};
+
+export const searchYActions = (query) => async (dispatch) => {
+  try {
+    dispatch({ type: SEARCH_Y_REQUEST });
+
+    const getToken = JSON.parse(localStorage.getItem("userInfo"));
+    const token = getToken ? getToken.token : null;
+    const config = token
+      ? {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      : null;
+
+    const response = await axios.post(
+      "http://localhost:5001/get-y-query",
+      query,
+      config
+    );
+
+    if (response.data && response.data.success) {
+      return dispatch({
+        type: SEARCH_Y_SUCCESS,
+        payload: response.data.success,
+      });
+    }
+  } catch (err) {
+    return dispatch({
+      type: SEARCH_Y_FAIL,
+      payload:
+        err.response && err.response.data.error
+          ? err.response.data.error
+          : null,
     });
   }
 };

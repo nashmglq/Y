@@ -156,8 +156,11 @@ const deleteY = async (req, res) => {
       [tweet_id]
     );
 
-    const [checkAdmin] = await pool.query(`SELECT is_admin FROM authentication WHERE id = ?`, [tokenId])
-    console.log(checkAdmin[0].is_admin)
+    const [checkAdmin] = await pool.query(
+      `SELECT is_admin FROM authentication WHERE id = ?`,
+      [tokenId]
+    );
+    console.log(checkAdmin[0].is_admin);
     if (checkId[0].userId === tokenId || checkAdmin[0].is_admin === 1) {
       const deleteTweet = await pool.query(
         "DELETE FROM tweets WHERE tweet_id = ?",
@@ -386,7 +389,7 @@ const getComments = async (req, res) => {
 
 const deleteComments = async (req, res) => {
   const { id } = req.params;
-  const userId = req.user.id 
+  const userId = req.user.id;
 
   try {
     if (!id) return res.status(400).json({ error: "No ID FOUND" });
@@ -395,23 +398,25 @@ const deleteComments = async (req, res) => {
       `SELECT * from comments WHERE comment_id = ?`,
       [id]
     );
-    const [checkAdmin] = await pool.query(`SELECT is_admin from authentication WHERE id = ?`,userId)
+    const [checkAdmin] = await pool.query(
+      `SELECT is_admin from authentication WHERE id = ?`,
+      userId
+    );
 
     if (getComment.length === 0) {
       return res.status(400).json({ error: "No tweet found" });
     }
 
-    if(getComment[0].userId = userId || checkAdmin[0].id == userId){
-
+    if ((getComment[0].userId = userId || checkAdmin[0].id == userId)) {
       const [deleteComment] = await pool.query(
         "DELETE from comments WHERE comment_id = ?",
         id
       );
-  
+
       return res.status(200).json({ success: "Successfully deleted" });
     }
 
-    return res.status(500).json({error: "You are not the owner of this Y"})
+    return res.status(500).json({ error: "You are not the owner of this Y" });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
@@ -469,23 +474,43 @@ const repostY = async (req, res) => {
   }
 };
 
+const searchY = async (req, res) => {
+  const { query } = req.body;
+  const userId = req.user.id;
+  console.log(query);
+  try {
+    if (!query) return res.status(200).json({ success: "Empty Y, but Y?" });
 
-const searchY = async(req,res) => {
-  const {query} = req.body
-  console.log(query)
-  try{
-
-  if (!query) return res.status(200).json({success: "Empty Y, but Y?"})
-
-  const [queryDb] = await pool.query(`SELECT tweet from tweets WHERE tweet LIKE "%${query}%"`)
-
-  return res.status(200).json({success: queryDb})
+    const [queryDb] = await pool.query(
+      `SELECT 
+        authentication.id, 
+        authentication.name, 
+        authentication.username, 
+        profile.profile_image, 
+        tweets.*, 
+        CASE 
+            WHEN EXISTS (
+                SELECT 1 
+                FROM likedid
+                WHERE likedid.userId = ? AND likedid.tweet_id = tweets.tweet_id
+            ) THEN 1
+            ELSE 0
+        END AS isLiked
+    FROM authentication
+    LEFT JOIN profile ON authentication.id = profile.user_id
+    LEFT JOIN tweets ON profile.user_id = tweets.userId
+    WHERE tweets.tweet LIKE ? 
+    ORDER BY tweets.date_published DESC;
+    `,
+      [userId, `%${query}%`]
+    );
     
-  }catch(err){
-    return res.status(500).json({error: err.mesage})
+    if(queryDb.length < 1) return res.status(200).json({ success: "Empty Y, but Y?" });
+    return res.status(200).json({ success: queryDb });
+  } catch (err) {
+    return res.status(500).json({ error: err.mesage });
   }
-}
-
+};
 
 module.exports = {
   postY,
@@ -502,5 +527,5 @@ module.exports = {
   updateComments,
   getCountOfLikes,
   repostY,
-  searchY
+  searchY,
 };

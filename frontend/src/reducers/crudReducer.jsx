@@ -205,26 +205,25 @@ export const getUserYReducer = (
         message: actions.payload,
       };
 
-    
-      case "OPTIMISTIC_LIKE_UPDATE":
-        return {
-          // call state, overwrite y, who action calls reducer will be payload
-          // y is payload, it contains all, update the like and heart count, return the whole payload but only for the certain id
-          ...state,
-          y: state.y.map((tweet) =>
-            // actions.payload.id is the {id}
-            // this is just to manually do it
-            tweet.tweet_id === actions.payload.id
-              ? {
-                  ...tweet,
-                  isLiked: !tweet.isLiked,
-                  heart: tweet.isLiked ? tweet.heart - 1 : tweet.heart + 1,
-                }
-              : tweet
-          ),
-        };
-      case "REVERT_OPTIMISTIC_UPDATE":
-        return state;
+    case "OPTIMISTIC_LIKE_UPDATE":
+      return {
+        // call state, overwrite y, who action calls reducer will be payload
+        // y is payload, it contains all, update the like and heart count, return the whole payload but only for the certain id
+        ...state,
+        y: state.y.map((tweet) =>
+          // actions.payload.id is the {id}
+          // this is just to manually do it
+          tweet.tweet_id === actions.payload.id
+            ? {
+                ...tweet,
+                isLiked: !tweet.isLiked,
+                heart: tweet.isLiked ? tweet.heart - 1 : tweet.heart + 1,
+              }
+            : tweet
+        ),
+      };
+    case "REVERT_OPTIMISTIC_UPDATE":
+      return state;
     default:
       return state;
   }
@@ -251,26 +250,26 @@ export const getUserYOtherReducer = (
         error: true,
         message: actions.payload,
       };
-      case "OPTIMISTIC_LIKE_UPDATE":
-        return {
-          // call state, overwrite y, who action calls reducer will be payload
-          // y is payload, it contains all, update the like and heart count, return the whole payload but only for the certain id
-          ...state,
-          y: state.y.map((tweet) =>
-            // actions.payload.id is the {id}
-            // this is just to manually do it
-            tweet.tweet_id === actions.payload.id
-              ? {
-                  ...tweet,
-                  isLiked: !tweet.isLiked,
-                  heart: tweet.isLiked ? tweet.heart - 1 : tweet.heart + 1,
-                }
-              : tweet
-          ),
-        };
-      case "REVERT_OPTIMISTIC_UPDATE":
-        return state;
-      
+    case "OPTIMISTIC_LIKE_UPDATE":
+      return {
+        // call state, overwrite y, who action calls reducer will be payload
+        // y is payload, it contains all, update the like and heart count, return the whole payload but only for the certain id
+        ...state,
+        y: state.y.map((tweet) =>
+          // actions.payload.id is the {id}
+          // this is just to manually do it
+          tweet.tweet_id === actions.payload.id
+            ? {
+                ...tweet,
+                isLiked: !tweet.isLiked,
+                heart: tweet.isLiked ? tweet.heart - 1 : tweet.heart + 1,
+              }
+            : tweet
+        ),
+      };
+    case "REVERT_OPTIMISTIC_UPDATE":
+      return state;
+
     default:
       return state;
   }
@@ -429,5 +428,24 @@ export const deleteCommentReducer = (
       };
     default:
       return state;
+  }
+};
+
+export const searchYReducer = (
+  state = { loading: false, success: false, error: false, message: []},
+  actions
+) => {
+  switch (actions.type) {
+    case "SEARCH_Y_REQUEST":
+      return { loading: true, success: false, error: false };
+
+    case "SEARCH_Y_SUCCESS":
+      return { loading: false, success: true, error: false, message: actions.payload };
+
+    case "SEARCH_Y_FAIL":
+      return { loading: false, success: false, error: true, message: actions.payload };
+
+    default:
+      return { ...state };
   }
 };

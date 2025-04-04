@@ -30,6 +30,7 @@ import {
   likeReducer,
   postCommentReducer,
   postYreducer,
+  searchYReducer,
   updateCommentReducer,
   updateYReducer,
 } from "./reducers/crudReducer";
@@ -66,7 +67,8 @@ const reducer = combineReducers({
   adminChecker : adminCheckerReducer,
   adminListOfUser : adminListOfUserReducer,
   AdminDeleteUser : AdminDeleteUserReducer,
-  AdminSuspendUser : AdminSuspendUserReducer
+  AdminSuspendUser : AdminSuspendUserReducer,
+  searchY : searchYReducer
 });
 
 const intialState = {}; // initial state which can be used in our reducers
