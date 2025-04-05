@@ -432,7 +432,7 @@ export const deleteCommentReducer = (
 };
 
 export const searchYReducer = (
-  state = { loading: false, success: false, error: false, message: [] },
+  state = { loading: false, success: false, error: false, message: [], queries: [] },
   actions
 ) => {
   switch (actions.type) {
@@ -445,6 +445,7 @@ export const searchYReducer = (
         success: true,
         error: false,
         message: actions.payload,
+        queries: actions.userQuery
       };
 
     case "SEARCH_Y_FAIL":

@@ -7,7 +7,7 @@ import { postYActions } from "../actions/crudActions";
 const SeachQuery = () => {
   const [tweet, setTweet] = useState("");
   const [tweet_img, setTweet_img] = useState("");
-  const { message } = useSelector((state) => state.searchY);
+  const { message, queries } = useSelector((state) => state.searchY);
   const maxtext = 999;
   const dispatch = useDispatch();
   const fileNameReset = useRef(null);
@@ -52,7 +52,7 @@ const SeachQuery = () => {
         </div>
 
         <div className="col-lg-8">
-        {/* <h5>Results from "{}"</h5> */}
+        <h5>{queries? `Results from "${queries}"`: null}</h5>
           {message && Array.isArray(message)
             ? message.map((tweets) => (
                 <div class="card mt-2 p-2" value={tweets.tweet_id}>

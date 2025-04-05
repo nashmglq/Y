@@ -600,7 +600,7 @@ export const deleteCommentActions = (id, tweet_id) => async (dispatch) => {
 export const searchYActions = (query) => async (dispatch) => {
   try {
 
-
+    console.log(query.query)
     dispatch({ type: SEARCH_Y_REQUEST });
 
     const getToken = JSON.parse(localStorage.getItem("userInfo"));
@@ -624,6 +624,7 @@ export const searchYActions = (query) => async (dispatch) => {
       return dispatch({
         type: SEARCH_Y_SUCCESS,
         payload: response.data.success,
+        userQuery : query.query
       });
     }
   } catch (err) {

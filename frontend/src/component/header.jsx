@@ -6,6 +6,7 @@ import { searchYActions } from "../actions/crudActions";
 
 const Navbar = () => {
   const [query, setSearch] = useState("");
+
   const nav = useNavigate();
   const dispatch = useDispatch();
   const logOut = (e) => {
@@ -16,12 +17,10 @@ const Navbar = () => {
 
   const search = (e) => {
     e.preventDefault();
-    const formData = {query}
-    console.log(formData)
+    const formData = { query };
     dispatch(searchYActions(formData));
-    nav("/search")
+    nav("/search");
   };
-
 
   const { message } = useSelector((state) => state.adminChecker);
 
