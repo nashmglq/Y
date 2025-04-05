@@ -285,16 +285,17 @@ export const likeCountActions = (id) => async (dispatch) => {
 
 export const likeActions = (id) => async (dispatch) => {
   try {
+    console.log(id)
     dispatch({
       type: OPTIMISTIC_LIKE_UPDATE,
       payload: { id },
     });
 
+
     dispatch({ type: LIKE_Y_REQUEST });
 
     const getToken = JSON.parse(localStorage.getItem("userInfo"));
     const token = getToken ? getToken.token : null;
-    console.log(token);
     const config = token
       ? {
           headers: {
@@ -598,6 +599,8 @@ export const deleteCommentActions = (id, tweet_id) => async (dispatch) => {
 
 export const searchYActions = (query) => async (dispatch) => {
   try {
+
+
     dispatch({ type: SEARCH_Y_REQUEST });
 
     const getToken = JSON.parse(localStorage.getItem("userInfo"));

@@ -6,7 +6,7 @@ import { likeActions } from "../actions/crudActions";
 
 const Like = ({ id }) => {
   const dispatch = useDispatch();
-
+ 
   const likeHandler = () => {
     dispatch(likeActions(id)); // Handles both like and unlike
   };
