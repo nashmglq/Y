@@ -34,6 +34,11 @@ import {
 } from "../constants/authConstant";
 import axios from "axios";
 import { getUserYActions } from "./crudActions";
+import {
+  FOLLOW_COUNT_FAIL,
+  FOLLOW_COUNT_REQUEST,
+  FOLLOW_COUNT_SUCCESS,
+} from "../constants/adminConstant";
 export const loginActions = (formData) => async (dispatch) => {
   try {
     dispatch({ type: LOGIN_REQUEST });
@@ -371,7 +376,7 @@ export const checkIfFollowActions = (id) => async (dispatch) => {
 export const changePasswordActions = (data) => async (dispatch) => {
   try {
     dispatch({ type: CHANGE_PASSWORD_REQUEST });
-    const getToken = JSON.parse(localStorage.getItem("userInfo"))
+    const getToken = JSON.parse(localStorage.getItem("userInfo"));
     const token = getToken ? getToken.token : null;
     const config = token
       ? {
@@ -399,6 +404,40 @@ export const changePasswordActions = (data) => async (dispatch) => {
         err.response && err.response.data.error
           ? err.response.data.error
           : "Something went wrong.",
+    });
+  }
+};
+
+export const FollowCountActions = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: FOLLOW_COUNT_REQUEST });
+    const getToken = JSON.parse(localStorage.getItem("userInfo"));
+    const token = getToken ? getToken.token : null;
+    const config = token
+      ? {
+          headers: { Authorization: `Bearer ${token}` },
+          Accept: "application/json",
+        }
+      : null;
+
+    const response = await axios.get(
+      "http://localhost:5001/get-followers",
+      config
+    );
+    if (response.data && response.data.success) {
+      console.log(response.data.success)
+      return dispatch({
+        type: FOLLOW_COUNT_SUCCESS,
+        payload: response.data.success,
+      });
+    }
+  } catch (err) {
+    return dispatch({
+      type: FOLLOW_COUNT_FAIL,
+      payload:
+        err.response && err.response.data.error
+          ? err.response.data.error
+          : "Something Went Wrong!",
     });
   }
 };

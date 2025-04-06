@@ -257,25 +257,62 @@ export const OtherUserFollowersReducer = (
     case "OTHER_USER_FOLLOWERS_REQUEST":
       return { loading: true, success: false, error: false };
     case "OTHER_USER_FOLLOWERS_SUCCESS":
-      return { loading: false, success: true, error: false, message: actions.payload };
+      return {
+        loading: false,
+        success: true,
+        error: false,
+        message: actions.payload,
+      };
     case "OTHER_USER_FOLLOWERS_FAIL":
-      return { loading: false, success: false, error: true, message: actions.payload };
+      return {
+        loading: false,
+        success: false,
+        error: true,
+        message: actions.payload,
+      };
     default:
       return state;
   }
 };
 
-
-export const changePasswordReducer = (state = {loading: false, success: false, error: false, message: ""}, actions) =>{
-
-  switch(actions.type){
+export const changePasswordReducer = (
+  state = { loading: false, success: false, error: false, message: "" },
+  actions
+) => {
+  switch (actions.type) {
     case "CHANGE_PASSWORD_REQUEST":
-      return {loading: true, success: false, error: false}
+      return { loading: true, success: false, error: false };
     case "CHANGE_PASSWORD_SUCCESS":
-      return {loading: false, success: true, error: false, message: actions.payload}
+      return {
+        loading: false,
+        success: true,
+        error: false,
+        message: actions.payload,
+      };
     case "CHANGE_PASSWORD_FAIL":
-      return {loading: false, success: false, error: false, message: actions.payload}
+      return {
+        loading: false,
+        success: false,
+        error: false,
+        message: actions.payload,
+      };
     default:
-        return state
+      return state;
   }
-}
+};
+
+export const FollowCountReducer = (
+  state = { loading: false, success: false, error: false, followersCount: [] },
+  actions
+) => {
+  switch (actions.type) {
+    case "FOLLOW_COUNT_REQUEST":
+      return { loading: true, success: false, error: false};
+    case "FOLLOW_COUNT_SUCCESS":
+      return { loading: false, success: true, error: false, followersCount: actions.payload };
+    case "FOLLOW_COUNT_FAIL":
+      return { loading: false, success: false, error: true, followersCount: actions.payload };
+    default:
+      return state;
+  }
+};

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getProfileActions } from "../actions/authActions";
+import { FollowCountActions, getProfileActions } from "../actions/authActions";
 import UpdateProfile from "../component/updateProfile";
 import Header from "../component/header";
 import { Link, useNavigate } from "react-router-dom";
@@ -26,13 +26,18 @@ const Profile = () => {
     message: messageGet,
   } = useSelector((state) => state.getProfile);
 
+  const {followersCount} = useSelector((state) => state.FollowCount)
+  
   const { y } = useSelector((state) => state.getUserY);
   console.log(y);
 
   useEffect(() => {
     dispatch(getUserYActions());
     dispatch(getProfileActions());
+    dispatch(FollowCountActions())
   }, [dispatch]);
+
+  console.log(followersCount)
 
   return (
     <div class="container mt-2">
@@ -57,11 +62,18 @@ const Profile = () => {
                 ? `@${profileGet.username}`
                 : "You are not authenticated"}{" "}
             </small>
+
+            <small className="mt-2">
+              Followers: {followersCount ? `${followersCount}`: "0"}
+            </small>
+
+            
             <small class="mb-4 mt-2">
               {profileGet && profileGet.bio
                 ? `${profileGet.bio}`
                 : "No bio yet."}
             </small>
+
 
             {profileGet && (
               <UpdateProfile

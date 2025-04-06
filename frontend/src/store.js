@@ -4,6 +4,7 @@ import {
   changePasswordReducer,
   checkIfFollowReducer,
   emailVerificationReducer,
+  FollowCountReducer,
   followReducer,
   getProfileReducer,
   getUserIdReducer,
@@ -34,8 +35,13 @@ import {
   updateCommentReducer,
   updateYReducer,
 } from "./reducers/crudReducer";
-import { adminCheckerReducer, AdminDeleteUserReducer, adminListOfUserReducer, AdminSearchUserReducer, AdminSuspendUserReducer } from "./reducers/adminReducer";
-
+import {
+  adminCheckerReducer,
+  AdminDeleteUserReducer,
+  adminListOfUserReducer,
+  AdminSearchUserReducer,
+  AdminSuspendUserReducer,
+} from "./reducers/adminReducer";
 
 // put all reducers here
 const reducer = combineReducers({
@@ -64,12 +70,13 @@ const reducer = combineReducers({
   deleteComment: deleteCommentReducer,
   OtherUserFollowers: OtherUserFollowersReducer,
   changePassword: changePasswordReducer,
-  adminChecker : adminCheckerReducer,
-  adminListOfUser : adminListOfUserReducer,
-  AdminDeleteUser : AdminDeleteUserReducer,
-  AdminSuspendUser : AdminSuspendUserReducer,
-  searchY : searchYReducer,
-  adminSearchUser: AdminSearchUserReducer
+  adminChecker: adminCheckerReducer,
+  adminListOfUser: adminListOfUserReducer,
+  AdminDeleteUser: AdminDeleteUserReducer,
+  AdminSuspendUser: AdminSuspendUserReducer,
+  searchY: searchYReducer,
+  adminSearchUser: AdminSearchUserReducer,
+  FollowCount: FollowCountReducer,
 });
 
 const intialState = {}; // initial state which can be used in our reducers
