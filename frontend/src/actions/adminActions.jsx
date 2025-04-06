@@ -6,6 +6,9 @@ import {
   ADMIN_DELETE_USER_FAIL,
   ADMIN_DELETE_USER_REQUEST,
   ADMIN_DELETE_USER_SUCCESS,
+  ADMIN_SEARCH_USER_FAIL,
+  ADMIN_SEARCH_USER_REQUEST,
+  ADMIN_SEARCH_USER_SUCCESS,
   ADMIN_SUSPEND_USER_FAIL,
   ADMIN_SUSPEND_USER_REQUEST,
   ADMIN_SUSPEND_USER_SUCCESS,
@@ -18,7 +21,6 @@ import {
 
 export const adminCheckerActions = () => async (dispatch) => {
   try {
-
     dispatch({ type: ADMIN_CHECKER_REQUEST });
 
     const getToken = JSON.parse(localStorage.getItem("userInfo"));
@@ -130,9 +132,9 @@ export const AdminDeleteUserActions = (id) => async (dispatch) => {
 
 export const AdminUserSuspendAction = (id) => async (dispatch) => {
   try {
-    dispatch({type: OPTIMISTIC_SUSPEND_UPDATE, payload: {id} })
-  
-    dispatch({type: ADMIN_SUSPEND_USER_REQUEST })
+    dispatch({ type: OPTIMISTIC_SUSPEND_UPDATE, payload: { id } });
+
+    dispatch({ type: ADMIN_SUSPEND_USER_REQUEST });
     const getToken = JSON.parse(localStorage.getItem("userInfo"));
     const token = getToken ? getToken.token : null;
     const config = token
@@ -145,7 +147,8 @@ export const AdminUserSuspendAction = (id) => async (dispatch) => {
       : null;
 
     const response = await axios.put(
-      `http://localhost:5001/admin/suspend/${id}`,[],
+      `http://localhost:5001/admin/suspend/${id}`,
+      [],
       config
     );
 
@@ -157,7 +160,7 @@ export const AdminUserSuspendAction = (id) => async (dispatch) => {
       });
     }
   } catch (err) {
-    dispatch({type: OPTIMISTIC_SUSPEND_LIST_UPDATE, payload: {id}})
+    dispatch({ type: OPTIMISTIC_SUSPEND_LIST_UPDATE, payload: { id } });
     return dispatch({
       type: ADMIN_SUSPEND_USER_FAIL,
       payload:
@@ -165,7 +168,40 @@ export const AdminUserSuspendAction = (id) => async (dispatch) => {
           ? err.response.data.error
           : "Something went wrong!",
     });
+  }
+};
 
 
+
+export const AdminSearchUserActions = (query) => async (dispatch) => {
+  try {
+    dispatch({ type: ADMIN_SEARCH_USER_REQUEST });
+
+    const getToken = JSON.parse(localStorage.getItem("userInfo"));
+    const token = getToken ? getToken.token : null;
+    const config = token
+      ? {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      : null;
+
+    const response = await axios.post("http://localhost:5001/admin-search-user",query, config)
+
+    if(response.data && response.data.success){
+      dispatch({type: ADMIN_SEARCH_USER_SUCCESS, payload: response.data.success})
+    }
+    
+
+  } catch (err) {
+    return dispatch({
+      type: ADMIN_SEARCH_USER_FAIL,
+      payload:
+        err.response.data && err.response.data.error
+          ? err.response.data.error
+          : "Something went wrong!",
+    });
   }
 };

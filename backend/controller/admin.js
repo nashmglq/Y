@@ -118,6 +118,7 @@ const searchUserAdmin = async (req, res) => {
   const userId = req.params.id;
   const adminId = req.user.id;
   const { query } = req.body;
+  console.log(query)
   try {
     const [checkIfAdmin] = await pool.query(
       `SELECT is_admin FROM authentication WHERE id = ?`,
@@ -131,8 +132,22 @@ const searchUserAdmin = async (req, res) => {
       return res.status(500).json({ error: "You are not an Admin" });
 
     const [queryDb] = await pool.query(
-      `SELECT email from authentication WHERE email like "%${query}%"`
-    );
+      `SELECT 
+        authentication.id, 
+        authentication.email, 
+        authentication.username, 
+        authentication.name, 
+        authentication.is_admin,
+        authentication.is_verified,
+        profile.profile_image
+        FROM authentication
+        LEFT JOIN profile ON authentication.id = profile.user_id
+        WHERE authentication.email LIKE ? OR authentication.username LIKE ?
+        `
+    , [`%${query}%`, `%${query}%`]);
+
+
+
 
     return res.status(200).json({ success: queryDb });
   } catch (err) {
@@ -178,6 +193,8 @@ const setAdmin = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
+
+
 
 module.exports = {
   adminChecker,

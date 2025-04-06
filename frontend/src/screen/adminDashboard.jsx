@@ -1,30 +1,49 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { adminCheckerActions,adminListOfUserActions } from "../actions/adminActions";
+import {
+  adminCheckerActions,
+  adminListOfUserActions,
+  AdminSearchUserActions,
+} from "../actions/adminActions";
 import DeleteUser from "../component/deleteUser";
 import SuspendUser from "../component/suspendUser";
 import { useNavigate } from "react-router-dom";
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
+  const [query, setQuery] = useState("");
   const { message } = useSelector((state) => state.adminListOfUser);
-  const getToken = JSON.parse(localStorage.getItem("userInfo"))
-  const nav = useNavigate()
+  const { message: searchUserMessage } = useSelector(
+    (state) => state.adminSearchUser
+  );
+
+  const searchUser = (e) => {
+    e.preventDefault();
+    const formData = { query };
+    dispatch(AdminSearchUserActions(formData));
+  };
 
   useEffect(() => {
-    if(getToken.is_admin === 0){
-      nav("/")
-    }
     dispatch(adminListOfUserActions());
   }, [dispatch]);
 
-  
   return (
     <div>
       <div className="container mt-2">
         <div className="row justify-content-center align-items-center">
           <div className="col-sm-8">
             <h4>Users</h4>
+            <form class="d-flex m-4" onSubmit={searchUser}>
+              <input
+                class="form-control mr-sm-2 bg-light font-white text-body"
+                type="search"
+                placeholder="Find user using email or username..."
+                onChange={(e) => setQuery(e.target.value)}
+              />
+              <button className="btn btn" type="submit">
+                Search
+              </button>
+            </form>
             <div className="table-responsive">
               <table className="table table-bordered">
                 <thead>
@@ -38,7 +57,44 @@ const AdminDashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {message && Array.isArray(message) ? (
+                  {searchUserMessage &&
+                  Array.isArray(searchUserMessage) &&
+                  searchUserMessage.length > 0 ? (
+                    searchUserMessage.map((usersList) => (
+                      <tr key={usersList.id}>
+                        <td>
+                          <img
+                            src={
+                              `http://localhost:5001/uploads/${usersList.profile_image}` ||
+                              "default.jpg"
+                            }
+                            className="rounded-circle img-fluid"
+                            style={{ width: "40px", height: "40px" }}
+                            alt="Profile"
+                          />
+                        </td>
+                        <td>@{usersList.username}</td>
+                        <td>{usersList.email}</td>
+                        <td>
+                          {usersList.is_admin === 1 ? "Admin" : "User"}{" "}
+                          {usersList.is_verified === 1
+                            ? "(Active)"
+                            : "(Inactive)"}
+                        </td>
+                        <td>
+                          <SuspendUser
+                            id={usersList.id}
+                            check={usersList.is_verified}
+                          />
+                        </td>
+                        <td>
+                          <DeleteUser id={usersList.id} />
+                        </td>
+                      </tr>
+                    ))
+
+                    
+                  ) : message && Array.isArray(message) ? (
                     message.map((usersList) => (
                       <tr key={usersList.id}>
                         <td>
@@ -54,12 +110,20 @@ const AdminDashboard = () => {
                         </td>
                         <td>@{usersList.username}</td>
                         <td>{usersList.email}</td>
-                        <td>{usersList.is_admin === 1 ? "Admin" : "User"}{" "}{usersList.is_verified === 1 ? "(Active)" : "(Inactive)" }</td>
                         <td>
-                            <SuspendUser id = {usersList.id} check = {usersList.is_verified}/>
+                          {usersList.is_admin === 1 ? "Admin" : "User"}{" "}
+                          {usersList.is_verified === 1
+                            ? "(Active)"
+                            : "(Inactive)"}
                         </td>
                         <td>
-                          <DeleteUser id = {usersList.id}/>
+                          <SuspendUser
+                            id={usersList.id}
+                            check={usersList.is_verified}
+                          />
+                        </td>
+                        <td>
+                          <DeleteUser id={usersList.id} />
                         </td>
                       </tr>
                     ))

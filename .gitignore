@@ -2,3 +2,6 @@ backend/.env
 backend/node_modules
 backend/y.sql
 backend/node_modules/
+cheatcode boostrs.txt
+mysql.txt
+Progress.txt

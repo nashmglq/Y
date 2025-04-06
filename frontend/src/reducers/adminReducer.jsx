@@ -114,3 +114,29 @@ export const AdminSuspendUserReducer = (
       return initialState;
   }
 };
+
+export const AdminSearchUserReducer = (
+  initialState = { loading: false, success: false, error: false, message: []},
+  actions
+) => {
+  switch (actions.type) {
+    case "ADMIN_SEARCH_USER_REQUEST":
+      return { loading: true, success: false, error: false, message: [] };
+    case "ADMIN_SEARCH_USER_SUCCESS":
+      return {
+        loading: false,
+        success: true,
+        error: false,
+        message: actions.payload,
+      };
+    case "ADMIN_SEARCH_USER_FAIL":
+      return {
+        loading: false,
+        success: false,
+        error: true,
+        message: actions.payload,
+      };
+    default:
+      return initialState;
+  }
+};
